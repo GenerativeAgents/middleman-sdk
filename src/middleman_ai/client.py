@@ -118,6 +118,8 @@ class ToolsClient:
             return result.pdf_url
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
+        except requests.exceptions.RequestException as e:
+            raise ConnectionError() from e
 
     def md_to_docx(self, markdown_text: str) -> str:
         """Markdown文字列をDOCXに変換し、DOCXのダウンロードURLを返します。

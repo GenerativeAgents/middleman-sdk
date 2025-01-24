@@ -1,8 +1,9 @@
 """LangChainのJSON to PPTX変換ツール。"""
 
-from typing import Any, Dict
+from typing import Any
 
 from langchain_core.tools import BaseTool
+from pydantic import Field
 
 from middleman_ai.client import ToolsClient
 
@@ -16,6 +17,7 @@ class JsonToPptxAnalyzeTool(BaseTool):
         "入力はテンプレートID（UUID）である必要があります。"
         "出力はテンプレートの構造情報です。"
     )
+    client: ToolsClient = Field(..., exclude=True)
 
     def __init__(self, client: ToolsClient, **kwargs: Any) -> None:
         """ツールを初期化します。
@@ -24,28 +26,33 @@ class JsonToPptxAnalyzeTool(BaseTool):
             client: Middleman.ai APIクライアント
             **kwargs: BaseTool用の追加引数
         """
+        kwargs["client"] = client
         super().__init__(**kwargs)
-        self.client = client
 
-    def _run(self, template_id: str) -> Dict[str, Any]:
+    def _run(self, template_id: str) -> str:
         """同期的にPPTXテンプレートを解析します。
 
         Args:
             template_id: テンプレートID（UUID）
 
         Returns:
-            Dict[str, Any]: テンプレートの構造情報
+            str: テンプレートの構造情報を文字列化したもの
         """
-        return self.client.json_to_pptx_analyze_v2(template_id)
+        result = self.client.json_to_pptx_analyze_v2(template_id)
+        return "\n".join(
+            f"Slide {i+1}: {slide['title']} "
+            f"(placeholders: {', '.join(slide['placeholders'])})"
+            for i, slide in enumerate(result["slides"])
+        )
 
-    async def _arun(self, template_id: str) -> Dict[str, Any]:
+    async def _arun(self, template_id: str) -> str:
         """非同期的にPPTXテンプレートを解析します。
 
         Args:
             template_id: テンプレートID（UUID）
 
         Returns:
-            Dict[str, Any]: テンプレートの構造情報
+            str: テンプレートの構造情報を文字列化したもの
         """
         # 現時点では同期メソッドを呼び出し
         return self._run(template_id)
@@ -60,6 +67,7 @@ class JsonToPptxExecuteTool(BaseTool):
         "入力は「テンプレートID,JSON」の形式である必要があります（カンマ区切り）。"
         "出力は生成されたPPTXのURLです。"
     )
+    client: ToolsClient = Field(..., exclude=True)
 
     def __init__(self, client: ToolsClient, **kwargs: Any) -> None:
         """ツールを初期化します。
@@ -68,8 +76,8 @@ class JsonToPptxExecuteTool(BaseTool):
             client: Middleman.ai APIクライアント
             **kwargs: BaseTool用の追加引数
         """
+        kwargs["client"] = client
         super().__init__(**kwargs)
-        self.client = client
 
     def _run(self, input_str: str) -> str:
         """同期的にJSONからPPTXを生成します。

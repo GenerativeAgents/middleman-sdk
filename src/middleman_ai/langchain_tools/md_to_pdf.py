@@ -3,6 +3,7 @@
 from typing import Any
 
 from langchain_core.tools import BaseTool
+from pydantic import Field
 
 from middleman_ai.client import ToolsClient
 
@@ -16,6 +17,7 @@ class MdToPdfTool(BaseTool):
         "入力は有効なMarkdown文字列である必要があります。"
         "出力は生成されたPDFのURLです。"
     )
+    client: ToolsClient = Field(..., exclude=True)
 
     def __init__(self, client: ToolsClient, **kwargs: Any) -> None:
         """ツールを初期化します。
@@ -24,8 +26,8 @@ class MdToPdfTool(BaseTool):
             client: Middleman.ai APIクライアント
             **kwargs: BaseTool用の追加引数
         """
+        kwargs["client"] = client
         super().__init__(**kwargs)
-        self.client = client
 
     def _run(self, text: str) -> str:
         """同期的にMarkdown文字列をPDFに変換します。
