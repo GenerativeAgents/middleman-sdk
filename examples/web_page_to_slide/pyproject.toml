@@ -19,6 +19,7 @@ dependencies = [
 [tool.uv]
 dev-dependencies = [
     "langgraph-cli[inmem]>=0.1.56",
+    "python-dotenv>=1.0.1",
 ]
 
 [tool.uv.sources]

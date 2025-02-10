@@ -95,12 +95,10 @@ def test_json_to_pptx_analyze_tool(
     client: ToolsClient, mocker: "MockerFixture"
 ) -> None:
     """JsonToPptxAnalyzeToolのテスト。"""
-    template_structure = {
-        "slides": [
-            {"title": "Title Slide", "placeholders": ["title", "subtitle"]},
-            {"title": "Content Slide", "placeholders": ["title", "content"]},
-        ]
-    }
+    template_structure = [
+        {"title": "Title Slide", "placeholders": ["title", "subtitle"]},
+        {"title": "Content Slide", "placeholders": ["title", "content"]},
+    ]
     mock_analyze = mocker.patch.object(
         client,
         "json_to_pptx_analyze_v2",
