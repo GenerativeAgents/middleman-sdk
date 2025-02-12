@@ -8,7 +8,7 @@ import os
 from typing import Any, Dict
 
 from dotenv import load_dotenv
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain_core.agents import AgentExecutor
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -52,10 +52,10 @@ def create_pdf_agent(
     """
     middleman_client = ToolsClient(api_key=middleman_api_key)
 
-    llm = ChatAnthropic(
-        model="claude-3-sonnet-20240229",
+    llm = ChatOpenAI(
+        model="gpt-4-turbo-preview",
         temperature=0.0,
-        api_key=anthropic_api_key,
+        api_key=anthropic_api_key,  # OpenAI API key
     )
 
     md_to_pdf_tool = MdToPdfTool(client=middleman_client)
@@ -86,17 +86,17 @@ def process_text_to_pdf(text: str) -> Dict[str, Any]:
         ValueError: 必要な環境変数が設定されていない場合
     """
     middleman_api_key = os.getenv("MIDDLEMAN_API_KEY")
-    anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+    openai_api_key = os.getenv("OPENAI_API_KEY")
 
-    if not middleman_api_key or not anthropic_api_key:
+    if not middleman_api_key or not openai_api_key:
         raise ValueError(
             "環境変数が設定されていません。"
-            "MIDDLEMAN_API_KEY と ANTHROPIC_API_KEY を設定してください。"
+            "MIDDLEMAN_API_KEY と OPENAI_API_KEY を設定してください。"
         )
 
     agent = create_pdf_agent(
         middleman_api_key=middleman_api_key,
-        anthropic_api_key=anthropic_api_key,
+        anthropic_api_key=openai_api_key,  # OpenAI API key
     )
 
     result = agent.invoke({"input": text})
