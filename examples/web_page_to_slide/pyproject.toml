@@ -1,0 +1,35 @@
+[project]
+name = "web-page-to-slide"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "bs4>=0.0.2",
+    "langchain-anthropic>=0.3.6",
+    "langchain-community>=0.3.15",
+    "langchain-core>=0.3.31",
+    "langgraph>=0.2.69",
+    "middleman-ai",
+    "requests>=2.32.3",
+    "tavily-python>=0.5.0",
+    "types-requests>=2.32.0.20241016",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "langgraph-cli[inmem]>=0.1.56",
+    "python-dotenv>=1.0.1",
+]
+
+[tool.uv.sources]
+middleman-ai = { path = "../../", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+    "src/web_page_to_slide",
+]

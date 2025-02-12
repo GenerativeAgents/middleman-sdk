@@ -51,7 +51,7 @@ class PdfToPageImagesResponse(BaseModel):
 class JsonToPptxAnalyzeResponse(BaseModel):
     """PPTX テンプレート解析のレスポンスモデル。"""
 
-    template_structure: dict = Field(..., description="テンプレートの構造情報")
+    slides: List[dict] = Field(..., description="テンプレートの構造情報")
     important_remark_for_user: Optional[str] = Field(
         None, description="ユーザーへの重要な注意事項"
     )

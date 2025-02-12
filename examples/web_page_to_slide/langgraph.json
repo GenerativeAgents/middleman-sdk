@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "agent": "./src/web_page_to_slide/agent.py:agent"
+  },
+  "env": ".env"
+}

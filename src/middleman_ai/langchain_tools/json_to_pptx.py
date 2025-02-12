@@ -1,6 +1,6 @@
 """LangChainのJSON to PPTX変換ツール。"""
 
-from typing import Any
+from typing import Any, List
 
 from langchain_core.tools import BaseTool
 from pydantic import Field
@@ -38,11 +38,11 @@ class JsonToPptxAnalyzeTool(BaseTool):
         Returns:
             str: テンプレートの構造情報を文字列化したもの
         """
-        result = self.client.json_to_pptx_analyze_v2(template_id)
+        result: List[dict] = self.client.json_to_pptx_analyze_v2(template_id)
         return "\n".join(
-            f"Slide {i+1}: {slide['title']} "
-            f"(placeholders: {', '.join(slide['placeholders'])})"
-            for i, slide in enumerate(result["slides"])
+            f"Slide {i+1}: {slide.get('title', 'Untitled')} "
+            f"(placeholders: {', '.join(slide.get('placeholders', []))})"
+            for i, slide in enumerate(result)
         )
 
     async def _arun(self, template_id: str) -> str:

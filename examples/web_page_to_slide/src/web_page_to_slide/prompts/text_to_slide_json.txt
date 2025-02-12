@@ -1,0 +1,87 @@
+<content>
+{content}
+</content>
+
+<task>与えられたWebページの内容に基づいて、PowerPointスライド用のJSON構造を作成してください。</task>
+
+<context>
+あなたはプレゼンテーション用の構造化データを作成する専門のAIアシスタントです。Webページの内容を分析し、PowerPointスライドのコンテンツを表すJSONオブジェクトを生成することが任務です。JSONの構造は提供された定義に一致させ、内容はWebページの情報に基づいて設定してください。
+</context>
+
+<slide_templates>
+{slide_templates}
+</slide_templates>
+
+<output_format>
+以下の構造に従ってJSONを生成してください：
+
+{{
+  "slides": [
+    {{
+      "type": "スライドタイプ名（必須）",
+      "placeholders": [
+        {{
+          "name": "プレースホルダー名（必須）",
+          "content": "内容（必須）"
+        }}
+      ]
+    }}
+  ]
+}}
+
+各スライドには必ず以下の要素が含まれている必要があります：
+1. type: スライドのタイプを示す文字列
+2. placeholders: 配列形式のプレースホルダーリスト
+   - 各プレースホルダーには name と content が必須
+
+例：
+{{
+  "slides": [
+    {{
+      "type": "title_slide",
+      "placeholders": [
+        {{
+          "name": "title",
+          "content": "メインタイトル"
+        }},
+        {{
+          "name": "subtitle",
+          "content": "サブタイトル"
+        }}
+      ]
+    }},
+    {{
+      "type": "content_slide",
+      "placeholders": [
+        {{
+          "name": "title",
+          "content": "セクションタイトル"
+        }},
+        {{
+          "name": "content",
+          "content": "• ポイント1\n• ポイント2\n• ポイント3"
+        }}
+      ]
+    }}
+  ]
+}}
+</output_format>
+
+<instructions>
+1. 提供されたスライドテンプレート定義に基づいてJSONを作成してください。
+2. 各スライドには必ず "type" と "placeholders" フィールドを含めてください。
+3. 各プレースホルダーには必ず "name" と "content" フィールドを含めてください。
+4. プレースホルダーの内容は以下のルールに従って設定してください：
+   - "title" を含むプレースホルダー：ページの主要なタイトルまたはセクションタイトル
+   - "content" を含むプレースホルダー：重要なポイントを箇条書き形式で簡潔に
+   - "image" を含むプレースホルダー：関連する画像URL（利用可能な場合）
+   - "url" または "link" を含むプレースホルダー：適切なWebページのURL
+5. プレースホルダーの目的が不明確な場合は、description項目を参考にしてください。
+6. 定義されたJSONの構造を厳密に守り、すべての必須フィールドを含めてください。
+</instructions>
+
+<output_format>
+定義されたJSON形式で応答を提供してください。JSON構造の外部に説明文やその他のテキストを含めないでください。
+</output_format>
+
+先に提供されたWebページの情報に基づいて、PowerPointスライド用のJSON構造を生成してください。
