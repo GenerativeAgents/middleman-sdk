@@ -10,17 +10,19 @@ from middleman_ai.client import ToolsClient
 
 class JsonToPptxAnalyzeInput(BaseModel):
     """PPTXテンプレート解析用の入力スキーマ。"""
+
     template_id: str | None = Field(
         None,
-        description="PPTXテンプレートのID（UUID形式）。テンプレートの構造を解析するために使用します。default_template_idが設定されている場合は省略可能です。",
+        description="PPTXテンプレートのID（UUID形式）。テンプレートの構造を解析するために使用します。省略した場合はデフォルトのテンプレートが利用されます。ユーザーからテンプレートIDの共有がない場合は省略してください。",
     )
 
 
 class JsonToPptxExecuteInput(BaseModel):
     """PPTXファイル生成用の入力スキーマ。"""
+
     template_id: str | None = Field(
         None,
-        description="PPTXテンプレートのID（UUID形式）。プレゼンテーションの生成に使用します。default_template_idが設定されている場合は省略可能です。",
+        description="PPTXテンプレートのID（UUID形式）。プレゼンテーションの生成に使用します。省略した場合はデフォルトのテンプレートが利用されます。ユーザーからテンプレートIDの共有がない場合は省略してください。",
     )
     slide_json_str: str = Field(
         ...,
