@@ -1,5 +1,6 @@
 """LangChainツール群のVCRテストモジュール。"""
 
+import json
 import os
 from typing import TYPE_CHECKING
 
@@ -9,6 +10,11 @@ from middleman_ai.client import ToolsClient
 from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
 from middleman_ai.langchain_tools.md_to_docx import MdToDocxTool
 from middleman_ai.langchain_tools.md_to_pptx import MdToPptxTool
+from middleman_ai.langchain_tools.pdf_to_page_images import PdfToPageImagesTool
+from middleman_ai.langchain_tools.json_to_pptx import (
+    JsonToPptxAnalyzeTool,
+    JsonToPptxExecuteTool,
+)
 
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest
