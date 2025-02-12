@@ -34,7 +34,10 @@ password: <APIキー>
 ```
 
 ```bash
-# 古いファイルを削除
+# 事前にpyproject.tomlのversionを更新
+cat pyproject.toml
+
+# 古いビルド成果物を削除
 rm -rf dist/
 rm -rf build/
 rm -rf middleman_ai.egg-info/
