@@ -5,12 +5,11 @@ PDFに変換するエージェントを提供します。
 """
 
 import os
-from typing import Any, Dict
 
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-from langchain_core.agents import AgentExecutor
+from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
 
 from middleman_ai import ToolsClient
 from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
@@ -18,107 +17,41 @@ from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
 load_dotenv()
 
 
-def load_prompt(prompt_name: str) -> str:
-    """プロンプトファイルを読み込みます。
+SYSTEM_PROMPT = """
+あなたはMarkdownテキストをPDFに変換するAIアシスタントです。
 
-    Args:
-        prompt_name: プロンプトファイル名（.txt拡張子なし）
+以下のツールが利用可能です：
+1) md-to-pdf: Markdown文字列をPDFに変換します。
 
-    Returns:
-        str: プロンプトファイルの内容
+あなたの役割：
+1. ユーザーからの依頼に応える返答をMarkdown形式で生成する
+2. 整形したMarkdownテキストをPDFに変換する
+3. 生成されたPDFのURLを返す
 
-    Raises:
-        FileNotFoundError: プロンプトファイルが見つからない場合
-    """
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    prompt_path = os.path.join(current_dir, "prompts", f"{prompt_name}.txt")
-
-    with open(prompt_path) as f:
-        return f.read()
+最終的な出力は必ずPDFのURLを含めてください。
+""".strip()
 
 
-def create_pdf_agent(
-    middleman_api_key: str,
-    openai_api_key: str,
-) -> AgentExecutor:
-    """PDF生成エージェントを作成します。
+middleman_client = ToolsClient(api_key=os.getenv("MIDDLEMAN_API_KEY", ""))
+md_to_pdf_tool = MdToPdfTool(client=middleman_client)
+model = ChatOpenAI(
+    model="gpt-4o-mini",
+    temperature=0.0,
+)
+tools = [md_to_pdf_tool]
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", SYSTEM_PROMPT),
+        ("human", "{input}"),
+        ("placeholder", "{agent_scratchpad}"),
+    ]
+)
 
-    Args:
-        middleman_api_key: Middleman.aiのAPIキー
-        openai_api_key: OpenAIのAPIキー
-
-    Returns:
-        AgentExecutor: 設定済みのエージェント
-    """
-    middleman_client = ToolsClient(api_key=middleman_api_key)
-
-    llm = ChatOpenAI(
-        model="gpt-4-turbo-preview",
-        temperature=0.0,
-        api_key=openai_api_key,
-    )
-
-    md_to_pdf_tool = MdToPdfTool(client=middleman_client)
-    tools = [md_to_pdf_tool]
-
-    prompt = ChatPromptTemplate.from_template(load_prompt("agent"))
-
-    agent = AgentExecutor.from_agent_and_tools(
-        agent="structured-chat-zero-shot-react-description",
-        llm=llm,
-        tools=tools,
-        verbose=True,
-    )
-
-    return agent
-
-
-def process_text_to_pdf(text: str) -> Dict[str, Any]:
-    """テキストをPDFに変換します。
-
-    Args:
-        text: 変換対象のテキスト
-
-    Returns:
-        Dict[str, Any]: 処理結果（PDFのURL等）
-
-    Raises:
-        ValueError: 必要な環境変数が設定されていない場合
-    """
-    middleman_api_key = os.getenv("MIDDLEMAN_API_KEY")
-    openai_api_key = os.getenv("OPENAI_API_KEY")
-
-    if not middleman_api_key or not openai_api_key:
-        raise ValueError(
-            "環境変数が設定されていません。"
-            "MIDDLEMAN_API_KEY と OPENAI_API_KEY を設定してください。"
-        )
-
-    agent = create_pdf_agent(
-        middleman_api_key=middleman_api_key,
-        openai_api_key=openai_api_key,
-    )
-
-    result = agent.invoke({"input": text})
-    return result
-
-
-if __name__ == "__main__":
-    sample_text = """
-    # サンプルドキュメント
-
-    これはサンプルのMarkdownドキュメントです。
-
-    ## 特徴
-    - シンプルな構造
-    - 日本語対応
-    - Markdown形式
-
-    詳細については[Markdown Guide](https://www.markdownguide.org)を参照してください。
-    """
-
-    try:
-        result = process_text_to_pdf(sample_text)
-        print("生成されたPDF:", result)
-    except Exception as e:
-        print(f"エラーが発生しました: {e}")
+agent = create_tool_calling_agent(model, tools, prompt)
+agent_executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    return_intermediate_steps=False,
+)
+result = agent_executor.invoke({"input": "Pythonの基本的な文法をまとめてPDF化して"})
+print(result)
