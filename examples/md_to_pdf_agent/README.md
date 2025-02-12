@@ -1,36 +1,34 @@
 # Markdown to PDF Agent
 
-ユーザーから依頼された内容をMarkdown形式に整形し、PDFに変換するエージェントのサンプルです。
-
-## 機能
-
-- テキスト入力のMarkdown形式への整形
-- LLMを使用したコンテンツの最適化
-- Middleman.aiのAPIを使用したPDF生成
-- 日本語テキストの完全サポート
+ユーザーから依頼された内容を Markdown 形式に整形し、PDF に変換するエージェントのサンプルです。
 
 ## 必要条件
 
-- Python 3.10以上
+- Python 3.10 以上
 - [uv](https://github.com/astral-sh/uv)
 
 ## セットアップ
 
 1. リポジトリをクローン:
+
 ```bash
 git clone [repository-url]
-cd examples/md_to_pdf
+cd examples/md_to_pdf_agent
 ```
 
 2. 環境変数の設定:
+
 ```bash
 cp .env.sample .env
 ```
-`.env`ファイルを編集し、必要なAPI keyを設定してください：
-- `MIDDLEMAN_API_KEY`: Middleman.aiのAPIキー
-- `OPENAI_API_KEY`: OpenAIのAPIキー
+
+`.env`ファイルを編集し、必要な API key を設定してください：
+
+- `MIDDLEMAN_API_KEY`: Middleman.ai の API キー
+- `OPENAI_API_KEY`: OpenAI の API キー
 
 3. 依存関係のインストール:
+
 ```bash
 uv sync
 ```
@@ -38,29 +36,13 @@ uv sync
 ## 使用方法
 
 1. サンプルスクリプトの実行:
+
 ```bash
-python -m src.md_to_pdf.agent
+uv run python -m src.md_to_pdf_agent.agent
 ```
 
-生成されたPDFのURLがエージェントからの出力として表示されます。
-
-## カスタマイズ
-
-エージェントは以下の方法でカスタマイズ可能です：
-
-```python
-from md_to_pdf.agent import process_text_to_pdf
-
-# カスタムテキストの処理
-custom_text = """
-# カスタムドキュメント
-これは**カスタム**コンテンツです。
-"""
-
-result = process_text_to_pdf(custom_text)
-print(f"生成されたPDF: {result}")
-```
+生成された PDF の URL がエージェントからの出力として表示されます。
 
 ## ライセンス
 
-このプロジェクトはMITライセンスの下で公開されています。
+このプロジェクトは MIT ライセンスの下で公開されています。
