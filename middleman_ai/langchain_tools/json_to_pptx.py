@@ -18,8 +18,14 @@ class JsonToPptxAnalyzeTool(BaseTool):
         "出力はテンプレートの構造情報です。"
     )
     client: ToolsClient = Field(..., exclude=True)
+    default_template_id: str | None = Field(..., exclude=True)
 
-    def __init__(self, client: ToolsClient, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        client: ToolsClient,
+        default_template_id: str | None = None,
+        **kwargs: Any,
+    ) -> None:
         """ツールを初期化します。
 
         Args:
@@ -27,9 +33,10 @@ class JsonToPptxAnalyzeTool(BaseTool):
             **kwargs: BaseTool用の追加引数
         """
         kwargs["client"] = client
+        kwargs["default_template_id"] = default_template_id
         super().__init__(**kwargs)
 
-    def _run(self, template_id: str) -> str:
+    def _run(self, template_id: str | None = None) -> str:
         """同期的にPPTXテンプレートを解析します。
 
         Args:
@@ -38,14 +45,21 @@ class JsonToPptxAnalyzeTool(BaseTool):
         Returns:
             str: テンプレートの構造情報を文字列化したもの
         """
-        result: List[dict] = self.client.json_to_pptx_analyze_v2(template_id)
+        template_id_to_use = template_id or self.default_template_id
+        if template_id_to_use is None:
+            raise ValueError("テンプレートIDが指定されていません")
+
+        result: List[dict] = self.client.json_to_pptx_analyze_v2(template_id_to_use)
         return "\n".join(
-            f"Slide {i+1}: {slide.get('title', 'Untitled')} "
+            f"Slide {i + 1}: {slide.get('title', 'Untitled')} "
             f"(placeholders: {', '.join(slide.get('placeholders', []))})"
             for i, slide in enumerate(result)
         )
 
-    async def _arun(self, template_id: str) -> str:
+    async def _arun(
+        self,
+        template_id: str | None = None,
+    ) -> str:
         """非同期的にPPTXテンプレートを解析します。
 
         Args:
@@ -68,8 +82,14 @@ class JsonToPptxExecuteTool(BaseTool):
         "出力は生成されたPPTXのURLです。"
     )
     client: ToolsClient = Field(..., exclude=True)
+    default_template_id: str | None = Field(..., exclude=True)
 
-    def __init__(self, client: ToolsClient, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        client: ToolsClient,
+        default_template_id: str | None = None,
+        **kwargs: Any,
+    ) -> None:
         """ツールを初期化します。
 
         Args:
@@ -77,9 +97,14 @@ class JsonToPptxExecuteTool(BaseTool):
             **kwargs: BaseTool用の追加引数
         """
         kwargs["client"] = client
+        kwargs["default_template_id"] = default_template_id
         super().__init__(**kwargs)
 
-    def _run(self, input_str: str) -> str:
+    def _run(
+        self,
+        slide_json_str: str,
+        template_id: str | None = None,
+    ) -> str:
         """同期的にJSONからPPTXを生成します。
 
         Args:
@@ -92,20 +117,24 @@ class JsonToPptxExecuteTool(BaseTool):
             ValueError: 入力形式が不正な場合
             json.JSONDecodeError: JSON形式が不正な場合
         """
-        try:
-            import json
+        import json
 
-            template_id, json_str = input_str.split(",", 1)
-            presentation = json.loads(json_str)
-            return self.client.json_to_pptx_execute_v2(template_id, presentation)
-        except ValueError as e:
-            raise ValueError(
-                "入力は「テンプレートID,JSON」形式である必要があります"
-            ) from e
+        template_id_to_use = template_id or self.default_template_id
+        if template_id_to_use is None:
+            raise ValueError("テンプレートIDが指定されていません")
+
+        try:
+            presentation = json.loads(slide_json_str)
         except json.JSONDecodeError as e:
             raise ValueError("不正なJSON形式です") from e
 
-    async def _arun(self, input_str: str) -> str:
+        return self.client.json_to_pptx_execute_v2(template_id_to_use, presentation)
+
+    async def _arun(
+        self,
+        slide_json_str: str,
+        template_id: str | None = None,
+    ) -> str:
         """非同期的にJSONからPPTXを生成します。
 
         Args:
@@ -115,4 +144,4 @@ class JsonToPptxExecuteTool(BaseTool):
             str: 生成されたPPTXのURL
         """
         # 現時点では同期メソッドを呼び出し
-        return self._run(input_str)
+        return self._run(slide_json_str, template_id)

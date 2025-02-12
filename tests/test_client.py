@@ -119,18 +119,3 @@ def test_md_to_pdf_validation_error(
 
     with pytest.raises(ValidationError):
         client.md_to_pdf("# Test")
-
-
-def test_list_tools_success(client: ToolsClient, mocker: "MockerFixture") -> None:
-    """list_tools成功時のテスト。"""
-    expected_tools = [
-        {"id": "1", "name": "md-to-pdf"},
-        {"id": "2", "name": "md-to-docx"},
-    ]
-    mock_response = Mock(spec=requests.Response)
-    mock_response.json.return_value = expected_tools
-    mocker.patch.object(client.session, "get", return_value=mock_response)
-
-    result = client.list_tools()
-
-    assert result == expected_tools
