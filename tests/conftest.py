@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, Dict
 import pytest
 from dotenv import load_dotenv
 from vcr.cassette import Cassette
+from vcr.stubs import VCRHTTPResponse
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -35,16 +36,25 @@ _original_play_response = Cassette.play_response
 
 
 def patched_play_response(self: Cassette, request: Any) -> Any:
+    """VCRHTTPResponseにversion_stringを追加するパッチ関数。"""
     # オリジナル処理で VCRHTTPResponse オブジェクトを生成
     resp = _original_play_response(self, request)
-    # version_string 属性が無ければ追加
-    if not hasattr(resp, "version_string"):
+
+    # VCRHTTPResponseの場合のみversion_stringを追加
+    if isinstance(resp, VCRHTTPResponse):
         resp.version_string = "HTTP/1.1"
     return resp
 
 
 # Cassette.play_response をパッチする
 Cassette.play_response = patched_play_response
+
+
+# VCRHTTPResponseにversion_stringプロパティを追加
+def _get_version_string(self: VCRHTTPResponse) -> str:
+    return "HTTP/1.1"
+
+VCRHTTPResponse.version_string = property(_get_version_string)
 
 
 @pytest.fixture(scope="module")
