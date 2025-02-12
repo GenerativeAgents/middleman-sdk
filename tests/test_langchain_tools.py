@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from middleman_ai.client import ToolsClient
+from middleman_ai.client import Presentation, ToolsClient
 from middleman_ai.langchain_tools.json_to_pptx import (
     JsonToPptxAnalyzeTool,
     JsonToPptxExecuteTool,
@@ -96,8 +96,34 @@ def test_json_to_pptx_analyze_tool_without_default_template_id(
 ) -> None:
     """JsonToPptxAnalyzeToolのテスト。"""
     template_structure = [
-        {"title": "Title Slide", "placeholders": ["title", "subtitle"]},
-        {"title": "Content Slide", "placeholders": ["title", "content"]},
+        {
+            "type": "Title Slide",
+            "description": "Description1",
+            "placeholders": [
+                {
+                    "name": "title",
+                    "description": "スライドのタイトル",
+                },
+                {
+                    "name": "subtitle",
+                    "description": "スライドのサブタイトル",
+                },
+            ],
+        },
+        {
+            "type": "Content Slide",
+            "description": "Description2",
+            "placeholders": [
+                {
+                    "name": "title",
+                    "description": "スライドのタイトル",
+                },
+                {
+                    "name": "content",
+                    "description": "スライドの内容",
+                },
+            ],
+        },
     ]
     mock_analyze = mocker.patch.object(
         client,
@@ -116,6 +142,14 @@ def test_json_to_pptx_analyze_tool_without_default_template_id(
     assert isinstance(result, str)
     assert "Title Slide" in result
     assert "Content Slide" in result
+    assert "Description1" in result
+    assert "Description2" in result
+    assert "title" in result
+    assert "subtitle" in result
+    assert "content" in result
+    assert "スライドのタイトル" in result
+    assert "スライドのサブタイトル" in result
+    assert "スライドの内容" in result
     mock_analyze.assert_called_once_with("template-123")
 
 
@@ -124,8 +158,34 @@ def test_json_to_pptx_analyze_tool_with_default_template_id(
 ) -> None:
     """JsonToPptxAnalyzeToolのテスト。"""
     template_structure = [
-        {"title": "Title Slide", "placeholders": ["title", "subtitle"]},
-        {"title": "Content Slide", "placeholders": ["title", "content"]},
+        {
+            "type": "Title Slide",
+            "description": "Description1",
+            "placeholders": [
+                {
+                    "name": "title",
+                    "description": "スライドのタイトル",
+                },
+                {
+                    "name": "subtitle",
+                    "description": "スライドのサブタイトル",
+                },
+            ],
+        },
+        {
+            "type": "Content Slide",
+            "description": "Description2",
+            "placeholders": [
+                {
+                    "name": "title",
+                    "description": "スライドのタイトル",
+                },
+                {
+                    "name": "content",
+                    "description": "スライドの内容",
+                },
+            ],
+        },
     ]
     mock_analyze = mocker.patch.object(
         client,
@@ -139,6 +199,14 @@ def test_json_to_pptx_analyze_tool_with_default_template_id(
     assert isinstance(result, str)
     assert "Title Slide" in result
     assert "Content Slide" in result
+    assert "Description1" in result
+    assert "Description2" in result
+    assert "title" in result
+    assert "subtitle" in result
+    assert "content" in result
+    assert "スライドのタイトル" in result
+    assert "スライドのサブタイトル" in result
+    assert "スライドの内容" in result
     mock_analyze.assert_called_once_with("template-123")
 
 
@@ -147,8 +215,34 @@ def test_json_to_pptx_analyze_tool_with_both_template_id_and_default_template_id
 ) -> None:
     """JsonToPptxAnalyzeToolのテスト。"""
     template_structure = [
-        {"title": "Title Slide", "placeholders": ["title", "subtitle"]},
-        {"title": "Content Slide", "placeholders": ["title", "content"]},
+        {
+            "type": "Title Slide",
+            "description": "Description1",
+            "placeholders": [
+                {
+                    "name": "title",
+                    "description": "スライドのタイトル",
+                },
+                {
+                    "name": "subtitle",
+                    "description": "スライドのサブタイトル",
+                },
+            ],
+        },
+        {
+            "type": "Content Slide",
+            "description": "Description2",
+            "placeholders": [
+                {
+                    "name": "title",
+                    "description": "スライドのタイトル",
+                },
+                {
+                    "name": "content",
+                    "description": "スライドの内容",
+                },
+            ],
+        },
     ]
     mock_analyze = mocker.patch.object(
         client,
@@ -162,6 +256,14 @@ def test_json_to_pptx_analyze_tool_with_both_template_id_and_default_template_id
     assert isinstance(result, str)
     assert "Title Slide" in result
     assert "Content Slide" in result
+    assert "Description1" in result
+    assert "Description2" in result
+    assert "title" in result
+    assert "subtitle" in result
+    assert "content" in result
+    assert "スライドのタイトル" in result
+    assert "スライドのサブタイトル" in result
+    assert "スライドの内容" in result
     mock_analyze.assert_called_once_with("template-456")
 
 
@@ -172,9 +274,21 @@ def test_json_to_pptx_execute_tool_without_default_template_id(
     template_id = "template-123"
     presentation_data = {
         "slides": [
-            {"title": "My Title", "subtitle": "My Subtitle"},
-            {"title": "Content", "content": "Some content"},
-        ]
+            {
+                "type": "Title Slide",
+                "placeholders": [
+                    {"name": "title", "content": "My Title"},
+                    {"name": "subtitle", "content": "My Subtitle"},
+                ],
+            },
+            {
+                "type": "Content Slide",
+                "placeholders": [
+                    {"name": "title", "content": "My Title"},
+                    {"name": "content", "content": "Some content"},
+                ],
+            },
+        ],
     }
     mock_execute = mocker.patch.object(
         client,
@@ -186,15 +300,26 @@ def test_json_to_pptx_execute_tool_without_default_template_id(
 
     # テンプレートIDが指定されていない場合はエラー
     with pytest.raises(ValueError, match="テンプレートIDが指定されていません"):
-        tool._run(slide_json_str=json.dumps(presentation_data))
+        tool._run(
+            presentation=Presentation.model_validate(
+                presentation_data,
+            ).model_dump_json(),
+        )
 
     # テンプレートIDが指定された場合は成功
     result = tool._run(
-        slide_json_str=json.dumps(presentation_data),
+        presentation=Presentation.model_validate(
+            presentation_data,
+        ).model_dump_json(),
         template_id=template_id,
     )
     assert result == "https://example.com/result.pptx"
-    mock_execute.assert_called_once_with(template_id, presentation_data)
+    mock_execute.assert_called_once_with(
+        template_id,
+        Presentation.model_validate(
+            presentation_data,
+        ),
+    )
 
 
 def test_json_to_pptx_execute_tool_with_default_template_id(
@@ -204,9 +329,21 @@ def test_json_to_pptx_execute_tool_with_default_template_id(
     template_id = "template-123"
     presentation_data = {
         "slides": [
-            {"title": "My Title", "subtitle": "My Subtitle"},
-            {"title": "Content", "content": "Some content"},
-        ]
+            {
+                "type": "Title Slide",
+                "placeholders": [
+                    {"name": "title", "content": "My Title"},
+                    {"name": "subtitle", "content": "My Subtitle"},
+                ],
+            },
+            {
+                "type": "Content Slide",
+                "placeholders": [
+                    {"name": "title", "content": "My Title"},
+                    {"name": "content", "content": "Some content"},
+                ],
+            },
+        ],
     }
     mock_execute = mocker.patch.object(
         client,
@@ -216,11 +353,18 @@ def test_json_to_pptx_execute_tool_with_default_template_id(
 
     tool = JsonToPptxExecuteTool(client=client, default_template_id=template_id)
     result = tool._run(
-        slide_json_str=json.dumps(presentation_data),
+        presentation=Presentation.model_validate(
+            presentation_data,
+        ).model_dump_json(),
     )
 
     assert result == "https://example.com/result.pptx"
-    mock_execute.assert_called_once_with(template_id, presentation_data)
+    mock_execute.assert_called_once_with(
+        template_id,
+        Presentation.model_validate(
+            presentation_data,
+        ),
+    )
 
 
 def test_json_to_pptx_execute_tool_with_both_template_id_and_default_template_id(
@@ -229,9 +373,21 @@ def test_json_to_pptx_execute_tool_with_both_template_id_and_default_template_id
     """JsonToPptxExecuteToolのテスト。"""
     presentation_data = {
         "slides": [
-            {"title": "My Title", "subtitle": "My Subtitle"},
-            {"title": "Content", "content": "Some content"},
-        ]
+            {
+                "type": "Title Slide",
+                "placeholders": [
+                    {"name": "title", "content": "My Title"},
+                    {"name": "subtitle", "content": "My Subtitle"},
+                ],
+            },
+            {
+                "type": "Content Slide",
+                "placeholders": [
+                    {"name": "title", "content": "My Title"},
+                    {"name": "content", "content": "Some content"},
+                ],
+            },
+        ],
     }
     mock_execute = mocker.patch.object(
         client,
@@ -241,12 +397,19 @@ def test_json_to_pptx_execute_tool_with_both_template_id_and_default_template_id
 
     tool = JsonToPptxExecuteTool(client=client, default_template_id="template-123")
     result = tool._run(
-        slide_json_str=json.dumps(presentation_data),
+        presentation=Presentation.model_validate(
+            presentation_data,
+        ).model_dump_json(),
         template_id="template-456",
     )
 
     assert result == "https://example.com/result.pptx"
-    mock_execute.assert_called_once_with("template-456", presentation_data)
+    mock_execute.assert_called_once_with(
+        "template-456",
+        Presentation.model_validate(
+            presentation_data,
+        ),
+    )
 
 
 def test_json_to_pptx_analyze_tool_template_id_error(

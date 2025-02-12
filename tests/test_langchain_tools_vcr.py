@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from middleman_ai.client import ToolsClient
+from middleman_ai.client import Presentation, ToolsClient
 from middleman_ai.langchain_tools.json_to_pptx import (
     JsonToPptxAnalyzeTool,
     JsonToPptxExecuteTool,
@@ -186,7 +186,9 @@ def test_json_to_pptx_execute_tool_vcr(client: ToolsClient) -> None:
     )  # テスト用のテンプレートID
     tool = JsonToPptxExecuteTool(client=client)
     result = tool._run(
-        slide_json_str=json.dumps(presentation_data),
+        presentation=Presentation.model_validate(
+            presentation_data,
+        ).model_dump_json(),
         template_id=template_id,
     )
 

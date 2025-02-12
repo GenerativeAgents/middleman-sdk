@@ -34,6 +34,9 @@ password: <APIキー>
 ```
 
 ```bash
+# 事前にテストを実行
+uv run pytest
+
 # 事前にpyproject.tomlのversionを更新
 cat pyproject.toml
 

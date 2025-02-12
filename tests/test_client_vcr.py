@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from middleman_ai.client import ToolsClient
+from middleman_ai.client import Presentation, ToolsClient
 
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest  # noqa: F401
@@ -159,7 +159,10 @@ def test_json_to_pptx_execute_v2_vcr(client: ToolsClient) -> None:
         ]
     }
     pptx_url = client.json_to_pptx_execute_v2(
-        pptx_template_id=template_id, presentation=presentation
+        pptx_template_id=template_id,
+        presentation=Presentation.model_validate(
+            presentation,
+        ),
     )
     assert isinstance(pptx_url, str)
     assert pptx_url.startswith("https://")
