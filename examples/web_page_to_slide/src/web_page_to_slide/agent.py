@@ -10,7 +10,7 @@ from langgraph.graph.state import CompiledGraph
 from langgraph.prebuilt import create_react_agent
 from pydantic import BaseModel, Field
 
-from middleman_ai.client import ToolsClient
+from middleman_ai.client import Presentation, ToolsClient
 
 load_dotenv()
 
@@ -91,31 +91,6 @@ class WebPageAnalysisTool(BaseTool):
         return self._run(url)
 
 
-class Placeholder(BaseModel):
-    name: str = Field(description="The key of the placeholder")
-    content: str = Field(description="The content of the placeholder")
-
-
-class Slide(BaseModel):
-    type: str = Field(description="The type of the slide")
-    placeholders: list[Placeholder] = Field(description="The placeholders of the slide")
-
-    def to_dict(self) -> dict:
-        return {
-            "type": self.type,
-            "placeholders": [
-                {"name": p.name, "content": p.content} for p in self.placeholders
-            ],
-        }
-
-
-class Presentation(BaseModel):
-    slides: list[Slide] = Field(description="The slides of the presentation")
-
-    def to_dict(self) -> list[dict]:
-        return [slide.to_dict() for slide in self.slides]
-
-
 class TextToSlideJsonTool(BaseTool):
     """Tool to convert text into slide JSON format"""
 
@@ -156,7 +131,7 @@ class JsonToPptxExecuteTool(BaseTool):
     def _run(self, json_str: str) -> str:
         result: str = self.client.json_to_pptx_execute_v2(
             pptx_template_id=self.template_slide_id,
-            presentation={"slides": json.loads(json_str)},
+            presentation=Presentation.model_validate(json.loads(json_str)),
         )
         return result
 

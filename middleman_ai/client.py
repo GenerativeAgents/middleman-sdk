@@ -4,6 +4,7 @@ import json
 from typing import Any, Dict, List, cast
 
 import requests
+from pydantic import BaseModel, Field
 from pydantic import ValidationError as PydanticValidationError
 
 from .exceptions import (
@@ -31,6 +32,31 @@ HTTP_FORBIDDEN = 403
 HTTP_NOT_FOUND = 404
 HTTP_UNPROCESSABLE_ENTITY = 422
 HTTP_INTERNAL_SERVER_ERROR = 500
+
+
+class Placeholder(BaseModel):
+    name: str = Field(description="The key of the placeholder")
+    content: str = Field(description="The content of the placeholder")
+
+
+class Slide(BaseModel):
+    type: str = Field(description="The type of the slide")
+    placeholders: list[Placeholder] = Field(description="The placeholders of the slide")
+
+    def to_dict(self) -> dict:
+        return {
+            "type": self.type,
+            "placeholders": [
+                {"name": p.name, "content": p.content} for p in self.placeholders
+            ],
+        }
+
+
+class Presentation(BaseModel):
+    slides: list[Slide] = Field(description="The slides of the presentation")
+
+    def to_dict(self) -> list[dict]:
+        return [slide.to_dict() for slide in self.slides]
 
 
 class ToolsClient:
@@ -247,9 +273,9 @@ class ToolsClient:
             raise ValidationError(str(e)) from e
 
     def json_to_pptx_execute_v2(
-        self, pptx_template_id: str, presentation: Dict[str, List[Dict[str, Any]]]
+        self, pptx_template_id: str, presentation: Presentation
     ) -> str:
-        """テンプレートIDとプレゼンテーションJSONを指定し、合成したPPTXを生成します。
+        """テンプレートIDとプレゼンテーションを指定し、合成したPPTXを生成します。
 
         Args:
             pptx_template_id: テンプレートID(UUID)
@@ -280,7 +306,7 @@ class ToolsClient:
         try:
             request_data = {
                 "pptx_template_id": pptx_template_id,
-                "presentation": presentation,
+                "presentation": presentation.model_dump(),
             }
             response = self.session.post(
                 f"{self.base_url}/api/v2/tools/json-to-pptx/execute",
