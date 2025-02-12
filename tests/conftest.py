@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, Any, Dict
 
 import pytest
 from dotenv import load_dotenv
-from vcr.cassette import Cassette
-from vcr.stubs import VCRHTTPResponse
+from vcr.cassette import Cassette  # type: ignore
+from vcr.stubs import VCRHTTPResponse  # type: ignore
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -54,8 +54,10 @@ Cassette.play_response = patched_play_response
 def _get_version_string(self: VCRHTTPResponse) -> str:
     return "HTTP/1.1"
 
+
 def _set_version_string(self: VCRHTTPResponse, value: str) -> None:
     pass
+
 
 VCRHTTPResponse.version_string = property(_get_version_string, _set_version_string)
 

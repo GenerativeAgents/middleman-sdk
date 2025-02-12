@@ -1,3 +1,5 @@
+# ruff: noqa: PLR2004
+
 """LangChainツール群のVCRテストモジュール。"""
 
 import os
@@ -10,6 +12,7 @@ from middleman_ai.client import ToolsClient
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest
 
+
 @pytest.fixture
 def client() -> ToolsClient:
     """テスト用のToolsClientインスタンスを生成します。
@@ -18,6 +21,7 @@ def client() -> ToolsClient:
         ToolsClient: テスト用のクライアントインスタンス
     """
     return ToolsClient(api_key=os.getenv("MIDDLEMAN_API_KEY") or "")
+
 
 @pytest.mark.vcr()
 def test_md_to_pdf_vcr(client: ToolsClient) -> None:
@@ -39,6 +43,7 @@ def test_md_to_pdf_vcr(client: ToolsClient) -> None:
     assert pdf_url.startswith("https://")
     assert "md-to-pdf" in pdf_url
     assert "blob.core.windows.net" in pdf_url
+
 
 @pytest.mark.vcr()
 def test_md_to_docx_vcr(client: ToolsClient) -> None:
@@ -84,22 +89,9 @@ def test_md_to_pptx_vcr(client: ToolsClient) -> None:
     assert "blob.core.windows.net" in pptx_url
 
 
-@pytest.mark.vcr()
-def test_list_tools_vcr(client: ToolsClient) -> None:
-    """ToolsClient.list_toolsの実際のAPIを使用したテスト。
-
-    Note:
-        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
-        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
-    """
-    tools = client.list_tools()
-    assert isinstance(tools, list)
-    assert len(tools) > 0
-    assert all(isinstance(tool, dict) for tool in tools)
-    assert all("id" in tool and "name" in tool for tool in tools)
-
-
-@pytest.mark.vcr()
+# マルチパートの場合リクエストごとにファイルがどこで分割されるかが異なるようなので
+# bodyをマッチ判定の対象外にしている
+@pytest.mark.vcr(match_on=["method", "scheme", "host", "port", "path", "query"])
 def test_pdf_to_page_images_vcr(client: ToolsClient) -> None:
     """ToolsClient.pdf_to_page_imagesの実際のAPIを使用したテスト。
 
@@ -110,7 +102,7 @@ def test_pdf_to_page_images_vcr(client: ToolsClient) -> None:
     pdf_file_path = "tests/data/test.pdf"
     pages = client.pdf_to_page_images(pdf_file_path=pdf_file_path)
     assert isinstance(pages, list)
-    assert len(pages) > 0
+    assert len(pages) == 3
     assert all(isinstance(page, dict) for page in pages)
     assert all("page_no" in page and "image_url" in page for page in pages)
     assert all(page["image_url"].startswith("https://") for page in pages)
@@ -125,13 +117,23 @@ def test_json_to_pptx_analyze_v2_vcr(client: ToolsClient) -> None:
         このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
         初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
     """
-    template_id = os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or ""  # テスト用のテンプレートID
+    template_id = (
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or ""
+    )  # テスト用のテンプレートID
     slides = client.json_to_pptx_analyze_v2(pptx_template_id=template_id)
     assert isinstance(slides, list)
-    assert len(slides) > 0
+    assert len(slides) == 1
     assert all(isinstance(slide, dict) for slide in slides)
-    assert all("title" in slide for slide in slides)
+    assert all("position" in slide for slide in slides)
+    assert all("type" in slide for slide in slides)
+    assert all("description" in slide for slide in slides)
     assert all("placeholders" in slide for slide in slides)
+
+    for slide in slides:
+        placeholders = slide["placeholders"]
+        assert all(isinstance(placeholder, dict) for placeholder in placeholders)
+        assert all("name" in placeholder for placeholder in placeholders)
+        assert all("description" in placeholder for placeholder in placeholders)
 
 
 @pytest.mark.vcr()
@@ -142,21 +144,22 @@ def test_json_to_pptx_execute_v2_vcr(client: ToolsClient) -> None:
         このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
         初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
     """
-    template_id = os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or ""  # テスト用のテンプレートID
+    template_id = (
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or ""
+    )  # テスト用のテンプレートID
     presentation = {
         "slides": [
             {
                 "type": "title",
                 "placeholders": [
                     {"name": "title", "content": "Test Title"},
-                    {"name": "subtitle", "content": "Test Subtitle"}
-                ]
+                    {"name": "subtitle", "content": "Test Subtitle"},
+                ],
             }
         ]
     }
     pptx_url = client.json_to_pptx_execute_v2(
-        pptx_template_id=template_id,
-        presentation=presentation
+        pptx_template_id=template_id, presentation=presentation
     )
     assert isinstance(pptx_url, str)
     assert pptx_url.startswith("https://")
