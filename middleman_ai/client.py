@@ -1,7 +1,7 @@
 """Middleman.ai APIクライアントの実装。"""
 
 import json
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, cast
 
 import requests
 from pydantic import ValidationError as PydanticValidationError
@@ -183,9 +183,7 @@ class ToolsClient:
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
 
-    def pdf_to_page_images(
-        self, pdf_file_path: str, request_id: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+    def pdf_to_page_images(self, pdf_file_path: str) -> List[Dict[str, Any]]:
         """PDFファイルをアップロードしてページごとに画像化し、それぞれの画像URLを返します。
 
         Args:
@@ -201,12 +199,12 @@ class ToolsClient:
         """
         try:
             with open(pdf_file_path, "rb") as f:
-                files = {"pdf_file": f}
-                headers = {}
-                if request_id:
-                    headers["X-Request-Id"] = request_id
-
-                response = self.session.post(
+                files = {"pdf_file": (f.name, f.read(), "application/pdf")}
+                headers = dict(self.session.headers)
+                del headers["Content-Type"]
+                # sessionを共有するとContent-Typeがapplicatoin/jsonになるので
+                # マルチパートの送信を可能にするために直接requestsを使用
+                response = requests.post(
                     f"{self.base_url}/api/v1/tools/pdf-to-page-images",
                     files=files,
                     headers=headers,
@@ -294,19 +292,3 @@ class ToolsClient:
             return result.pptx_url
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
-
-    def list_tools(self) -> List[Dict[str, Any]]:
-        """利用可能なツールの一覧を取得します。
-
-        Returns:
-            List[Dict[str, Any]]: ツール情報のリスト
-
-        Raises:
-            その他、_handle_responseで定義される例外
-        """
-        response = self.session.get(
-            f"{self.base_url}/api/v1/tools",
-            timeout=self.timeout,
-        )
-        data = self._handle_response(response)
-        return cast(List[Dict[str, Any]], data)
