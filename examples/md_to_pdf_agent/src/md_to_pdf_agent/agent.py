@@ -39,13 +39,13 @@ def load_prompt(prompt_name: str) -> str:
 
 def create_pdf_agent(
     middleman_api_key: str,
-    anthropic_api_key: str,
+    openai_api_key: str,
 ) -> AgentExecutor:
     """PDF生成エージェントを作成します。
 
     Args:
         middleman_api_key: Middleman.aiのAPIキー
-        anthropic_api_key: AnthropicのAPIキー
+        openai_api_key: OpenAIのAPIキー
 
     Returns:
         AgentExecutor: 設定済みのエージェント
@@ -55,7 +55,7 @@ def create_pdf_agent(
     llm = ChatOpenAI(
         model="gpt-4-turbo-preview",
         temperature=0.0,
-        api_key=anthropic_api_key,  # OpenAI API key
+        api_key=openai_api_key,
     )
 
     md_to_pdf_tool = MdToPdfTool(client=middleman_client)
@@ -96,7 +96,7 @@ def process_text_to_pdf(text: str) -> Dict[str, Any]:
 
     agent = create_pdf_agent(
         middleman_api_key=middleman_api_key,
-        anthropic_api_key=openai_api_key,  # OpenAI API key
+        openai_api_key=openai_api_key,
     )
 
     result = agent.invoke({"input": text})

@@ -28,7 +28,7 @@ cp .env.sample .env
 ```
 `.env`ファイルを編集し、必要なAPI keyを設定してください：
 - `MIDDLEMAN_API_KEY`: Middleman.aiのAPIキー
-- `ANTHROPIC_API_KEY`: AnthropicのAPIキー
+- `OPENAI_API_KEY`: OpenAIのAPIキー
 
 3. 依存関係のインストール:
 ```bash

@@ -3,7 +3,7 @@
 このスクリプトは、Markdown to PDFエージェントの使用例を示します。
 """
 
-from md_to_pdf.agent import process_text_to_pdf
+from md_to_pdf_agent.agent import process_text_to_pdf
 
 
 def main() -> None:
