@@ -182,3 +182,12 @@ cdk.out/
 
 .cursorrules
 spec.md
+
+.langgraph_api/
+
+.env.test
+.env.local
+.env.development
+.env.production
+.env.development.local
+.env.production.local

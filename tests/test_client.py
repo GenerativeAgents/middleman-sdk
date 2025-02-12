@@ -45,7 +45,7 @@ def mock_response() -> Mock:
 def test_init(client: ToolsClient) -> None:
     """初期化のテスト。"""
     assert client.api_key == "test_api_key"
-    assert client.base_url == "https://api.yourdomain.com"
+    assert client.base_url == "https://middleman-ai.com"
     assert client.timeout == 30.0  # noqa: PLR2004
     assert client.session.headers["Authorization"] == "Bearer test_api_key"
     assert client.session.headers["Content-Type"] == "application/json"
@@ -61,7 +61,7 @@ def test_md_to_pdf_success(
 
     assert result == "https://example.com/test.pdf"
     mock_post.assert_called_once_with(
-        "https://api.yourdomain.com/api/v1/tools/md-to-pdf",
+        "https://middleman-ai.com/api/v1/tools/md-to-pdf",
         json={"markdown": "# Test"},
         timeout=30.0,
     )

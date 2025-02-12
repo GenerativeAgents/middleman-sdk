@@ -29,6 +29,7 @@ HTTP_PAYMENT_REQUIRED = 402
 HTTP_UNAUTHORIZED = 401
 HTTP_FORBIDDEN = 403
 HTTP_NOT_FOUND = 404
+HTTP_UNPROCESSABLE_ENTITY = 422
 HTTP_INTERNAL_SERVER_ERROR = 500
 
 
@@ -38,7 +39,7 @@ class ToolsClient:
     def __init__(
         self,
         api_key: str,
-        base_url: str = "https://api.yourdomain.com",
+        base_url: str = "https://middleman-ai.com/",
         timeout: float = 30.0,
     ) -> None:
         """クライアントを初期化します。
@@ -73,13 +74,19 @@ class ToolsClient:
             ForbiddenError: 認証エラー（401, 403）
             NotFoundError: リソースが見つからない（404）
             InternalError: サーバーエラー（500）
-            ValidationError: バリデーションエラー
+            ValidationError: バリデーションエラー（422）
             ConnectionError: 接続エラー
         """
         try:
             response.raise_for_status()
             return cast(Dict[str, Any], response.json())
         except requests.exceptions.HTTPError as e:
+            error_body = {}
+            try:
+                error_body = response.json()
+            except json.JSONDecodeError:
+                pass
+
             if response.status_code == HTTP_PAYMENT_REQUIRED:
                 raise NotEnoughCreditError() from e
             if response.status_code in (HTTP_UNAUTHORIZED, HTTP_FORBIDDEN):
@@ -88,6 +95,11 @@ class ToolsClient:
                 raise NotFoundError() from e
             if response.status_code >= HTTP_INTERNAL_SERVER_ERROR:
                 raise InternalError() from e
+            if response.status_code == HTTP_UNPROCESSABLE_ENTITY:
+                error_message = (
+                    f"Validation error: {error_body}" if error_body else str(e)
+                )
+                raise ValidationError(error_message) from e
             raise MiddlemanBaseException(str(e)) from e
         except requests.exceptions.RequestException as e:
             raise ConnectionError() from e
@@ -211,7 +223,7 @@ class ToolsClient:
         except OSError as e:
             raise ValidationError(f"Failed to read PDF file: {e}") from e
 
-    def json_to_pptx_analyze_v2(self, pptx_template_id: str) -> Dict[str, Any]:
+    def json_to_pptx_analyze_v2(self, pptx_template_id: str) -> List[Dict[str, Any]]:
         """PPTXテンプレートの構造を解析します。
 
         Args:
@@ -225,24 +237,40 @@ class ToolsClient:
             その他、_handle_responseで定義される例外
         """
         try:
-            response = self.session.get(
-                f"{self.base_url}/api/v1/tools/json-to-pptx/analyze/v2/{pptx_template_id}",
+            response = self.session.post(
+                f"{self.base_url}/api/v2/tools/json-to-pptx/analyze",
+                json={"pptx_template_id": pptx_template_id},
                 timeout=self.timeout,
             )
             data = self._handle_response(response)
             result = JsonToPptxAnalyzeResponse.model_validate(data)
-            return result.template_structure
+            return result.slides
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
 
     def json_to_pptx_execute_v2(
-        self, pptx_template_id: str, presentation: Dict[str, Any]
+        self, pptx_template_id: str, presentation: Dict[str, List[Dict[str, Any]]]
     ) -> str:
         """テンプレートIDとプレゼンテーションJSONを指定し、合成したPPTXを生成します。
 
         Args:
             pptx_template_id: テンプレートID(UUID)
-            presentation: プレゼンテーションのJSON構造
+            presentation: プレゼンテーションのJSON構造。以下の形式:
+                {
+                    "slides": [
+                        {
+                            "type": str,
+                            "placeholders": [
+                                {
+                                    "name": str,
+                                    "content": str
+                                },
+                                ...
+                            ]
+                        },
+                        ...
+                    ]
+                }
 
         Returns:
             str: 生成されたPPTXのダウンロードURL
@@ -252,9 +280,13 @@ class ToolsClient:
             その他、_handle_responseで定義される例外
         """
         try:
+            request_data = {
+                "pptx_template_id": pptx_template_id,
+                "presentation": presentation,
+            }
             response = self.session.post(
-                f"{self.base_url}/api/v1/tools/json-to-pptx/execute/v2/{pptx_template_id}",
-                json=presentation,
+                f"{self.base_url}/api/v2/tools/json-to-pptx/execute",
+                json=request_data,
                 timeout=self.timeout,
             )
             data = self._handle_response(response)
