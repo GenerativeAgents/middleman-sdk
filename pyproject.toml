@@ -41,15 +41,19 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 warn_no_return = true
 warn_unreachable = true
-plugins = ["pydantic.mypy"] 
+plugins = ["pydantic.mypy"]
 
 [tool.uv]
-dev-dependencies = [
+
+[dependency-groups]
+dev = [
     "mypy>=1.14.1",
-    "pytest-mock>=3.14.0",
     "pytest>=8.3.4",
+    "pytest-mock>=3.14.0",
+    "ruff>=0.9.6",
     "python-dotenv>=1.0.1",
-    "ruff>=0.9.3",
     "types-requests>=2.32.0.20241016",
     "vcrpy>=5.1.0",
+    "pytest-cov>=6.0.0",
+    "pytest-vcr>=1.0.2",
 ]
