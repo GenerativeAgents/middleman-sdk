@@ -53,5 +53,7 @@ agent_executor = AgentExecutor(
     tools=tools,
     return_intermediate_steps=False,
 )
-result = agent_executor.invoke({"input": "会社の四半期報告書のテンプレートを作成してDOCX化して"})
+result = agent_executor.invoke(
+    {"input": "議事録用のテンプレートを作成してDOCX化して"},
+)
 print(result)

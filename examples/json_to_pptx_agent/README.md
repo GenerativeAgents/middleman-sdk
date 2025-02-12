@@ -25,6 +25,7 @@ cp .env.sample .env
 `.env`ファイルを編集し、必要な API key を設定してください：
 
 - `MIDDLEMAN_API_KEY`: Middleman.ai の API キー
+- `MIDDLEMAN_TEMPLATE_ID`: Middleman.ai のテンプレート ID （[こちら](./sample_template.pptx)にテンプレートサンプルがあります）
 - `OPENAI_API_KEY`: OpenAI の API キー
 
 3. 依存関係のインストール:

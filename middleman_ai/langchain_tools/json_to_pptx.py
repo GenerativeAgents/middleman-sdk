@@ -5,7 +5,7 @@ from typing import Any, List
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, Field
 
-from middleman_ai.client import ToolsClient
+from middleman_ai.client import Presentation, ToolsClient
 
 
 class JsonToPptxAnalyzeInput(BaseModel):
@@ -24,9 +24,9 @@ class JsonToPptxExecuteInput(BaseModel):
         None,
         description="PPTXテンプレートのID（UUID形式）。プレゼンテーションの生成に使用します。省略した場合はデフォルトのテンプレートが利用されます。ユーザーからテンプレートIDの共有がない場合は省略してください。",
     )
-    slide_json_str: str = Field(
+    presentation: str = Field(
         ...,
-        description="プレゼンテーションの内容を表すJSON文字列。各スライドのプレースホルダーに挿入するテキストやイメージを指定します。",
+        description=f"プレゼンテーションの内容を表すJSON文字列。各スライドのプレースホルダーに挿入するテキストやイメージを以下のJSONスキーマに従って指定します:\n{Presentation.model_json_schema()}",
     )
 
 
@@ -72,9 +72,12 @@ class JsonToPptxAnalyzeTool(BaseTool):
         if template_id_to_use is None:
             raise ValueError("テンプレートIDが指定されていません")
 
+        print(template_id_to_use)
         result: List[dict] = self.client.json_to_pptx_analyze_v2(template_id_to_use)
+        import json
+        print(json.dumps(result, indent=2))
         return "\n".join(
-            f"Slide {i + 1}: {slide.get('title', 'Untitled')} "
+            f"Slide {i + 1}: {slide.get('type', 'Untitled')} "
             f"(placeholders: {', '.join(str(p) for p in slide.get('placeholders', []))})"
             for i, slide in enumerate(result)
         )
@@ -126,13 +129,14 @@ class JsonToPptxExecuteTool(BaseTool):
 
     def _run(
         self,
-        slide_json_str: str,
+        presentation: str,
         template_id: str | None = None,
     ) -> str:
         """同期的にJSONからPPTXを生成します。
 
         Args:
-            input_str: 「テンプレートID,JSON」形式の入力文字列
+            presentation: プレゼンテーションの内容をJSONで表した文字列
+            template_id: テンプレートID（UUID）
 
         Returns:
             str: 生成されたPPTXのURL
@@ -148,24 +152,28 @@ class JsonToPptxExecuteTool(BaseTool):
             raise ValueError("テンプレートIDが指定されていません")
 
         try:
-            presentation = json.loads(slide_json_str)
+            presentation_dict = Presentation.model_validate_json(presentation)
         except json.JSONDecodeError as e:
             raise ValueError("不正なJSON形式です") from e
 
-        return self.client.json_to_pptx_execute_v2(template_id_to_use, presentation)
+        return self.client.json_to_pptx_execute_v2(
+            template_id_to_use,
+            presentation_dict,
+        )
 
     async def _arun(
         self,
-        slide_json_str: str,
+        presentation: str,
         template_id: str | None = None,
     ) -> str:
         """非同期的にJSONからPPTXを生成します。
 
         Args:
-            input_str: 「テンプレートID,JSON」形式の入力文字列
+            presentation: プレゼンテーションの内容をJSONで表した文字列
+            template_id: テンプレートID（UUID）
 
         Returns:
             str: 生成されたPPTXのURL
         """
         # 現時点では同期メソッドを呼び出し
-        return self._run(slide_json_str, template_id)
+        return self._run(presentation, template_id)

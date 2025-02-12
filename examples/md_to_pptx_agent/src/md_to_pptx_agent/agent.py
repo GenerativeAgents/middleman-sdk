@@ -53,5 +53,10 @@ agent_executor = AgentExecutor(
     tools=tools,
     return_intermediate_steps=False,
 )
-result = agent_executor.invoke({"input": "AI技術の最新トレンドについてプレゼン資料を作成して"})
+input = """
+AI技術の最新トレンドについて多角的な観点でまとめたPPTX資料を作成して
+""".strip()
+result = agent_executor.invoke(
+    {"input": input,},
+)
 print(result)
