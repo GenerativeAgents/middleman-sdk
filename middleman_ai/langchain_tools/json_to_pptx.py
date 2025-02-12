@@ -75,9 +75,10 @@ class JsonToPptxAnalyzeTool(BaseTool):
         print(template_id_to_use)
         result: List[dict] = self.client.json_to_pptx_analyze_v2(template_id_to_use)
         import json
+
         print(json.dumps(result, indent=2))
         return "\n".join(
-            f"Slide {i + 1}: {slide.get('type', 'Untitled')} "
+            f"Slide{i + 1}: type={slide.get('type', 'Untitled')} "
             f"(placeholders: {', '.join(str(p) for p in slide.get('placeholders', []))})"
             for i, slide in enumerate(result)
         )
