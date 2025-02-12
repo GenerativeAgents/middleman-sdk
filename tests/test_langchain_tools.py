@@ -106,11 +106,11 @@ def test_json_to_pptx_analyze_tool_without_default_template_id(
     )
 
     tool = JsonToPptxAnalyzeTool(client=client)
-    
+
     # テンプレートIDが指定されていない場合はエラー
     with pytest.raises(ValueError, match="テンプレートIDが指定されていません"):
         tool._run(None)
-    
+
     # テンプレートIDが指定された場合は成功
     result = tool._run("template-123")
     assert isinstance(result, str)
@@ -183,11 +183,11 @@ def test_json_to_pptx_execute_tool_without_default_template_id(
     )
 
     tool = JsonToPptxExecuteTool(client=client)
-    
+
     # テンプレートIDが指定されていない場合はエラー
     with pytest.raises(ValueError, match="テンプレートIDが指定されていません"):
         tool._run(slide_json_str=json.dumps(presentation_data))
-    
+
     # テンプレートIDが指定された場合は成功
     result = tool._run(
         slide_json_str=json.dumps(presentation_data),
