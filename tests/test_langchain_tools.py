@@ -106,8 +106,13 @@ def test_json_to_pptx_analyze_tool_without_default_template_id(
     )
 
     tool = JsonToPptxAnalyzeTool(client=client)
-    result = tool._run("template-123")
 
+    # テンプレートIDが指定されていない場合はエラー
+    with pytest.raises(ValueError, match="テンプレートIDが指定されていません"):
+        tool._run(None)
+
+    # テンプレートIDが指定された場合は成功
+    result = tool._run("template-123")
     assert isinstance(result, str)
     assert "Title Slide" in result
     assert "Content Slide" in result
@@ -178,11 +183,16 @@ def test_json_to_pptx_execute_tool_without_default_template_id(
     )
 
     tool = JsonToPptxExecuteTool(client=client)
+
+    # テンプレートIDが指定されていない場合はエラー
+    with pytest.raises(ValueError, match="テンプレートIDが指定されていません"):
+        tool._run(slide_json_str=json.dumps(presentation_data))
+
+    # テンプレートIDが指定された場合は成功
     result = tool._run(
         slide_json_str=json.dumps(presentation_data),
         template_id=template_id,
     )
-
     assert result == "https://example.com/result.pptx"
     mock_execute.assert_called_once_with(template_id, presentation_data)
 
@@ -237,3 +247,57 @@ def test_json_to_pptx_execute_tool_with_both_template_id_and_default_template_id
 
     assert result == "https://example.com/result.pptx"
     mock_execute.assert_called_once_with("template-456", presentation_data)
+
+
+def test_json_to_pptx_analyze_tool_template_id_error(
+    client: ToolsClient, mocker: "MockerFixture"
+) -> None:
+    """JsonToPptxAnalyzeToolのテンプレートIDエラーのテスト。"""
+    mock_analyze = mocker.patch.object(
+        client,
+        "json_to_pptx_analyze_v2",
+        return_value=[],
+    )
+
+    # テンプレートIDが指定されていない場合
+    tool = JsonToPptxAnalyzeTool(client=client)
+    with pytest.raises(ValueError, match="テンプレートIDが指定されていません"):
+        tool._run(None)
+
+    mock_analyze.assert_not_called()
+
+
+def test_json_to_pptx_execute_tool_template_id_error(
+    client: ToolsClient, mocker: "MockerFixture"
+) -> None:
+    """JsonToPptxExecuteToolのテンプレートIDエラーのテスト。"""
+    mock_execute = mocker.patch.object(
+        client,
+        "json_to_pptx_execute_v2",
+        return_value="https://example.com/result.pptx",
+    )
+
+    # テンプレートIDが指定されていない場合
+    tool = JsonToPptxExecuteTool(client=client)
+    test_json = '{"slides": []}'
+    with pytest.raises(ValueError, match="テンプレートIDが指定されていません"):
+        tool._run(test_json)
+
+    mock_execute.assert_not_called()
+
+
+def test_json_to_pptx_execute_tool_json_error(
+    client: ToolsClient, mocker: "MockerFixture"
+) -> None:
+    """JsonToPptxExecuteToolのJSON形式エラーのテスト。"""
+    mock_execute = mocker.patch.object(
+        client,
+        "json_to_pptx_execute_v2",
+        return_value="https://example.com/result.pptx",
+    )
+
+    tool = JsonToPptxExecuteTool(client=client)
+    with pytest.raises(ValueError, match="不正なJSON形式です"):
+        tool._run("invalid json", template_id="template-123")
+
+    mock_execute.assert_not_called()
