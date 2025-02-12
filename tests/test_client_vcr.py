@@ -10,7 +10,7 @@ import pytest
 from middleman_ai.client import ToolsClient
 
 if TYPE_CHECKING:
-    from _pytest.fixtures import FixtureRequest
+    from _pytest.fixtures import FixtureRequest  # noqa: F401
 
 
 @pytest.fixture

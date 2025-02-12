@@ -17,7 +17,7 @@ from middleman_ai.langchain_tools.md_to_pptx import MdToPptxTool
 from middleman_ai.langchain_tools.pdf_to_page_images import PdfToPageImagesTool
 
 if TYPE_CHECKING:
-    from _pytest.fixtures import FixtureRequest
+    from _pytest.fixtures import FixtureRequest  # noqa: F401
 
 
 @pytest.fixture

@@ -1,27 +1,29 @@
 [project]
 name = "middleman-ai"
-version = "0.1.0"
+version = "0.0.2"
 description = "Python client SDK for Middleman.ai API"
 authors = [{ name = "Generative Agents, Inc." }]
 dependencies = [
-    "requests>=2.31.0",
-    "pydantic>=2.5.0",
-    "langchain-core>=0.3.0",
-    "typing-extensions>=4.8.0",
+    "requests>=2",
+    "pydantic>=2",
+    "langchain-core>=0.3",
+    "typing-extensions",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "MIT" }
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
 
 [tool.ruff]
 line-length = 88
 target-version = "py38"
-select = ["E", "F", "I", "N", "W", "B", "UP", "PL", "RUF"]
-ignore = ["RUF001", "RUF002", "RUF022", "N818"]
+lint.select = ["E", "F", "I", "N", "W", "B", "UP", "PL", "RUF"]
+lint.ignore = ["RUF001", "RUF002", "RUF022", "N818"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -56,4 +58,8 @@ dev = [
     "vcrpy>=5.1.0",
     "pytest-cov>=6.0.0",
     "pytest-vcr>=1.0.2",
+    "setuptools>=75.8.0",
+    "wheel>=0.45.1",
+    "setuptools-scm>=8.1.0",
+    "twine>=6.1.0",
 ]

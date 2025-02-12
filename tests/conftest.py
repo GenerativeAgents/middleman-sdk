@@ -11,7 +11,7 @@ from vcr.cassette import Cassette  # type: ignore
 from vcr.stubs import VCRHTTPResponse  # type: ignore
 
 if TYPE_CHECKING:
-    from pytest_mock import MockerFixture
+    from pytest_mock import MockerFixture  # noqa: F401
 
 
 def pytest_configure(config: pytest.Config) -> None:

@@ -8,7 +8,6 @@ from langchain_core.tools import BaseTool
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph.state import CompiledGraph
 from langgraph.prebuilt import create_react_agent
-from pydantic import BaseModel, Field
 
 from middleman_ai.client import Presentation, ToolsClient
 

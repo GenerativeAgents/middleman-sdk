@@ -77,17 +77,3 @@ except Exception as e:
 ## ライセンス
 
 MIT License
-
-## 開発者向け情報
-
-### テスト実行
-
-```bash
-pytest
-```
-
-### リンター実行
-
-```bash
-ruff check .
-```
