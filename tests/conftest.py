@@ -54,7 +54,10 @@ Cassette.play_response = patched_play_response
 def _get_version_string(self: VCRHTTPResponse) -> str:
     return "HTTP/1.1"
 
-VCRHTTPResponse.version_string = property(_get_version_string)
+def _set_version_string(self: VCRHTTPResponse, value: str) -> None:
+    pass
+
+VCRHTTPResponse.version_string = property(_get_version_string, _set_version_string)
 
 
 @pytest.fixture(scope="module")

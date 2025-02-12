@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: "--c129e0cb50bc98a942ae284302d69a26\r\nContent-Disposition: form-data; name=\"pdf_file\";
+      filename=\"test.pdf\"\r\n\r\n%PDF-1.4\n1 0 obj\n<</Type /Catalog /Pages 2 0
+      R>>\nendobj\n2 0 obj\n<</Type /Pages /Kids [3 0 R] /Count 1>>\nendobj\n3 0 obj\n<</Type
+      /Page /Parent 2 0 R /Resources 4 0 R /MediaBox [0 0 612 792] /Contents 6 0 R>>\nendobj\n4
+      0 obj\n<</Font <</F1 5 0 R>>>>\nendobj\n5 0 obj\n<</Type /Font /Subtype /Type1
+      /BaseFont /Helvetica>>\nendobj\n6 0 obj\n<</Length 44>>\nstream\nBT /F1 24 Tf
+      100 700 Td (Test PDF File) Tj ET\nendstream\nendobj\nxref\n0 7\n0000000000 65535
+      f\n0000000009 00000 n\n0000000056 00000 n\n0000000111 00000 n\n0000000209 00000
+      n\n0000000247 00000 n\n0000000315 00000 n\ntrailer\n<</Size 7 /Root 1 0 R>>\nstartxref\n406\n%%EOF\n\r\n--c129e0cb50bc98a942ae284302d69a26--\r\n"
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '755'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v1/tools/pdf-to-page-images
+  response:
+    body:
+      string: '{"detail":"Unauthorized"}'
+    headers:
+      content-length:
+      - '25'
+      content-type:
+      - application/json
+      date:
+      - Wed, 12 Feb 2025 04:02:13 GMT
+      server:
+      - uvicorn
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v1/tools/pdf-to-page-images
+    status:
+      code: 401
+      message: Unauthorized
+version: 1

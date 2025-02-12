@@ -1,7 +1,6 @@
 interactions:
 - request:
-    body: '{"markdown": "# Test Heading\n\n    This is a test markdown document.\n\n    ##
-      Section 1\n    - Item 1\n    - Item 2\n    "}'
+    body: '{"pptx_template_id": "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"}'
     headers:
       Accept:
       - '*/*'
@@ -10,7 +9,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '125'
+      - '60'
       Content-Type:
       - application/json
       User-Agent:
@@ -18,7 +17,7 @@ interactions:
       authorization:
       - DUMMY
     method: POST
-    uri: https://middleman-ai.com/api/v1/tools/md-to-pdf
+    uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/analyze
   response:
     body:
       string: '{"detail":"Unauthorized"}'
@@ -28,13 +27,13 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 12 Feb 2025 04:02:12 GMT
+      - Wed, 12 Feb 2025 04:02:13 GMT
       server:
       - uvicorn
       vary:
       - Accept-Encoding
       x-middleware-rewrite:
-      - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v1/tools/md-to-pdf
+      - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v2/tools/json-to-pptx/analyze
     status:
       code: 401
       message: Unauthorized

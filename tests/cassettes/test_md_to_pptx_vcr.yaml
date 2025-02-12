@@ -18,7 +18,7 @@ interactions:
       authorization:
       - DUMMY
     method: POST
-    uri: https://middleman-ai.com/api/v1/tools/md-to-pdf
+    uri: https://middleman-ai.com/api/v1/tools/md-to-pptx
   response:
     body:
       string: '{"detail":"Unauthorized"}'
@@ -34,7 +34,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-middleware-rewrite:
-      - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v1/tools/md-to-pdf
+      - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v1/tools/md-to-pptx
     status:
       code: 401
       message: Unauthorized
