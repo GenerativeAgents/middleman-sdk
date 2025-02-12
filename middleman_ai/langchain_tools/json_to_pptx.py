@@ -92,18 +92,21 @@ class JsonToPptxExecuteTool(BaseTool):
             ValueError: 入力形式が不正な場合
             json.JSONDecodeError: JSON形式が不正な場合
         """
-        try:
-            import json
+        import json
 
+        try:
             template_id, json_str = input_str.split(",", 1)
-            presentation = json.loads(json_str)
-            return self.client.json_to_pptx_execute_v2(template_id, presentation)
         except ValueError as e:
             raise ValueError(
                 "入力は「テンプレートID,JSON」形式である必要があります"
             ) from e
+
+        try:
+            presentation = json.loads(json_str)
         except json.JSONDecodeError as e:
             raise ValueError("不正なJSON形式です") from e
+
+        return self.client.json_to_pptx_execute_v2(template_id, presentation)
 
     async def _arun(self, input_str: str) -> str:
         """非同期的にJSONからPPTXを生成します。
