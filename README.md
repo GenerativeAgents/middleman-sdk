@@ -1,6 +1,6 @@
 # Middleman.ai Python SDK
 
-Middleman.aiのAPIを簡単に利用するためのPython SDKです。マークダウン→PDF変換、JSON→PPTX変換、PDFページ→画像変換などの機能を提供します。
+Middleman.ai の API を簡単に利用するための Python SDK です。マークダウン →PDF 変換、JSON→PPTX 変換、PDF ページ → 画像変換などの機能を提供します。
 
 ## インストール
 
@@ -22,7 +22,7 @@ pdf_url = client.md_to_pdf(markdown_text)
 print(f"Generated PDF URL: {pdf_url}")
 ```
 
-## LangChainとの統合
+## LangChain との統合
 
 ```python
 from langchain_core.agents import AgentExecutor
@@ -53,11 +53,11 @@ print(f"Agent response: {response}")
 
 ## 機能一覧
 
-- Markdown → PDF変換
-- Markdown → DOCX変換
-- Markdown → PPTX変換
+- Markdown → PDF 変換
+- Markdown → DOCX 変換
+- Markdown → PPTX 変換
 - PDF → ページ画像変換
-- JSON → PPTX変換（テンプレート解析・実行）
+- JSON → PPTX 変換（テンプレート解析・実行）
 
 ## エラーハンドリング
 
@@ -90,4 +90,4 @@ pytest
 
 ```bash
 ruff check .
-``` 
+```
