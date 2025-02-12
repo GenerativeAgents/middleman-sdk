@@ -7,14 +7,14 @@ from typing import TYPE_CHECKING
 import pytest
 
 from middleman_ai.client import ToolsClient
-from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
-from middleman_ai.langchain_tools.md_to_docx import MdToDocxTool
-from middleman_ai.langchain_tools.md_to_pptx import MdToPptxTool
-from middleman_ai.langchain_tools.pdf_to_page_images import PdfToPageImagesTool
 from middleman_ai.langchain_tools.json_to_pptx import (
     JsonToPptxAnalyzeTool,
     JsonToPptxExecuteTool,
 )
+from middleman_ai.langchain_tools.md_to_docx import MdToDocxTool
+from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
+from middleman_ai.langchain_tools.md_to_pptx import MdToPptxTool
+from middleman_ai.langchain_tools.pdf_to_page_images import PdfToPageImagesTool
 
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest
@@ -117,7 +117,7 @@ def test_md_to_pptx_tool_vcr(client: ToolsClient) -> None:
     assert "blob.core.windows.net" in result
 
 
-@pytest.mark.vcr()
+@pytest.mark.vcr(match_on=["method", "scheme", "host", "port", "path", "query"])
 def test_pdf_to_page_images_tool_vcr(client: ToolsClient) -> None:
     """PdfToPageImagesToolの実際のAPIを使用したテスト。
 
@@ -129,7 +129,7 @@ def test_pdf_to_page_images_tool_vcr(client: ToolsClient) -> None:
         client: テスト用のクライアントインスタンス
     """
     pdf_path = "tests/data/test.pdf"
-    
+
     tool = PdfToPageImagesTool(client=client)
     result = tool._run(pdf_path)
 
@@ -149,8 +149,11 @@ def test_json_to_pptx_analyze_tool_vcr(client: ToolsClient) -> None:
     Args:
         client: テスト用のクライアントインスタンス
     """
+    template_id = (
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or ""
+    )  # テスト用のテンプレートID
     tool = JsonToPptxAnalyzeTool(client=client)
-    result = tool._run("0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7")
+    result = tool._run(template_id)
 
     assert isinstance(result, str)
     assert "Slide" in result
@@ -169,17 +172,22 @@ def test_json_to_pptx_execute_tool_vcr(client: ToolsClient) -> None:
     """
     presentation_data = {
         "slides": [
-            {"type": "title", "placeholders": [
-                {"name": "title", "content": "Test Title"},
-                {"name": "subtitle", "content": "Test Subtitle"}
-            ]}
+            {
+                "type": "title",
+                "placeholders": [
+                    {"name": "title", "content": "Test Title"},
+                    {"name": "subtitle", "content": "Test Subtitle"},
+                ],
+            }
         ]
     }
-    
+    template_id = (
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or ""
+    )  # テスト用のテンプレートID
     tool = JsonToPptxExecuteTool(client=client)
     result = tool._run(
         slide_json_str=json.dumps(presentation_data),
-        template_id="0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
+        template_id=template_id,
     )
 
     assert isinstance(result, str)
