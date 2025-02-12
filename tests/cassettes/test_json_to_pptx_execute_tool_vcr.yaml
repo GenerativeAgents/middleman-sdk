@@ -1,0 +1,44 @@
+interactions:
+- request:
+    body: '{"pptx_template_id": "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7", "presentation":
+      {"slides": [{"type": "title", "placeholders": [{"name": "title", "content":
+      "Test Title"}, {"name": "subtitle", "content": "Test Subtitle"}]}]}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '221'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/execute
+  response:
+    body:
+      string: '{"pptx_url":"https://middlemanprodstorage.blob.core.windows.net/json-to-pptx/1ced2d18-2d55-4db8-8477-553fa9b2cd1f/f3429c33-262a-4f01-a0cd-2c2b424eff31.pptx?st=2025-02-12T06%3A23%3A27Z&se=2025-02-12T07%3A23%3A27Z&sp=r&sv=2025-01-05&sr=b&skoid=8dcbdc05-c59d-4694-9a41-058c0e5b8014&sktid=e62264db-1967-4e8d-bb6f-68e6f0093e0d&skt=2025-02-12T06%3A23%3A27Z&ske=2025-02-13T06%3A23%3A27Z&sks=b&skv=2025-01-05&sig=5t%2Bdx6%2Bg7bWm/wpnla9XM9PTBVkFyRKuoHS%2BFfBrYoU%3D"}'
+    headers:
+      content-length:
+      - '459'
+      content-type:
+      - application/json
+      date:
+      - Wed, 12 Feb 2025 06:23:25 GMT
+      server:
+      - uvicorn
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v2/tools/json-to-pptx/execute
+      x-request-id:
+      - 754947d4-33d0-427e-829d-ab0bb849833b
+    status:
+      code: 200
+      message: OK
+version: 1

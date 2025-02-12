@@ -115,3 +115,74 @@ def test_md_to_pptx_tool_vcr(client: ToolsClient) -> None:
     assert result.startswith("https://")
     assert "md-to-pptx" in result
     assert "blob.core.windows.net" in result
+
+
+@pytest.mark.vcr()
+def test_pdf_to_page_images_tool_vcr(client: ToolsClient) -> None:
+    """PdfToPageImagesToolの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+
+    Args:
+        client: テスト用のクライアントインスタンス
+    """
+    pdf_path = "tests/data/test.pdf"
+    
+    tool = PdfToPageImagesTool(client=client)
+    result = tool._run(pdf_path)
+
+    assert isinstance(result, str)
+    assert "pdf-to-page-images" in result
+    assert "blob.core.windows.net" in result
+
+
+@pytest.mark.vcr()
+def test_json_to_pptx_analyze_tool_vcr(client: ToolsClient) -> None:
+    """JsonToPptxAnalyzeToolの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+
+    Args:
+        client: テスト用のクライアントインスタンス
+    """
+    tool = JsonToPptxAnalyzeTool(client=client)
+    result = tool._run("0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7")
+
+    assert isinstance(result, str)
+    assert "Slide" in result
+
+
+@pytest.mark.vcr()
+def test_json_to_pptx_execute_tool_vcr(client: ToolsClient) -> None:
+    """JsonToPptxExecuteToolの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+
+    Args:
+        client: テスト用のクライアントインスタンス
+    """
+    presentation_data = {
+        "slides": [
+            {"type": "title", "placeholders": [
+                {"name": "title", "content": "Test Title"},
+                {"name": "subtitle", "content": "Test Subtitle"}
+            ]}
+        ]
+    }
+    
+    tool = JsonToPptxExecuteTool(client=client)
+    result = tool._run(
+        slide_json_str=json.dumps(presentation_data),
+        template_id="0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
+    )
+
+    assert isinstance(result, str)
+    assert result.startswith("https://")
+    assert "json-to-pptx" in result
+    assert "blob.core.windows.net" in result

@@ -1,0 +1,42 @@
+interactions:
+- request:
+    body: '{"pptx_template_id": "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '60'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/analyze
+  response:
+    body:
+      string: "{\"slides\":[{\"position\":1,\"type\":\"PaperContent\",\"description\":\"\u30DA\u30FC\u30B8\u306E\u5185\u5BB9\u3092\u30B5\u30DE\u30EA\u3057\u305F\u30B9\u30E9\u30A4\u30C9\",\"placeholders\":[{\"name\":\"title\",\"description\":\"\u30DA\u30FC\u30B8\u306E\u30BF\u30A4\u30C8\u30EB\u3092\u8F09\u305B\u308B\"},{\"name\":\"content\",\"description\":\"\u30DA\u30FC\u30B8\u306E\u5185\u5BB9\u306B\u3064\u3044\u3066\u7B87\u6761\u66F8\u304D\u3067\u8F09\u305B\u308B\"},{\"name\":\"image_1\",\"description\":\"\u30DA\u30FC\u30B8\u306E\u30B9\u30AF\u30EA\u30FC\u30F3\u30B7\u30E7\u30C3\u30C8\"},{\"name\":\"url\",\"description\":\"\u30DA\u30FC\u30B8\u306EURL\u3092\u8F09\u305B\u308B\"},{\"name\":\"image_2\",\"description\":\"\u30DA\u30FC\u30B8\u5185\u3067\u4F7F\u7528\u3055\u308C\u3066\u3044\u308B\u753B\u50CF\"}]}]}"
+    headers:
+      content-length:
+      - '503'
+      content-type:
+      - application/json
+      date:
+      - Wed, 12 Feb 2025 06:23:25 GMT
+      server:
+      - uvicorn
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v2/tools/json-to-pptx/analyze
+      x-request-id:
+      - 4dc70c10-14fe-42dd-ba13-1c18e652daeb
+    status:
+      code: 200
+      message: OK
+version: 1
