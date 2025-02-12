@@ -3,9 +3,17 @@
 from typing import Any
 
 from langchain_core.tools import BaseTool
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from middleman_ai.client import ToolsClient
+
+
+class MdToPptxInput(BaseModel):
+    """Markdown to PPTX変換用の入力スキーマ。"""
+    text: str = Field(
+        ...,
+        description="変換対象のMarkdown文字列。有効なMarkdown形式である必要があります。",
+    )
 
 
 class MdToPptxTool(BaseTool):
@@ -17,6 +25,7 @@ class MdToPptxTool(BaseTool):
         "入力は有効なMarkdown文字列である必要があります。"
         "出力は生成されたPPTXのURLです。"
     )
+    args_schema: type[BaseModel] = MdToPptxInput
     client: ToolsClient = Field(..., exclude=True)
 
     def __init__(self, client: ToolsClient, **kwargs: Any) -> None:

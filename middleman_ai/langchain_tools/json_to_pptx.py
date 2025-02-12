@@ -3,9 +3,29 @@
 from typing import Any, List
 
 from langchain_core.tools import BaseTool
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from middleman_ai.client import ToolsClient
+
+
+class JsonToPptxAnalyzeInput(BaseModel):
+    """PPTXテンプレート解析用の入力スキーマ。"""
+    template_id: str | None = Field(
+        None,
+        description="PPTXテンプレートのID（UUID形式）。テンプレートの構造を解析するために使用します。default_template_idが設定されている場合は省略可能です。",
+    )
+
+
+class JsonToPptxExecuteInput(BaseModel):
+    """PPTXファイル生成用の入力スキーマ。"""
+    template_id: str | None = Field(
+        None,
+        description="PPTXテンプレートのID（UUID形式）。プレゼンテーションの生成に使用します。default_template_idが設定されている場合は省略可能です。",
+    )
+    slide_json_str: str = Field(
+        ...,
+        description="プレゼンテーションの内容を表すJSON文字列。各スライドのプレースホルダーに挿入するテキストやイメージを指定します。",
+    )
 
 
 class JsonToPptxAnalyzeTool(BaseTool):
@@ -17,6 +37,7 @@ class JsonToPptxAnalyzeTool(BaseTool):
         "入力はテンプレートID（UUID）である必要があります。"
         "出力はテンプレートの構造情報です。"
     )
+    args_schema: type[BaseModel] = JsonToPptxAnalyzeInput
     client: ToolsClient = Field(..., exclude=True)
     default_template_id: str | None = Field(..., exclude=True)
 
@@ -52,7 +73,7 @@ class JsonToPptxAnalyzeTool(BaseTool):
         result: List[dict] = self.client.json_to_pptx_analyze_v2(template_id_to_use)
         return "\n".join(
             f"Slide {i + 1}: {slide.get('title', 'Untitled')} "
-            f"(placeholders: {', '.join(slide.get('placeholders', []))})"
+            f"(placeholders: {', '.join(str(p) for p in slide.get('placeholders', []))})"
             for i, slide in enumerate(result)
         )
 
@@ -81,6 +102,7 @@ class JsonToPptxExecuteTool(BaseTool):
         "入力は「テンプレートID,JSON」の形式である必要があります（カンマ区切り）。"
         "出力は生成されたPPTXのURLです。"
     )
+    args_schema: type[BaseModel] = JsonToPptxExecuteInput
     client: ToolsClient = Field(..., exclude=True)
     default_template_id: str | None = Field(..., exclude=True)
 

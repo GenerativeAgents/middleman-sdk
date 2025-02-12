@@ -3,9 +3,17 @@
 from typing import Any
 
 from langchain_core.tools import BaseTool
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from middleman_ai.client import ToolsClient
+
+
+class PdfToPageImagesInput(BaseModel):
+    """PDF to Page Images変換用の入力スキーマ。"""
+    pdf_file_path: str = Field(
+        ...,
+        description="変換対象のPDFファイルパス。ローカルに存在する有効なPDFファイルを指定する必要があります。",
+    )
 
 
 class PdfToPageImagesTool(BaseTool):
@@ -17,6 +25,7 @@ class PdfToPageImagesTool(BaseTool):
         "入力はローカルのPDFファイルパスである必要があります。"
         "出力は各ページの画像URLのリストを文字列化したものです。"
     )
+    args_schema: type[BaseModel] = PdfToPageImagesInput
     client: ToolsClient = Field(..., exclude=True)
 
     def __init__(self, client: ToolsClient, **kwargs: Any) -> None:
