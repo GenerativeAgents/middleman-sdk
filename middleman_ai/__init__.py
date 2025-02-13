@@ -9,6 +9,8 @@
 - JSON → PPTX変換（テンプレート解析・実行）
 """
 
+from importlib.metadata import version
+
 from .client import ToolsClient
 from .exceptions import (
     ConnectionError,
@@ -20,7 +22,7 @@ from .exceptions import (
     ValidationError,
 )
 
-__version__ = "0.1.0"
+__version__ = version(__package__)
 __all__ = [
     "ConnectionError",
     "ForbiddenError",

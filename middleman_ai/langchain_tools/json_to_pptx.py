@@ -3,7 +3,7 @@
 from typing import Any, List
 
 from langchain_core.tools import BaseTool
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from middleman_ai.client import Presentation, ToolsClient
 
@@ -72,14 +72,10 @@ class JsonToPptxAnalyzeTool(BaseTool):
         if template_id_to_use is None:
             raise ValueError("テンプレートIDが指定されていません")
 
-        print(template_id_to_use)
         result: List[dict] = self.client.json_to_pptx_analyze_v2(template_id_to_use)
-        import json
-
-        print(json.dumps(result, indent=2))
         return "\n".join(
-            f"Slide{i + 1}: type={slide.get('type', 'Untitled')} "
-            f"(placeholders: {', '.join(str(p) for p in slide.get('placeholders', []))})"
+            f"Slide{i + 1}: type={slide.get('type', 'Untitled')} description={slide.get('description', 'No description')}"  # noqa: E501
+            f"(placeholders: {', '.join(str(p) for p in slide.get('placeholders', []))})"  # noqa: E501
             for i, slide in enumerate(result)
         )
 
@@ -155,6 +151,8 @@ class JsonToPptxExecuteTool(BaseTool):
         try:
             presentation_dict = Presentation.model_validate_json(presentation)
         except json.JSONDecodeError as e:
+            raise ValueError("不正なJSON形式です") from e
+        except ValidationError as e:
             raise ValueError("不正なJSON形式です") from e
 
         return self.client.json_to_pptx_execute_v2(
