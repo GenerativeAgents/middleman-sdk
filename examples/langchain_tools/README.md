@@ -13,7 +13,7 @@ Middleman.ai の LangChain ツールを直接使用する最小限のサンプ�
 
 ```bash
 export MIDDLEMAN_API_KEY="YOUR_API_KEY"
-export MIDDLEMAN_TEMPLATE_ID="YOUR_TEMPLATE_ID"  # JSON to PPTXの機能を使用する場合
+export MIDDLEMAN_TEMPLATE_ID="YOUR_TEMPLATE_ID"  # JSON to PPTXの機能を使用する場合sample_template.pptxをMiddleman.aiにアップロードしてそのIDを設定
 ```
 
 2. 依存関係のインストール:
@@ -25,10 +25,10 @@ uv sync
 ## 使用方法
 
 ```bash
-python src/minimal_langchain_tools/main.py
+uv run main.py
 ```
 
-各ツールの_runメソッドの呼び出し結果（生成されたファイルのURL）が表示されます。
+各ツールの\_run メソッドの呼び出し結果（生成されたファイルの URL）が表示されます。
 
 ## ライセンス
 

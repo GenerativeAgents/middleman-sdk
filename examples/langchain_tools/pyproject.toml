@@ -1,15 +1,12 @@
 [project]
-name = "md-to-docx-agent"
+name = "langchain-tools"
 version = "0.1.0"
-description = "Markdown to DOCX conversion agent example"
+description = "Minimal example of using LangChain tools directly"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "langchain>=0.3.18",
-    "langchain-core>=0.3.34",
-    "langchain-openai>=0.3.5",
     "middleman-ai",
-    "python-dotenv>=1.0.1",
+    "langchain-core>=0.3.34",
 ]
 
 [tool.uv]
@@ -21,6 +18,4 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-include = [
-    "src/md_to_docx_agent",
-]
+include = ["src/minimal_langchain_tools"]

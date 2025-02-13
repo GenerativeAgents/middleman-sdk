@@ -1,5 +1,5 @@
 [project]
-name = "minimal-client-usage"
+name = "client-usage"
 version = "0.1.0"
 description = "Minimal example of using ToolsClient methods directly"
 readme = "README.md"
