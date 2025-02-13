@@ -1,0 +1,21 @@
+[project]
+name = "minimal-langchain-tools"
+version = "0.1.0"
+description = "Minimal example of using LangChain tools directly"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "middleman-ai",
+    "langchain-core>=0.3.34",
+]
+
+[tool.uv]
+[tool.uv.sources]
+middleman-ai = { path = "../../", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = ["src/minimal_langchain_tools"]
