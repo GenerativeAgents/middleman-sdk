@@ -48,12 +48,12 @@ rm -rf middleman_ai.egg-info/
 # 設定が正しいか事前チェック
 uv run python setup.py check
 
-# descriptionの形式が正しいかチェック
-uv run twine check dist/*
-
 # ビルド
 uv run python setup.py sdist
 uv run python setup.py bdist_wheel
+
+# descriptionの形式が正しいかチェック
+uv run twine check dist/*
 
 # 配信
 uv run twine upload --repository pypitest dist/* # テスト用
