@@ -31,7 +31,13 @@ def md_to_pdf():
     try:
         client = ToolsClient(api_key=get_api_key())
         markdown_text = sys.stdin.read()
-        pdf_url = client.md_to_pdf(markdown_text)
+        with click.progressbar(
+            length=1,
+            label='PDFに変換中...',
+            show_eta=False
+        ) as bar:
+            pdf_url = client.md_to_pdf(markdown_text)
+            bar.update(1)
         print(pdf_url)
     except MiddlemanBaseException as e:
         raise click.ClickException(str(e)) from e
@@ -43,7 +49,13 @@ def md_to_docx():
     try:
         client = ToolsClient(api_key=get_api_key())
         markdown_text = sys.stdin.read()
-        docx_url = client.md_to_docx(markdown_text)
+        with click.progressbar(
+            length=1,
+            label='DOCXに変換中...',
+            show_eta=False
+        ) as bar:
+            docx_url = client.md_to_docx(markdown_text)
+            bar.update(1)
         print(docx_url)
     except MiddlemanBaseException as e:
         raise click.ClickException(str(e)) from e
@@ -55,7 +67,13 @@ def md_to_pptx():
     try:
         client = ToolsClient(api_key=get_api_key())
         markdown_text = sys.stdin.read()
-        pptx_url = client.md_to_pptx(markdown_text)
+        with click.progressbar(
+            length=1,
+            label='PPTXに変換中...',
+            show_eta=False
+        ) as bar:
+            pptx_url = client.md_to_pptx(markdown_text)
+            bar.update(1)
         print(pptx_url)
     except MiddlemanBaseException as e:
         raise click.ClickException(str(e)) from e
@@ -67,7 +85,13 @@ def pdf_to_page_images(pdf_path):
     """Convert PDF pages to images."""
     try:
         client = ToolsClient(api_key=get_api_key())
-        results = client.pdf_to_page_images(pdf_path)
+        with click.progressbar(
+            length=1,
+            label='PDFを画像に変換中...',
+            show_eta=False
+        ) as bar:
+            results = client.pdf_to_page_images(pdf_path)
+            bar.update(1)
         for page in results:
             print(f"Page {page['page_no']}: {page['image_url']}")
     except MiddlemanBaseException as e:
@@ -80,7 +104,13 @@ def json_to_pptx_analyze(template_id):
     """Analyze PPTX template."""
     try:
         client = ToolsClient(api_key=get_api_key())
-        results = client.json_to_pptx_analyze_v2(template_id)
+        with click.progressbar(
+            length=1,
+            label='テンプレートを解析中...',
+            show_eta=False
+        ) as bar:
+            results = client.json_to_pptx_analyze_v2(template_id)
+            bar.update(1)
         print(json.dumps(results, indent=2))
     except MiddlemanBaseException as e:
         raise click.ClickException(str(e)) from e
@@ -103,7 +133,13 @@ def json_to_pptx_execute(template_id):
             )
             for slide in data["slides"]
         ])
-        pptx_url = client.json_to_pptx_execute_v2(template_id, presentation)
+        with click.progressbar(
+            length=1,
+            label='PPTXを生成中...',
+            show_eta=False
+        ) as bar:
+            pptx_url = client.json_to_pptx_execute_v2(template_id, presentation)
+            bar.update(1)
         print(pptx_url)
     except (json.JSONDecodeError, KeyError) as e:
         raise click.ClickException(f"Invalid JSON input: {e!s}") from e
