@@ -85,12 +85,6 @@ def vcr_config() -> Dict[str, Any]:
         Dict[str, Any]: VCRの設定辞書
     """
     return {
-        "filter_headers": [
-            ('authorization', 'DUMMY'),
-            ('user-agent', None),
-            ('accept-encoding', None)
-        ],
-        "record_mode": "once",
         "match_on": ["method", "scheme", "host", "port", "path"],
         "ignore_localhost": True,
         "ignore_hosts": ["api.middleman.ai"],  # APIホストも無視するように追加
@@ -99,6 +93,11 @@ def vcr_config() -> Dict[str, Any]:
         "before_record_response": lambda r: r,
         "serializer": "yaml",
         "record_mode": "once",
+        "filter_headers": [
+            ('authorization', 'DUMMY'),
+            ('user-agent', None),
+            ('accept-encoding', None)
+        ],
         "filter_post_data_parameters": [
             ('file', None),
             ('pptx_template_id', None),
