@@ -36,10 +36,14 @@ def pytest_configure(config: pytest.Config) -> None:
 
 def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
     """テストコレクションの修正を行います。"""
-    api_key_missing = not os.getenv("MIDDLEMAN_API_KEY")
     for item in items:
-        if api_key_missing and "test_cli.py" not in str(item.path):
+        # Skip non-CLI tests when API key is missing
+        if (
+            "test_cli.py" not in str(item.path)
+            and not os.getenv("MIDDLEMAN_API_KEY")
+        ):
             item.add_marker(pytest.mark.skip(reason="MIDDLEMAN_API_KEY is not set"))
+            item.add_marker(pytest.mark.requires_api_key)
 
 
 # オリジナルの play_response メソッドを保存
