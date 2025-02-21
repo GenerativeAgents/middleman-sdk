@@ -2,7 +2,7 @@
 
 from unittest.mock import Mock
 
-import click
+import click.testing
 import pytest
 from pytest_mock import MockerFixture
 
@@ -10,7 +10,7 @@ from pytest_mock import MockerFixture
 @pytest.fixture
 def runner() -> click.testing.CliRunner:
     """Create a CLI runner."""
-    return pytest.CliRunner()
+    return click.testing.CliRunner()
 
 
 @pytest.fixture
