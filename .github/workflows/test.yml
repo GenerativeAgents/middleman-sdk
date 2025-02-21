@@ -29,10 +29,10 @@ jobs:
         pip install pytest pytest-mock ruff mypy
         
     - name: Lint with ruff
-      run: ruff check .
+      run: python -m ruff check .
       
     - name: Type check with mypy
-      run: mypy middleman_ai tests
+      run: python -m mypy middleman_ai tests
       
     - name: Run tests
-      run: pytest tests/
+      run: python -m pytest tests/
