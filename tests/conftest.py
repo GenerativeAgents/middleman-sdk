@@ -93,7 +93,7 @@ def vcr_config() -> Dict[str, Any]:
         "decode_compressed_response": True,
         "preserve_exact_body_bytes": False,
         "before_record_request": lambda request: request,  # Allow all requests through
-        "before_record_response": lambda response: response,  # Allow all responses through
+        "before_record_response": lambda r: r,  # Allow all responses through
         "filter_query_parameters": [],  # Don't filter any query parameters
         "filter_post_data_parameters": ["pptx_template_id", "presentation"],  # Filter out dynamic data
     }
