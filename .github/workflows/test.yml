@@ -40,3 +40,6 @@ jobs:
       
     - name: Run tests
       run: python -m pytest tests/
+      env:
+        MIDDLEMAN_API_KEY: dummy-key-for-tests
+        MIDDLEMAN_TEST_TEMPLATE_ID: template_01HQ3TNBWJZ8YVQXP0QBXK8YGD
