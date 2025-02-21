@@ -90,4 +90,6 @@ def vcr_config() -> Dict[str, Any]:
         "match_on": ["method", "scheme", "host", "port", "path", "query"],
         "ignore_localhost": True,
         "ignore_hosts": ["api.middleman.ai"],  # APIホストも無視するように追加
+        "decode_compressed_response": True,
+        "preserve_exact_body_bytes": False,
     }
