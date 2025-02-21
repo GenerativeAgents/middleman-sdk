@@ -19,13 +19,13 @@ def get_api_key() -> str:
     return api_key
 
 
-@click.group()
+@click.group(name="middleman")
 def cli() -> None:
     """Middleman.ai CLI tools."""
     pass
 
 
-@cli.command()
+@cli.command("md-to-pdf")
 def md_to_pdf() -> None:
     """Convert Markdown to PDF."""
     try:
@@ -43,7 +43,7 @@ def md_to_pdf() -> None:
         raise click.ClickException(str(e)) from e
 
 
-@cli.command()
+@cli.command("md-to-docx")
 def md_to_docx() -> None:
     """Convert Markdown to DOCX."""
     try:
@@ -61,7 +61,7 @@ def md_to_docx() -> None:
         raise click.ClickException(str(e)) from e
 
 
-@cli.command()
+@cli.command("md-to-pptx")
 def md_to_pptx() -> None:
     """Convert Markdown to PPTX."""
     try:
@@ -79,7 +79,7 @@ def md_to_pptx() -> None:
         raise click.ClickException(str(e)) from e
 
 
-@cli.command()
+@cli.command("pdf-to-page-images")
 @click.argument('pdf_path', type=click.Path(exists=True))
 def pdf_to_page_images(pdf_path: str) -> None:
     """Convert PDF pages to images."""
@@ -98,7 +98,7 @@ def pdf_to_page_images(pdf_path: str) -> None:
         raise click.ClickException(str(e)) from e
 
 
-@cli.command()
+@cli.command("json-to-pptx-analyze")
 @click.argument('template_id')
 def json_to_pptx_analyze(template_id: str) -> None:
     """Analyze PPTX template."""
@@ -116,7 +116,7 @@ def json_to_pptx_analyze(template_id: str) -> None:
         raise click.ClickException(str(e)) from e
 
 
-@cli.command()
+@cli.command("json-to-pptx-execute")
 @click.argument('template_id')
 def json_to_pptx_execute(template_id: str) -> None:
     """Execute PPTX template with data from stdin."""

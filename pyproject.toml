@@ -17,6 +17,9 @@ license = { text = "MIT" }
 [project.scripts]
 middleman = "middleman_ai.cli.main:cli"
 
+[project.entry-points."middleman_ai.cli"]
+cli = "middleman_ai.cli.main:cli"
+
 [build-system]
 requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
