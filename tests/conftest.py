@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict
 
 import pytest
-import vcr
 from dotenv import load_dotenv
 from vcr.cassette import Cassette  # type: ignore
 from vcr.stubs import VCRHTTPResponse  # type: ignore
@@ -97,18 +96,16 @@ def vcr_config() -> Dict[str, Any]:
         "ignore_localhost": True,
         "ignore_hosts": ["api.middleman.ai"],  # APIホストも無視するように追加
         "decode_compressed_response": True,
-        "before_record_request": (
-            lambda r: r if isinstance(r.body, (bytes, BytesIO)) else r
-        ),
+        "before_record_request": lambda r: r,
         "before_record_response": lambda r: r,
         "serializer": "yaml",
-        "record_mode": "once",
         "filter_headers": [
             ('authorization', 'DUMMY'),
             ('user-agent', None),
             ('accept-encoding', None),
             ('content-type', None)
         ],
+        "record_mode": "once",
         "filter_post_data_parameters": [
             ('file', None),
             ('pptx_template_id', None),
