@@ -118,8 +118,8 @@ def test_json_to_pptx_analyze_v2_vcr(client: ToolsClient) -> None:
         初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
     """
     template_id = (
-        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID")
-        or "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or
+        "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
     )  # テスト用のテンプレートID
     slides = client.json_to_pptx_analyze_v2(pptx_template_id=template_id)
     assert isinstance(slides, list)
@@ -146,8 +146,8 @@ def test_json_to_pptx_execute_v2_vcr(client: ToolsClient) -> None:
         初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
     """
     template_id = (
-        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID")
-        or "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or
+        "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
     )  # テスト用のテンプレートID
     presentation = {
         "slides": [
