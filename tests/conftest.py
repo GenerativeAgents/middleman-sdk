@@ -99,6 +99,5 @@ def vcr_config() -> Dict[str, Any]:
         "decode_compressed_response": True,
         "before_record_request": lambda r: r if isinstance(r.body, (bytes, BytesIO)) else r,
         "before_record_response": lambda r: r,
-        "serializer": "yaml",
-        "preserve_exact_body_bytes": True
+        "serializer": "yaml"
     }
