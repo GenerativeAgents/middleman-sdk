@@ -1,10 +1,9 @@
 """Test configuration for CLI tests."""
 
-from unittest.mock import Mock
-
-from click.testing import CliRunner
 import pytest
+from click.testing import CliRunner
 from pytest_mock import MockerFixture
+from unittest.mock import Mock
 
 
 @pytest.fixture
