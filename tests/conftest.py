@@ -2,7 +2,6 @@
 
 import logging
 import os
-from io import BytesIO
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict
 
@@ -96,6 +95,6 @@ def vcr_config() -> Dict[str, Any]:
             "pptx_template_id",
             "presentation"
         ],
-        "before_record_request": lambda r: r if isinstance(r.body, (bytes, BytesIO)) else r,
+        "before_record_request": lambda r: r,
         "before_record_response": lambda r: r
     }
