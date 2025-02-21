@@ -35,7 +35,7 @@ def md_to_pdf() -> None:
             length=1,
             label='PDFに変換中...',
             show_eta=False
-        ) as bar:  # type: click.progressbar.ProgressBar
+        ) as bar:  # type: click._termui_impl.ProgressBar  # type: click.progressbar.ProgressBar
             pdf_url = client.md_to_pdf(markdown_text)
             bar.update(1)
         print(pdf_url)
@@ -53,7 +53,7 @@ def md_to_docx() -> None:
             length=1,
             label='DOCXに変換中...',
             show_eta=False
-        ) as bar:
+        ) as bar:  # type: click._termui_impl.ProgressBar
             docx_url = client.md_to_docx(markdown_text)
             bar.update(1)
         print(docx_url)
@@ -71,7 +71,7 @@ def md_to_pptx() -> None:
             length=1,
             label='PPTXに変換中...',
             show_eta=False
-        ) as bar:
+        ) as bar:  # type: click._termui_impl.ProgressBar
             pptx_url = client.md_to_pptx(markdown_text)
             bar.update(1)
         print(pptx_url)
@@ -89,7 +89,7 @@ def pdf_to_page_images(pdf_path: str) -> None:
             length=1,
             label='PDFを画像に変換中...',
             show_eta=False
-        ) as bar:
+        ) as bar:  # type: click._termui_impl.ProgressBar
             results = client.pdf_to_page_images(pdf_path)
             bar.update(1)
         for page in results:
@@ -108,7 +108,7 @@ def json_to_pptx_analyze(template_id: str) -> None:
             length=1,
             label='テンプレートを解析中...',
             show_eta=False
-        ) as bar:
+        ) as bar:  # type: click._termui_impl.ProgressBar
             results = client.json_to_pptx_analyze_v2(template_id)
             bar.update(1)
         print(json.dumps(results, indent=2))
@@ -137,7 +137,7 @@ def json_to_pptx_execute(template_id: str) -> None:
             length=1,
             label='PPTXを生成中...',
             show_eta=False
-        ) as bar:
+        ) as bar:  # type: click._termui_impl.ProgressBar
             pptx_url = client.json_to_pptx_execute_v2(template_id, presentation)
             bar.update(1)
         print(pptx_url)
