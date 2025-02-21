@@ -1,0 +1,40 @@
+interactions:
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '221'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/execute
+  response:
+    body:
+      string: '{"error_code":"UNEXPECTED","message":"Internal Server Error"}'
+    headers:
+      content-length:
+      - '61'
+      content-type:
+      - application/json
+      date:
+      - Fri, 21 Feb 2025 03:20:50 GMT
+      server:
+      - uvicorn
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v2/tools/json-to-pptx/execute
+    status:
+      code: 500
+      message: Internal Server Error
+version: 1
