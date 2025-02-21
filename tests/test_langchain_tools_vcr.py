@@ -16,7 +16,7 @@ from middleman_ai.langchain_tools.md_to_pptx import MdToPptxTool
 from middleman_ai.langchain_tools.pdf_to_page_images import PdfToPageImagesTool
 
 # テスト用のデフォルトテンプレートID
-DEFAULT_TEMPLATE_ID = "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
+DEFAULT_TEMPLATE_ID = "template_01HQ3TNBWJZ8YVQXP0QBXK8YGD"
 
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest  # noqa: F401
