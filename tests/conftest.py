@@ -99,9 +99,9 @@ def vcr_config() -> Dict[str, Any]:
         "before_record_response": lambda r: r,
         "serializer": "json",  # Better for binary data
         "filter_post_data_parameters": [
-            ('file', 'BINARY_DATA'),  # Replace binary data with placeholder
-            ('pptx_template_id', 'TEMPLATE_ID'),  # Replace template ID with placeholder
-            ('presentation', 'PRESENTATION_DATA')  # Replace presentation data with placeholder
+            ('file', 'BINARY_DATA'),
+            ('pptx_template_id', 'TEMPLATE_ID'),
+            ('presentation', 'PRESENTATION_DATA')
         ],
         "filter_query_parameters": [
             ('api_key', 'DUMMY_KEY')
