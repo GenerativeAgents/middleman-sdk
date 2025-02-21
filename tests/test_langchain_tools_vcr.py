@@ -149,7 +149,7 @@ def test_json_to_pptx_analyze_tool_vcr(client: ToolsClient) -> None:
         client: テスト用のクライアントインスタンス
     """
     template_id = (
-        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or ""
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
     )  # テスト用のテンプレートID
     tool = JsonToPptxAnalyzeTool(client=client)
     result = tool._run(template_id)
@@ -181,7 +181,7 @@ def test_json_to_pptx_execute_tool_vcr(client: ToolsClient) -> None:
         ]
     }
     template_id = (
-        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or ""
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
     )  # テスト用のテンプレートID
     tool = JsonToPptxExecuteTool(client=client)
     result = tool._run(
