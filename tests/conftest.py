@@ -89,7 +89,7 @@ def vcr_config() -> Dict[str, Any]:
         "record_mode": "once",
         "ignore_localhost": True,
         "ignore_hosts": ["api.middleman.ai"],
-        "decode_compressed_response": True,
+        "decode_compressed_response": False,  # Don't try to decode binary responses
         "filter_headers": [
             ('authorization', 'DUMMY'),
             ('user-agent', None),
@@ -97,13 +97,13 @@ def vcr_config() -> Dict[str, Any]:
         ],
         "before_record_request": lambda r: r,
         "before_record_response": lambda r: r,
-        "serializer": "json",  # Better for binary data
+        "serializer": "yaml",  # YAML handles binary data better
         "filter_post_data_parameters": [
-            ('file', 'BINARY_DATA'),
-            ('pptx_template_id', 'TEMPLATE_ID'),
-            ('presentation', 'PRESENTATION_DATA')
+            ('file', 'BINARY'),  # Just mark as binary
+            ('pptx_template_id', 'TEMPLATE'),
+            ('presentation', 'DATA')
         ],
         "filter_query_parameters": [
-            ('api_key', 'DUMMY_KEY')
+            ('api_key', 'DUMMY')
         ]
     }
