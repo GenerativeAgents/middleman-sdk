@@ -43,11 +43,11 @@ echo "# テスト" | uvx middleman md_to_pptx
 uvx middleman pdf_to_page_images input.pdf
 
 # PPTXテンプレート解析
-uvx middleman json_to_pptx_analyze template-id
+uvx middleman json_to_pptx_analyze [テンプレートID]
 
 # PPTXテンプレート実行
 echo '{"slides":[{"type":"title","placeholders":[{"name":"title","content":"テストタイトル"}]}]}' | \
-uvx middleman json_to_pptx_execute template-id
+uvx middleman json_to_pptx_execute [テンプレートID]
 ```
 
 各コマンドは標準入力からテキストを受け取るか、必要に応じてファイルパスやテンプレートIDを引数として受け取ります。
