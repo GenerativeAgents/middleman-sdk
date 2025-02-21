@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from unittest.mock import Mock
 
-import click
+from click.testing import CliRunner
 from pytest_mock import MockerFixture
 
 from middleman_ai.cli.main import cli
@@ -41,7 +41,7 @@ def test_md_to_pptx(runner: click.testing.CliRunner, mock_client: Mock) -> None:
 
 
 def test_pdf_to_page_images(
-    runner: click.testing.CliRunner,
+    runner: CliRunner,
     mock_client: Mock,
     tmp_path: Path,
 ) -> None:
@@ -60,7 +60,7 @@ def test_pdf_to_page_images(
 
 
 def test_json_to_pptx_analyze(
-    runner: click.testing.CliRunner,
+    runner: CliRunner,
     mock_client: Mock,
 ) -> None:
     """Test json_to_pptx_analyze CLI command."""
@@ -74,7 +74,7 @@ def test_json_to_pptx_analyze(
 
 
 def test_json_to_pptx_execute(
-    runner: click.testing.CliRunner,
+    runner: CliRunner,
     mock_client: Mock,
 ) -> None:
     """Test json_to_pptx_execute CLI command."""
@@ -100,7 +100,7 @@ def test_json_to_pptx_execute(
 
 
 def test_missing_api_key(
-    runner: click.testing.CliRunner,
+    runner: CliRunner,
     mocker: MockerFixture,
 ) -> None:
     """Test error handling when API key is missing."""
