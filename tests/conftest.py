@@ -91,7 +91,6 @@ def vcr_config() -> Dict[str, Any]:
         "ignore_localhost": True,
         "ignore_hosts": ["api.middleman.ai"],  # APIホストも無視するように追加
         "decode_compressed_response": True,
-        "preserve_exact_body_bytes": False,
         "before_record_request": lambda request: request,  # Pass through
         "before_record_response": lambda r: r,  # Pass through
         "filter_query_parameters": [],
