@@ -86,24 +86,24 @@ def vcr_config() -> Dict[str, Any]:
     """
     return {
         "match_on": ["method", "scheme", "host", "port", "path"],
-        "ignore_localhost": True,
-        "ignore_hosts": ["api.middleman.ai"],  # APIホストも無視するように追加
-        "decode_compressed_response": True,
-        "before_record_request": lambda r: r,
-        "before_record_response": lambda r: r,
-        "serializer": "yaml",
         "record_mode": "once",
+        "ignore_localhost": True,
+        "ignore_hosts": ["api.middleman.ai"],
+        "decode_compressed_response": True,
         "filter_headers": [
             ('authorization', 'DUMMY'),
             ('user-agent', None),
             ('accept-encoding', None)
         ],
+        "before_record_request": lambda r: r,
+        "before_record_response": lambda r: r,
+        "serializer": "json",  # Better for binary data
         "filter_post_data_parameters": [
-            ('file', None),
-            ('pptx_template_id', None),
-            ('presentation', None)
+            ('file', 'BINARY_DATA'),  # Replace binary data with placeholder
+            ('pptx_template_id', 'TEMPLATE_ID'),  # Replace template ID with placeholder
+            ('presentation', 'PRESENTATION_DATA')  # Replace presentation data with placeholder
         ],
         "filter_query_parameters": [
-            ('api_key', None)
+            ('api_key', 'DUMMY_KEY')
         ]
     }
