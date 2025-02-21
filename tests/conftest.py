@@ -87,7 +87,7 @@ def vcr_config() -> Dict[str, Any]:
     return {
         "filter_headers": [("authorization", "DUMMY")],
         "record_mode": "once",
-        "match_on": ["method", "scheme", "host", "port", "path", "query", "body"],
+        "match_on": ["method", "scheme", "host", "port", "path", "query"],
         "ignore_localhost": True,
         "ignore_hosts": ["api.middleman.ai"],  # APIホストも無視するように追加
     }
