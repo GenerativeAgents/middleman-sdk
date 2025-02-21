@@ -97,9 +97,12 @@ def vcr_config() -> Dict[str, Any]:
         "ignore_localhost": True,
         "ignore_hosts": ["api.middleman.ai"],  # APIホストも無視するように追加
         "decode_compressed_response": True,
-        "before_record_request": lambda r: r if isinstance(r.body, (bytes, BytesIO)) else r,
+        "before_record_request": (
+            lambda r: r if isinstance(r.body, (bytes, BytesIO)) else r
+        ),
         "before_record_response": lambda r: r,
         "serializer": "yaml",
+        "record_mode": "once",
         "filter_headers": [
             ('authorization', 'DUMMY'),
             ('user-agent', None),
@@ -113,13 +116,5 @@ def vcr_config() -> Dict[str, Any]:
         ],
         "filter_query_parameters": [
             ('api_key', None)
-        ],
-        "match_on": ["method", "scheme", "host", "port", "path"],
-        "record_mode": "once",
-        "filter_headers": [
-            ('authorization', 'DUMMY'),
-            ('user-agent', None),
-            ('accept-encoding', None),
-            ('content-type', None)
         ]
     }
