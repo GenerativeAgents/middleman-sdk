@@ -15,6 +15,9 @@ from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
 from middleman_ai.langchain_tools.md_to_pptx import MdToPptxTool
 from middleman_ai.langchain_tools.pdf_to_page_images import PdfToPageImagesTool
 
+# テスト用のデフォルトテンプレートID
+DEFAULT_TEMPLATE_ID = "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
+
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest  # noqa: F401
 
@@ -149,8 +152,7 @@ def test_json_to_pptx_analyze_tool_vcr(client: ToolsClient) -> None:
         client: テスト用のクライアントインスタンス
     """
     template_id = (
-        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or
-        "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or DEFAULT_TEMPLATE_ID
     )  # テスト用のテンプレートID
     tool = JsonToPptxAnalyzeTool(client=client)
     result = tool._run(template_id)
@@ -182,8 +184,7 @@ def test_json_to_pptx_execute_tool_vcr(client: ToolsClient) -> None:
         ]
     }
     template_id = (
-        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or
-        "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or DEFAULT_TEMPLATE_ID
     )  # テスト用のテンプレートID
     tool = JsonToPptxExecuteTool(client=client)
     result = tool._run(

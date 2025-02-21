@@ -92,12 +92,11 @@ def vcr_config() -> Dict[str, Any]:
         "ignore_hosts": ["api.middleman.ai"],  # APIホストも無視するように追加
         "decode_compressed_response": True,
         "preserve_exact_body_bytes": False,
-        # Allow all requests/responses through
-        "before_record_request": lambda request: request,
-        "before_record_response": lambda r: r,
+        "before_record_request": lambda request: request,  # Pass through
+        "before_record_response": lambda r: r,  # Pass through
         "filter_query_parameters": [],
         "filter_post_data_parameters": [
             "pptx_template_id",
             "presentation"
-        ]  # Filter dynamic data
+        ]
     }

@@ -12,6 +12,9 @@ from middleman_ai.client import Presentation, ToolsClient
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest  # noqa: F401
 
+# テスト用のデフォルトテンプレートID
+DEFAULT_TEMPLATE_ID = "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
+
 
 @pytest.fixture
 def client() -> ToolsClient:
@@ -118,8 +121,7 @@ def test_json_to_pptx_analyze_v2_vcr(client: ToolsClient) -> None:
         初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
     """
     template_id = (
-        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or
-        "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or DEFAULT_TEMPLATE_ID
     )  # テスト用のテンプレートID
     slides = client.json_to_pptx_analyze_v2(pptx_template_id=template_id)
     assert isinstance(slides, list)
@@ -146,8 +148,7 @@ def test_json_to_pptx_execute_v2_vcr(client: ToolsClient) -> None:
         初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
     """
     template_id = (
-        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or
-        "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7"
+        os.getenv("MIDDLEMAN_TEST_TEMPLATE_ID") or DEFAULT_TEMPLATE_ID
     )  # テスト用のテンプレートID
     presentation = {
         "slides": [
