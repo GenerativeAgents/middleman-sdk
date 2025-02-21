@@ -91,9 +91,6 @@ def vcr_config() -> Dict[str, Any]:
         "ignore_localhost": True,
         "ignore_hosts": ["api.middleman.ai"],  # APIホストも無視するように追加
         "decode_compressed_response": True,
-        "custom_patches": ((vcr.stubs, 'VCRHTTPSConnection', vcr.stubs.VCRHTTPConnection),),
-        "before_record_request": lambda r: r if isinstance(r.body, (bytes, type(None))) else r,
-        "before_record_response": lambda r: r,
         "filter_post_data_parameters": [
             "pptx_template_id",
             "presentation"
