@@ -2,17 +2,19 @@
 
 from unittest.mock import Mock
 
+import click
 import pytest
+from pytest_mock import MockerFixture
 
 
 @pytest.fixture
-def runner():
+def runner() -> click.testing.CliRunner:
     """Create a CLI runner."""
     return pytest.CliRunner()
 
 
 @pytest.fixture
-def mock_client(mocker):
+def mock_client(mocker: MockerFixture) -> Mock:
     """Create a mock client."""
     mock = Mock()
     mocker.patch("middleman_ai.cli.main.ToolsClient", return_value=mock)

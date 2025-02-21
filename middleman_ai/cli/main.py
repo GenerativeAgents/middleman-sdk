@@ -20,18 +20,18 @@ def get_api_key() -> str:
 
 
 @click.group()
-def cli():
+def cli() -> None:
     """Middleman.ai CLI tools."""
     pass
 
 
 @cli.command()
-def md_to_pdf():
+def md_to_pdf() -> None:
     """Convert Markdown to PDF."""
     try:
         client = ToolsClient(api_key=get_api_key())
         markdown_text = sys.stdin.read()
-        with click.progressbar(
+        with click.progressbar(  # type: ignore[no-untyped-call]
             length=1,
             label='PDFに変換中...',
             show_eta=False
@@ -44,12 +44,12 @@ def md_to_pdf():
 
 
 @cli.command()
-def md_to_docx():
+def md_to_docx() -> None:
     """Convert Markdown to DOCX."""
     try:
         client = ToolsClient(api_key=get_api_key())
         markdown_text = sys.stdin.read()
-        with click.progressbar(
+        with click.progressbar(  # type: ignore[no-untyped-call]
             length=1,
             label='DOCXに変換中...',
             show_eta=False
@@ -62,12 +62,12 @@ def md_to_docx():
 
 
 @cli.command()
-def md_to_pptx():
+def md_to_pptx() -> None:
     """Convert Markdown to PPTX."""
     try:
         client = ToolsClient(api_key=get_api_key())
         markdown_text = sys.stdin.read()
-        with click.progressbar(
+        with click.progressbar(  # type: ignore[no-untyped-call]
             length=1,
             label='PPTXに変換中...',
             show_eta=False
@@ -81,11 +81,11 @@ def md_to_pptx():
 
 @cli.command()
 @click.argument('pdf_path', type=click.Path(exists=True))
-def pdf_to_page_images(pdf_path):
+def pdf_to_page_images(pdf_path: str) -> None:
     """Convert PDF pages to images."""
     try:
         client = ToolsClient(api_key=get_api_key())
-        with click.progressbar(
+        with click.progressbar(  # type: ignore[no-untyped-call]
             length=1,
             label='PDFを画像に変換中...',
             show_eta=False
@@ -100,11 +100,11 @@ def pdf_to_page_images(pdf_path):
 
 @cli.command()
 @click.argument('template_id')
-def json_to_pptx_analyze(template_id):
+def json_to_pptx_analyze(template_id: str) -> None:
     """Analyze PPTX template."""
     try:
         client = ToolsClient(api_key=get_api_key())
-        with click.progressbar(
+        with click.progressbar(  # type: ignore[no-untyped-call]
             length=1,
             label='テンプレートを解析中...',
             show_eta=False
@@ -118,7 +118,7 @@ def json_to_pptx_analyze(template_id):
 
 @cli.command()
 @click.argument('template_id')
-def json_to_pptx_execute(template_id):
+def json_to_pptx_execute(template_id: str) -> None:
     """Execute PPTX template with data from stdin."""
     try:
         client = ToolsClient(api_key=get_api_key())
@@ -133,7 +133,7 @@ def json_to_pptx_execute(template_id):
             )
             for slide in data["slides"]
         ])
-        with click.progressbar(
+        with click.progressbar(  # type: ignore[no-untyped-call]
             length=1,
             label='PPTXを生成中...',
             show_eta=False
