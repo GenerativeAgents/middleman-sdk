@@ -87,7 +87,7 @@ def vcr_config() -> Dict[str, Any]:
     return {
         "filter_headers": [("authorization", "DUMMY")],
         "record_mode": "once",
-        "match_on": ["method", "scheme", "host", "port", "path", "query"],
+        "match_on": ["method", "scheme", "host", "port", "path"],
         "ignore_localhost": True,
         "ignore_hosts": ["api.middleman.ai"],  # APIホストも無視するように追加
         "decode_compressed_response": True,
@@ -95,4 +95,5 @@ def vcr_config() -> Dict[str, Any]:
         "before_record_request": lambda request: request,  # Allow all requests through
         "before_record_response": lambda response: response,  # Allow all responses through
         "filter_query_parameters": [],  # Don't filter any query parameters
+        "filter_post_data_parameters": ["pptx_template_id", "presentation"],  # Filter out dynamic data
     }
