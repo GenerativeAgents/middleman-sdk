@@ -27,10 +27,11 @@ def pytest_configure(config: pytest.Config) -> None:
     if env_file.exists():
         load_dotenv(env_file)
 
-    # Skip API key check for CLI tests which use mocks
-    if "test_cli.py" not in str(config.invocation_params.dir):
-        if not os.getenv("MIDDLEMAN_API_KEY"):
-            pytest.skip("MIDDLEMAN_API_KEY is not set")
+    # Skip API key check for non-CLI tests
+    if not os.getenv("MIDDLEMAN_API_KEY"):
+        # Don't skip CLI tests since they use mocks
+        if not any("test_cli.py" in str(p) for p in config.invocation_params.args):
+            pytest.skip("MIDDLEMAN_API_KEY is not set", allow_module_level=True)
 
 
 # オリジナルの play_response メソッドを保存
