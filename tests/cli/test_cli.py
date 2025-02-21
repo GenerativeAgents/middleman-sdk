@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from unittest.mock import Mock
 
+import click
 from click.testing import CliRunner
 from pytest_mock import MockerFixture
 
@@ -13,7 +14,7 @@ from middleman_ai.cli.main import cli
 os.environ["MIDDLEMAN_API_KEY"] = "test-key"
 
 
-def test_md_to_pdf(runner: click.testing.CliRunner, mock_client: Mock) -> None:
+def test_md_to_pdf(runner: CliRunner, mock_client: Mock) -> None:
     """Test md_to_pdf CLI command."""
     mock_client.md_to_pdf.return_value = "https://example.com/test.pdf"
     result = runner.invoke(cli, ["md_to_pdf"], input="# Test")
@@ -22,7 +23,7 @@ def test_md_to_pdf(runner: click.testing.CliRunner, mock_client: Mock) -> None:
     mock_client.md_to_pdf.assert_called_once_with("# Test")
 
 
-def test_md_to_docx(runner: click.testing.CliRunner, mock_client: Mock) -> None:
+def test_md_to_docx(runner: CliRunner, mock_client: Mock) -> None:
     """Test md_to_docx CLI command."""
     mock_client.md_to_docx.return_value = "https://example.com/test.docx"
     result = runner.invoke(cli, ["md_to_docx"], input="# Test")
@@ -31,7 +32,7 @@ def test_md_to_docx(runner: click.testing.CliRunner, mock_client: Mock) -> None:
     mock_client.md_to_docx.assert_called_once_with("# Test")
 
 
-def test_md_to_pptx(runner: click.testing.CliRunner, mock_client: Mock) -> None:
+def test_md_to_pptx(runner: CliRunner, mock_client: Mock) -> None:
     """Test md_to_pptx CLI command."""
     mock_client.md_to_pptx.return_value = "https://example.com/test.pptx"
     result = runner.invoke(cli, ["md_to_pptx"], input="# Test")
@@ -113,7 +114,7 @@ def test_missing_api_key(
     assert "API key not set" in result.output
 
 
-def test_invalid_json_input(runner: click.testing.CliRunner, mock_client: Mock) -> None:
+def test_invalid_json_input(runner: CliRunner, mock_client: Mock) -> None:
     """Test error handling for invalid JSON input."""
     result = runner.invoke(
         cli,
