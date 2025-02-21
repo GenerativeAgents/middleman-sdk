@@ -97,7 +97,17 @@ def vcr_config() -> Dict[str, Any]:
         "ignore_localhost": True,
         "ignore_hosts": ["api.middleman.ai"],  # APIホストも無視するように追加
         "decode_compressed_response": True,
-        "before_record_request": lambda r: r if isinstance(r.body, (bytes, BytesIO)) else r,
+        "before_record_request": lambda r: r,
         "before_record_response": lambda r: r,
-        "serializer": "yaml"
+        "serializer": "yaml",
+        "decode_compressed_response": True,
+        "filter_post_data_parameters": [
+            ('file', None),
+            ('pptx_template_id', None),
+            ('presentation', None)
+        ],
+        "filter_query_parameters": [
+            ('api_key', None)
+        ],
+        "match_on": ["method", "scheme", "host", "port", "path"]
     }

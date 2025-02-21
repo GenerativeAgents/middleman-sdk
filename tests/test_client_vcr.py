@@ -112,7 +112,7 @@ def test_pdf_to_page_images_vcr(client: ToolsClient) -> None:
     assert all("blob.core.windows.net" in page["image_url"] for page in pages)
 
 
-@pytest.mark.vcr(match_on=["method", "scheme", "host", "port", "path", "query"])
+@pytest.mark.vcr()
 def test_json_to_pptx_analyze_v2_vcr(client: ToolsClient) -> None:
     """ToolsClient.json_to_pptx_analyze_v2の実際のAPIを使用したテスト。
 
@@ -139,7 +139,7 @@ def test_json_to_pptx_analyze_v2_vcr(client: ToolsClient) -> None:
         assert all("description" in placeholder for placeholder in placeholders)
 
 
-@pytest.mark.vcr(match_on=["method", "scheme", "host", "port", "path", "query"])
+@pytest.mark.vcr()
 def test_json_to_pptx_execute_v2_vcr(client: ToolsClient) -> None:
     """ToolsClient.json_to_pptx_execute_v2の実際のAPIを使用したテスト。
 
