@@ -40,7 +40,11 @@ def test_md_to_pptx(runner: click.testing.CliRunner, mock_client: Mock) -> None:
     mock_client.md_to_pptx.assert_called_once_with("# Test")
 
 
-def test_pdf_to_page_images(runner: click.testing.CliRunner, mock_client: Mock, tmp_path: Path) -> None:
+def test_pdf_to_page_images(
+    runner: click.testing.CliRunner,
+    mock_client: Mock,
+    tmp_path: Path,
+) -> None:
     """Test pdf_to_page_images CLI command."""
     mock_client.pdf_to_page_images.return_value = [
         {"page_no": 1, "image_url": "https://example.com/page1.png"},
@@ -55,7 +59,10 @@ def test_pdf_to_page_images(runner: click.testing.CliRunner, mock_client: Mock, 
     mock_client.pdf_to_page_images.assert_called_once_with(str(pdf_path))
 
 
-def test_json_to_pptx_analyze(runner: click.testing.CliRunner, mock_client: Mock) -> None:
+def test_json_to_pptx_analyze(
+    runner: click.testing.CliRunner,
+    mock_client: Mock,
+) -> None:
     """Test json_to_pptx_analyze CLI command."""
     mock_client.json_to_pptx_analyze_v2.return_value = [
         {"type": "title", "placeholders": [{"name": "title", "content": ""}]}
@@ -66,7 +73,10 @@ def test_json_to_pptx_analyze(runner: click.testing.CliRunner, mock_client: Mock
     mock_client.json_to_pptx_analyze_v2.assert_called_once_with("template-123")
 
 
-def test_json_to_pptx_execute(runner: click.testing.CliRunner, mock_client: Mock) -> None:
+def test_json_to_pptx_execute(
+    runner: click.testing.CliRunner,
+    mock_client: Mock,
+) -> None:
     """Test json_to_pptx_execute CLI command."""
     mock_client.json_to_pptx_execute_v2.return_value = "https://example.com/result.pptx"
     input_data = {
@@ -89,7 +99,10 @@ def test_json_to_pptx_execute(runner: click.testing.CliRunner, mock_client: Mock
     mock_client.json_to_pptx_execute_v2.assert_called_once()
 
 
-def test_missing_api_key(runner: click.testing.CliRunner, mocker: MockerFixture) -> None:
+def test_missing_api_key(
+    runner: click.testing.CliRunner,
+    mocker: MockerFixture,
+) -> None:
     """Test error handling when API key is missing."""
     mocker.patch(
         "middleman_ai.cli.main.get_api_key",
