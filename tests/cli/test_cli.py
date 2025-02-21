@@ -6,9 +6,8 @@ from unittest.mock import Mock
 
 import click
 from click.testing import CliRunner
-from pytest_mock import MockerFixture
-
 from middleman_ai.cli.main import cli
+from pytest_mock import MockerFixture
 
 # Set dummy API key for tests
 os.environ["MIDDLEMAN_API_KEY"] = "test-key"
