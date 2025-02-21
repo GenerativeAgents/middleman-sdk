@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict
 
 import pytest
-import vcrpy as vcr
+import vcr
 from dotenv import load_dotenv
 from vcr.cassette import Cassette  # type: ignore
 from vcr.stubs import VCRHTTPResponse  # type: ignore
