@@ -22,6 +22,36 @@ pdf_url = client.md_to_pdf(markdown_text)
 print(f"Generated PDF URL: {pdf_url}")
 ```
 
+## CLIの使用方法
+
+SDKはコマンドラインインターフェース（CLI）も提供しています。UVを使用して以下のように実行できます：
+
+```bash
+# APIキーの設定
+export MIDDLEMAN_API_KEY=your-api-key
+
+# Markdown → PDF変換
+echo "# テスト" | uvx middleman md_to_pdf
+
+# Markdown → DOCX変換
+echo "# テスト" | uvx middleman md_to_docx
+
+# Markdown → PPTX変換
+echo "# テスト" | uvx middleman md_to_pptx
+
+# PDF → ページ画像変換
+uvx middleman pdf_to_page_images input.pdf
+
+# PPTXテンプレート解析
+uvx middleman json_to_pptx_analyze [テンプレートID]
+
+# PPTXテンプレート実行
+echo '{"slides":[{"type":"title","placeholders":[{"name":"title","content":"テストタイトル"}]}]}' | \
+uvx middleman json_to_pptx_execute [テンプレートID]
+```
+
+各コマンドは標準入力からテキストを受け取るか、必要に応じてファイルパスやテンプレートIDを引数として受け取ります。
+
 ## LangChain との統合
 
 ```python

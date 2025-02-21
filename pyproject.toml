@@ -8,10 +8,14 @@ dependencies = [
     "pydantic>=2",
     "langchain-core>=0.3",
     "typing-extensions",
+    "click>=8.0.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "MIT" }
+
+[project.scripts]
+middleman = "middleman_ai.cli.main:cli"
 
 [build-system]
 requires = ["setuptools>=64", "wheel"]
@@ -47,7 +51,7 @@ plugins = ["pydantic.mypy"]
 
 [tool.uv]
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
     "mypy>=1.14.1",
     "pytest>=8.3.4",

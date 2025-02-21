@@ -27,8 +27,10 @@ def pytest_configure(config: pytest.Config) -> None:
     if env_file.exists():
         load_dotenv(env_file)
 
-    if not os.getenv("MIDDLEMAN_API_KEY"):
-        pytest.skip("MIDDLEMAN_API_KEY is not set")
+    # Skip API key check for CLI tests which use mocks
+    if "test_cli.py" not in str(config.invocation_params.dir):
+        if not os.getenv("MIDDLEMAN_API_KEY"):
+            pytest.skip("MIDDLEMAN_API_KEY is not set")
 
 
 # オリジナルの play_response メソッドを保存
