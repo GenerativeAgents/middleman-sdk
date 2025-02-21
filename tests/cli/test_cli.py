@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from unittest.mock import Mock
 
-import click
+from click import ClickException
 from click.testing import CliRunner
 from middleman_ai.cli.main import cli
 from pytest_mock import MockerFixture
@@ -106,7 +106,7 @@ def test_missing_api_key(
     """Test error handling when API key is missing."""
     mocker.patch(
         "middleman_ai.cli.main.get_api_key",
-        side_effect=click.ClickException("API key not set")
+        side_effect=ClickException("API key not set")
     )
     result = runner.invoke(cli, ["md_to_pdf"], input="# Test")
     assert result.exit_code != 0

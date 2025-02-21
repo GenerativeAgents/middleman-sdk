@@ -35,7 +35,7 @@ def md_to_pdf() -> None:
             length=1,
             label='PDFに変換中...',
             show_eta=False
-        ) as bar:  # type: click.progressbar
+        ) as bar:  # type: click.progressbar.ProgressBar
             pdf_url = client.md_to_pdf(markdown_text)
             bar.update(1)
         print(pdf_url)
