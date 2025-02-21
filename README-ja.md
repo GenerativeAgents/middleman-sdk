@@ -52,43 +52,6 @@ uvx middleman json_to_pptx_execute template-id
 
 各コマンドは標準入力からテキストを受け取るか、必要に応じてファイルパスやテンプレートIDを引数として受け取ります。
 
-## LangChain との統合
-
-```python
-from langchain_core.agents import AgentExecutor
-from langchain_core.language_models import BaseLanguageModel
-from middleman_ai import ToolsClient
-from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
-
-# Middleman.aiクライアントの初期化
-client = ToolsClient(api_key="YOUR_API_KEY")
-
-# LangChainツールの設定
-md_to_pdf_tool = MdToPdfTool(client=client)
-
-# LLMの設定
-llm: BaseLanguageModel = ...  # お好みのLLMを設定
-
-# エージェントの初期化
-agent = AgentExecutor.from_agent_and_tools(
-    agent=...,  # お好みのエージェントを設定
-    tools=[md_to_pdf_tool],
-    verbose=True
-)
-
-# 自然言語でPDF生成を実行
-response = agent.invoke({"input": "以下のMarkdownテキストをPDFにして：# Title\nHello!"})
-print(f"Agent response: {response}")
-```
-
-## 機能一覧
-
-- Markdown → PDF 変換
-- Markdown → DOCX 変換
-- Markdown → PPTX 変換
-- PDF → ページ画像変換
-- JSON → PPTX 変換（テンプレート解析・実行）
-
 ## エラーハンドリング
 
 ```python
