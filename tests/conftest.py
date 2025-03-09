@@ -18,6 +18,14 @@ def pytest_configure(config: pytest.Config) -> None:
     """テスト実行前の設定を行います。"""
     # vcrマークを登録
     config.addinivalue_line("markers", "vcr: mark test to use VCR.py cassettes")
+    
+    # ロギングの設定
+    log_level = os.getenv("LOG_LEVEL", "INFO")
+    logging.basicConfig(
+        level=getattr(logging, log_level),
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        force=True
+    )
 
     # urllib3のデバッグログを無効化
     logging.getLogger("urllib3").setLevel(logging.WARNING)

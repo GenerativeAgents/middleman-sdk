@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"pptx_template_id": "0bb238bd-d03a-4f1a-be6f-fe2e0c6e91f7", "presentation":
+    body: '{"pptx_template_id": "76770022-08c2-4afb-873d-82674f80e8f5", "presentation":
       {"slides": [{"type": "title", "placeholders": [{"name": "title", "content":
       "Test Title"}, {"name": "subtitle", "content": "Test Subtitle"}]}]}}'
     headers:
@@ -22,14 +22,14 @@ interactions:
     uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/execute
   response:
     body:
-      string: '{"pptx_url":"https://middlemanprodstorage.blob.core.windows.net/json-to-pptx/1ced2d18-2d55-4db8-8477-553fa9b2cd1f/aaca3dd4-c60c-4bde-99cf-b49768064cb7.pptx?st=2025-02-12T15%3A46%3A00Z&se=2025-02-12T16%3A46%3A00Z&sp=r&sv=2025-01-05&sr=b&skoid=8dcbdc05-c59d-4694-9a41-058c0e5b8014&sktid=e62264db-1967-4e8d-bb6f-68e6f0093e0d&skt=2025-02-12T15%3A46%3A00Z&ske=2025-02-13T15%3A46%3A00Z&sks=b&skv=2025-01-05&sig=HGYpvp2gaNbBzqiY72SmPg1DLDMHwHVyArq9TKI04oA%3D"}'
+      string: '{"pptx_url":"https://middlemanprodstorage.blob.core.windows.net/json-to-pptx/cbef319c-4535-4770-aba3-415f7944a799/0bc4341a-2298-46b1-82dc-28e31b39b20a.pptx?st=2025-03-09T07%3A17%3A57Z&se=2025-03-09T08%3A17%3A57Z&sp=r&sv=2025-01-05&sr=b&skoid=8dcbdc05-c59d-4694-9a41-058c0e5b8014&sktid=e62264db-1967-4e8d-bb6f-68e6f0093e0d&skt=2025-03-09T07%3A17%3A57Z&ske=2025-03-10T07%3A17%3A57Z&sks=b&skv=2025-01-05&sig=163wmcPqDebgHdw53s%2BmTBaW%2BKPDtaRt/LTkN/l9LK8%3D"}'
     headers:
       content-length:
-      - '453'
+      - '457'
       content-type:
       - application/json
       date:
-      - Wed, 12 Feb 2025 15:45:59 GMT
+      - Sun, 09 Mar 2025 07:17:56 GMT
       server:
       - uvicorn
       vary:
@@ -37,7 +37,7 @@ interactions:
       x-middleware-rewrite:
       - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v2/tools/json-to-pptx/execute
       x-request-id:
-      - 1acb1865-6776-4df0-8f86-026ee8aba721
+      - b1cad69e-53aa-4877-994d-dabd0ca6593b
     status:
       code: 200
       message: OK

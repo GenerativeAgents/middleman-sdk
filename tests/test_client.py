@@ -86,6 +86,9 @@ def test_md_to_pdf_http_errors(
 ) -> None:
     """md_to_pdf HTTP エラー時のテスト。"""
     mock_response.status_code = status_code
+    mock_response.url = "https://example.com/api/test"  # URLを追加
+    mock_response.headers = {"content-type": "application/json"}  # headersを追加
+    mock_response.text = ""  # textを追加
     mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError()
     mocker.patch.object(client.session, "post", return_value=mock_response)
 
