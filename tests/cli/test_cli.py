@@ -1,4 +1,5 @@
 """Tests for the CLI implementation."""
+
 import json
 import os
 
@@ -70,16 +71,12 @@ def test_json_to_pptx_execute(runner, mock_client):
         "slides": [
             {
                 "type": "title",
-                "placeholders": [
-                    {"name": "title", "content": "Test Title"}
-                ]
+                "placeholders": [{"name": "title", "content": "Test Title"}],
             }
         ]
     }
     result = runner.invoke(
-        cli,
-        ["json-to-pptx-execute", "template-123"],
-        input=json.dumps(input_data)
+        cli, ["json-to-pptx-execute", "template-123"], input=json.dumps(input_data)
     )
     assert result.exit_code == 0
     assert "https://example.com/result.pptx" in result.output
@@ -90,7 +87,7 @@ def test_missing_api_key(runner, mocker):
     """Test error handling when API key is missing."""
     mocker.patch(
         "middleman_ai.cli.main.get_api_key",
-        side_effect=click.ClickException("API key not set")
+        side_effect=click.ClickException("API key not set"),
     )
     result = runner.invoke(cli, ["md-to-pdf"], input="# Test")
     assert result.exit_code != 0
@@ -100,9 +97,7 @@ def test_missing_api_key(runner, mocker):
 def test_invalid_json_input(runner, mock_client):
     """Test error handling for invalid JSON input."""
     result = runner.invoke(
-        cli,
-        ["json-to-pptx-execute", "template-123"],
-        input="invalid json"
+        cli, ["json-to-pptx-execute", "template-123"], input="invalid json"
     )
     assert result.exit_code != 0
     assert "Invalid JSON input" in result.output

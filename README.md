@@ -31,23 +31,23 @@ SDKはコマンドラインインターフェース（CLI）も提供してい�
 export MIDDLEMAN_API_KEY=your-api-key
 
 # Markdown → PDF変換
-echo "# テスト" | uvx middleman md_to_pdf
+echo "# テスト" | uvx middleman md-to-pdf
 
 # Markdown → DOCX変換
-echo "# テスト" | uvx middleman md_to_docx
+echo "# テスト" | uvx middleman md-to-docx
 
 # Markdown → PPTX変換
-echo "# テスト" | uvx middleman md_to_pptx
+echo "# テスト" | uvx middleman md-to-pptx
 
 # PDF → ページ画像変換
-uvx middleman pdf_to_page_images input.pdf
+uvx middleman pdf-to-page-images input.pdf
 
 # PPTXテンプレート解析
-uvx middleman json_to_pptx_analyze [テンプレートID]
+uvx middleman json-to-pptx-analyze [テンプレートID]
 
 # PPTXテンプレート実行
 echo '{"slides":[{"type":"title","placeholders":[{"name":"title","content":"テストタイトル"}]}]}' | \
-uvx middleman json_to_pptx_execute [テンプレートID]
+uvx middleman json-to-pptx-execute [テンプレートID]
 ```
 
 各コマンドは標準入力からテキストを受け取るか、必要に応じてファイルパスやテンプレートIDを引数として受け取ります。

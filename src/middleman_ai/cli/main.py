@@ -3,10 +3,8 @@
 import json
 import os
 import sys
-from typing import Any, Dict, List
 
 import click
-from click import progressbar
 
 from ..client import Placeholder, Presentation, Slide, ToolsClient
 from ..exceptions import MiddlemanBaseException
@@ -39,16 +37,18 @@ def md_to_pdf() -> None:
         print(
             f"読み込んだMarkdown ({len(markdown_text)} 文字): {markdown_text[:50]}..."
         )
-        with click.progressbar(length=1, label="PDFに変換中...", show_eta=False) as bar:  # type: Any
+        with click.progressbar(
+            length=1, label="PDFに変換中...", show_eta=False
+        ) as bar:  # type: Any
             print("APIを呼び出しています...")
             pdf_url = client.md_to_pdf(markdown_text)
             bar.update(1)
         print(f"変換結果URL: {pdf_url}")
     except MiddlemanBaseException as e:
-        print(f"エラーが発生しました: {str(e)}")
+        print(f"エラーが発生しました: {e!s}")
         raise click.ClickException(str(e)) from e
     except Exception as e:
-        print(f"予期せぬエラーが発生しました: {str(e)}")
+        print(f"予期せぬエラーが発生しました: {e!s}")
         raise
 
 
@@ -71,10 +71,10 @@ def md_to_docx() -> None:
             bar.update(1)
         print(f"変換結果URL: {docx_url}")
     except MiddlemanBaseException as e:
-        print(f"エラーが発生しました: {str(e)}")
+        print(f"エラーが発生しました: {e!s}")
         raise click.ClickException(str(e)) from e
     except Exception as e:
-        print(f"予期せぬエラーが発生しました: {str(e)}")
+        print(f"予期せぬエラーが発生しました: {e!s}")
         raise
 
 

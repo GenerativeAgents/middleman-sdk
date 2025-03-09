@@ -22,6 +22,7 @@ from .exceptions import (
 
 try:
     from importlib.metadata import version
+
     __version__ = version("middleman-ai")
 except ImportError:
     __version__ = "unknown"

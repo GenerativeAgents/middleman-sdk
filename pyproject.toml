@@ -19,15 +19,20 @@ middleman = "middleman_ai.cli.main:cli"
 
 [build-system]
 requires = ["setuptools>=64", "wheel"]
-build-backend = "setuptools.build_meta"
 
-[tool.setuptools_scm]
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
 
 [tool.ruff]
 line-length = 88
 target-version = "py38"
 lint.select = ["E", "F", "I", "N", "W", "B", "UP", "PL", "RUF"]
 lint.ignore = ["RUF001", "RUF002", "RUF022", "N818"]
+
+[tool.ruff.isort]
+known-first-party = ["middleman_ai"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -64,4 +69,5 @@ dev-dependencies = [
     "types-requests>=2.32.0.20241016",
     "vcrpy>=5.1.0",
     "wheel>=0.45.1",
+    "black>=25.1.0",
 ]

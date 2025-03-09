@@ -123,11 +123,17 @@ class ToolsClient:
             if response.status_code >= HTTP_INTERNAL_SERVER_ERROR:
                 # サーバーエラーの詳細情報をログに出力
                 logging.error(
-                    f"サーバーエラー発生: status_code={response.status_code}, url={response.url}, \n"
+                    f"サーバーエラー発生: "
+                    f"status_code={response.status_code}, "
+                    f"url={response.url}, \n"
                     f"headers={response.headers}, \n"
                     f"body={error_body if error_body else response.text[:500]}"
                 )
-                raise InternalError(f"サーバーエラー: {error_body if error_body else response.text[:500]}") from e
+                error_message = (
+                    f"サーバーエラー: "
+                    f"{error_body if error_body else response.text[:500]}"
+                )
+                raise InternalError(error_message) from e
             if response.status_code == HTTP_UNPROCESSABLE_ENTITY:
                 error_message = (
                     f"Validation error: {error_body}" if error_body else str(e)

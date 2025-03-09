@@ -122,3 +122,15 @@ def test_md_to_pdf_validation_error(
 
     with pytest.raises(ValidationError):
         client.md_to_pdf("# Test")
+
+
+def test_md_to_pdf_timeout_error(client: ToolsClient, mocker: "MockerFixture") -> None:
+    """md_to_pdf タイムアウトエラー時のテスト。"""
+    mocker.patch.object(
+        client.session,
+        "post",
+        side_effect=requests.exceptions.Timeout("Connection timed out"),
+    )
+
+    with pytest.raises(ConnectionError):
+        client.md_to_pdf("# Test")
