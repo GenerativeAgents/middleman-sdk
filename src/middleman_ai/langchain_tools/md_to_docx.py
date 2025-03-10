@@ -10,6 +10,7 @@ from middleman_ai.client import ToolsClient
 
 class MdToDocxInput(BaseModel):
     """Markdown to DOCX変換用の入力スキーマ。"""
+
     text: str = Field(
         ...,
         description="変換対象のMarkdown文字列。有効なMarkdown形式である必要があります。",

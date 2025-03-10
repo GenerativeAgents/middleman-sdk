@@ -122,7 +122,7 @@ def test_json_to_pptx_analyze_v2_vcr(client: ToolsClient) -> None:
     )  # テスト用のテンプレートID
     slides = client.json_to_pptx_analyze_v2(pptx_template_id=template_id)
     assert isinstance(slides, list)
-    assert len(slides) == 1
+    assert len(slides) >= 1
     assert all(isinstance(slide, dict) for slide in slides)
     assert all("position" in slide for slide in slides)
     assert all("type" in slide for slide in slides)

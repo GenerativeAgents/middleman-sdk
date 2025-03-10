@@ -10,6 +10,7 @@ from middleman_ai.client import ToolsClient
 
 class PdfToPageImagesInput(BaseModel):
     """PDF to Page Images変換用の入力スキーマ。"""
+
     pdf_file_path: str = Field(
         ...,
         description="変換対象のPDFファイルパス。ローカルに存在する有効なPDFファイルを指定する必要があります。",

@@ -1,6 +1,6 @@
 [project]
 name = "middleman-ai"
-version = "0.0.3"
+version = "0.0.4"
 description = "Python client SDK for Middleman.ai API"
 authors = [{ name = "Generative Agents, Inc." }]
 dependencies = [
@@ -19,15 +19,20 @@ middleman = "middleman_ai.cli.main:cli"
 
 [build-system]
 requires = ["setuptools>=64", "wheel"]
-build-backend = "setuptools.build_meta"
 
-[tool.setuptools_scm]
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
 
 [tool.ruff]
 line-length = 88
 target-version = "py38"
 lint.select = ["E", "F", "I", "N", "W", "B", "UP", "PL", "RUF"]
 lint.ignore = ["RUF001", "RUF002", "RUF022", "N818"]
+
+[tool.ruff.isort]
+known-first-party = ["middleman_ai"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -50,20 +55,19 @@ warn_unreachable = true
 plugins = ["pydantic.mypy"]
 
 [tool.uv]
-
-[project.optional-dependencies]
-dev = [
+dev-dependencies = [
     "mypy>=1.14.1",
     "pytest>=8.3.4",
-    "pytest-mock>=3.14.0",
-    "ruff>=0.9.6",
-    "python-dotenv>=1.0.1",
-    "types-requests>=2.32.0.20241016",
-    "vcrpy>=5.1.0",
     "pytest-cov>=6.0.0",
+    "pytest-mock>=3.14.0",
     "pytest-vcr>=1.0.2",
+    "python-dotenv>=1.0.1",
+    "ruff>=0.9.6",
     "setuptools>=75.8.0",
-    "wheel>=0.45.1",
     "setuptools-scm>=8.1.0",
     "twine>=6.1.0",
+    "types-requests>=2.32.0.20241016",
+    "vcrpy>=5.1.0",
+    "wheel>=0.45.1",
+    "black>=25.1.0",
 ]

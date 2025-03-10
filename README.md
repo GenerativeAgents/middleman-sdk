@@ -31,55 +31,26 @@ SDKはコマンドラインインターフェース（CLI）も提供してい�
 export MIDDLEMAN_API_KEY=your-api-key
 
 # Markdown → PDF変換
-echo "# テスト" | uvx middleman md_to_pdf
+echo "# テスト" | uvx middleman md-to-pdf
 
 # Markdown → DOCX変換
-echo "# テスト" | uvx middleman md_to_docx
+echo "# テスト" | uvx middleman md-to-docx
 
 # Markdown → PPTX変換
-echo "# テスト" | uvx middleman md_to_pptx
+echo "# テスト" | uvx middleman md-to-pptx
 
 # PDF → ページ画像変換
-uvx middleman pdf_to_page_images input.pdf
+uvx middleman pdf-to-page-images input.pdf
 
 # PPTXテンプレート解析
-uvx middleman json_to_pptx_analyze [テンプレートID]
+uvx middleman json-to-pptx-analyze [テンプレートID]
 
 # PPTXテンプレート実行
 echo '{"slides":[{"type":"title","placeholders":[{"name":"title","content":"テストタイトル"}]}]}' | \
-uvx middleman json_to_pptx_execute [テンプレートID]
+uvx middleman json-to-pptx-execute [テンプレートID]
 ```
 
 各コマンドは標準入力からテキストを受け取るか、必要に応じてファイルパスやテンプレートIDを引数として受け取ります。
-
-## LangChain との統合
-
-```python
-from langchain_core.agents import AgentExecutor
-from langchain_core.language_models import BaseLanguageModel
-from middleman_ai import ToolsClient
-from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
-
-# Middleman.aiクライアントの初期化
-client = ToolsClient(api_key="YOUR_API_KEY")
-
-# LangChainツールの設定
-md_to_pdf_tool = MdToPdfTool(client=client)
-
-# LLMの設定
-llm: BaseLanguageModel = ...  # お好みのLLMを設定
-
-# エージェントの初期化
-agent = AgentExecutor.from_agent_and_tools(
-    agent=...,  # お好みのエージェントを設定
-    tools=[md_to_pdf_tool],
-    verbose=True
-)
-
-# 自然言語でPDF生成を実行
-response = agent.invoke({"input": "以下のMarkdownテキストをPDFにして：# Title\nHello!"})
-print(f"Agent response: {response}")
-```
 
 ## 機能一覧
 

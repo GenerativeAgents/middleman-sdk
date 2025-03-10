@@ -3,12 +3,13 @@
 from unittest.mock import Mock
 
 import pytest
+from click.testing import CliRunner
 
 
 @pytest.fixture
 def runner():
     """Create a CLI runner."""
-    return pytest.CliRunner()
+    return CliRunner()
 
 
 @pytest.fixture
