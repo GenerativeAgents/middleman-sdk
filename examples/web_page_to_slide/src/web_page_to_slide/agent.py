@@ -153,7 +153,7 @@ def create_slide_agent(
     middleman_client = ToolsClient(api_key=middleman_api_key)
 
     llm = ChatAnthropic(
-        model="claude-3-5-sonnet-latest",
+        model="claude-3-7-sonnet-latest",
         temperature=0.0,
         api_key=anthropic_api_key,
     )
