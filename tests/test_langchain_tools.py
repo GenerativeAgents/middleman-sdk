@@ -13,6 +13,7 @@ from middleman_ai.langchain_tools.md_to_docx import MdToDocxTool
 from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
 from middleman_ai.langchain_tools.md_to_pptx import MdToPptxTool
 from middleman_ai.langchain_tools.pdf_to_page_images import PdfToPageImagesTool
+from middleman_ai.langchain_tools.pptx_to_page_images import PptxToPageImagesTool
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -88,6 +89,27 @@ def test_pdf_to_page_images_tool(client: ToolsClient, mocker: "MockerFixture") -
     assert "https://example.com/page1.png" in result
     assert "https://example.com/page2.png" in result
     mock_pdf_to_page_images.assert_called_once_with("/path/to/test.pdf")
+
+
+def test_pptx_to_page_images_tool(client: ToolsClient, mocker: "MockerFixture") -> None:
+    """PptxToPageImagesToolのテスト。"""
+    expected_result = [
+        {"page_no": 1, "image_url": "https://example.com/slide1.png"},
+        {"page_no": 2, "image_url": "https://example.com/slide2.png"},
+    ]
+    mock_pptx_to_page_images = mocker.patch.object(
+        client,
+        "pptx_to_page_images",
+        return_value=expected_result,
+    )
+
+    tool = PptxToPageImagesTool(client=client)
+    result = tool._run("/path/to/test.pptx")
+
+    assert isinstance(result, str)
+    assert "https://example.com/slide1.png" in result
+    assert "https://example.com/slide2.png" in result
+    mock_pptx_to_page_images.assert_called_once_with("/path/to/test.pptx")
 
 
 def test_json_to_pptx_analyze_tool_without_default_template_id(

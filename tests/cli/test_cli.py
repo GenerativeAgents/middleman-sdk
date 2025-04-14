@@ -101,3 +101,18 @@ def test_invalid_json_input(runner, mock_client):
     )
     assert result.exit_code != 0
     assert "Invalid JSON input" in result.output
+
+
+def test_pptx_to_page_images(runner, mock_client, tmp_path) -> None:
+    """Test pptx_to_page_images CLI command."""
+    mock_client.pptx_to_page_images.return_value = [
+        {"page_no": 1, "image_url": "https://example.com/slide1.png"},
+        {"page_no": 2, "image_url": "https://example.com/slide2.png"},
+    ]
+    pptx_path = tmp_path / "test.pptx"
+    pptx_path.write_bytes(b"dummy pptx content")
+    result = runner.invoke(cli, ["pptx-to-page-images", str(pptx_path)])
+    assert result.exit_code == 0
+    assert "Page 1: https://example.com/slide1.png" in result.output
+    assert "Page 2: https://example.com/slide2.png" in result.output
+    mock_client.pptx_to_page_images.assert_called_once_with(str(pptx_path))

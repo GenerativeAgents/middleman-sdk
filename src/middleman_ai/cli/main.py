@@ -37,9 +37,7 @@ def md_to_pdf() -> None:
         print(
             f"読み込んだMarkdown ({len(markdown_text)} 文字): {markdown_text[:50]}..."
         )
-        with click.progressbar(
-            length=1, label="PDFに変換中...", show_eta=False
-        ) as bar:  # type: Any
+        with click.progressbar(length=1, label="PDFに変換中...", show_eta=False) as bar:  # type: Any
             print("APIを呼び出しています...")
             pdf_url = client.md_to_pdf(markdown_text)
             bar.update(1)
@@ -104,6 +102,23 @@ def pdf_to_page_images(pdf_path: str) -> None:
             length=1, label="PDFを画像に変換中...", show_eta=False
         ) as bar:  # type: Any
             results = client.pdf_to_page_images(pdf_path)
+            bar.update(1)
+        for page in results:
+            print(f"Page {page['page_no']}: {page['image_url']}")
+    except MiddlemanBaseException as e:
+        raise click.ClickException(str(e)) from e
+
+
+@cli.command()
+@click.argument("pptx_path", type=click.Path(exists=True))
+def pptx_to_page_images(pptx_path: str) -> None:
+    """Convert PPTX pages to images."""
+    try:
+        client = ToolsClient(api_key=get_api_key())
+        with click.progressbar(
+            length=1, label="PPTXを画像に変換中...", show_eta=False
+        ) as bar:  # type: Any
+            results = client.pptx_to_page_images(pptx_path)
             bar.update(1)
         for page in results:
             print(f"Page {page['page_no']}: {page['image_url']}")

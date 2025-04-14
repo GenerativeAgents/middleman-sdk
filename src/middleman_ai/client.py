@@ -24,6 +24,7 @@ from .models import (
     MdToPdfResponse,
     MdToPptxResponse,
     PdfToPageImagesResponse,
+    PptxToPageImagesResponse,
 )
 
 # HTTPステータスコード
@@ -259,6 +260,49 @@ class ToolsClient:
             raise ValidationError(str(e)) from e
         except OSError as e:
             raise ValidationError(f"Failed to read PDF file: {e}") from e
+
+    def pptx_to_page_images(self, pptx_file_path: str) -> List[Dict[str, Any]]:
+        """PPTXファイルをアップロードしてスライドごとに画像化し、それぞれの画像URLを返します。
+
+        Args:
+            pptx_file_path: ローカルのPPTXファイルパス
+
+        Returns:
+            List[Dict[str, Any]]: [{"page_no": int, "image_url": str}, ...]
+
+        Raises:
+            ValidationError: 入力データが不正
+            その他、_handle_responseで定義される例外
+        """
+        try:
+            with open(pptx_file_path, "rb") as f:
+                files = {
+                    "pptx_file": (
+                        f.name,
+                        f.read(),
+                        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    )
+                }
+                headers = dict(self.session.headers)
+                del headers["Content-Type"]
+                # sessionを共有するとContent-Typeがapplicatoin/jsonになるので
+                # マルチパートの送信を可能にするために直接requestsを使用
+                response = requests.post(
+                    f"{self.base_url}/api/v1/tools/pptx-to-page-images",
+                    files=files,
+                    headers=headers,
+                    timeout=self.timeout,
+                )
+                data = self._handle_response(response)
+                result = PptxToPageImagesResponse.model_validate(data)
+                return [
+                    {"page_no": page.page_no, "image_url": page.image_url}
+                    for page in result.pages
+                ]
+        except PydanticValidationError as e:
+            raise ValidationError(str(e)) from e
+        except OSError as e:
+            raise ValidationError(f"Failed to read PPTX file: {e}") from e
 
     def json_to_pptx_analyze_v2(self, pptx_template_id: str) -> List[Dict[str, Any]]:
         """PPTXテンプレートの構造を解析します。
