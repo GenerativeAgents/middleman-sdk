@@ -168,3 +168,21 @@ def test_json_to_pptx_execute_v2_vcr(client: ToolsClient) -> None:
     assert pptx_url.startswith("https://")
     assert "json-to-pptx" in pptx_url
     assert "blob.core.windows.net" in pptx_url
+
+
+@pytest.mark.vcr(match_on=["method", "scheme", "host", "port", "path", "query"])
+def test_pptx_to_page_images_vcr(client: ToolsClient) -> None:
+    """ToolsClient.pptx_to_page_imagesの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    pptx_file_path = "tests/data/test.pptx"
+    pages = client.pptx_to_page_images(pptx_file_path=pptx_file_path)
+    assert isinstance(pages, list)
+    assert len(pages) > 0
+    assert all(isinstance(page, dict) for page in pages)
+    assert all("page_no" in page and "image_url" in page for page in pages)
+    assert all(page["image_url"].startswith("https://") for page in pages)
+    assert all("blob.core.windows.net" in page["image_url"] for page in pages)

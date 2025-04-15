@@ -16,6 +16,7 @@ from middleman_ai.langchain_tools.md_to_docx import MdToDocxTool
 from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
 from middleman_ai.langchain_tools.md_to_pptx import MdToPptxTool
 from middleman_ai.langchain_tools.pdf_to_page_images import PdfToPageImagesTool
+from middleman_ai.langchain_tools.pptx_to_page_images import PptxToPageImagesTool
 
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest  # noqa: F401
@@ -204,4 +205,25 @@ def test_json_to_pptx_execute_tool_vcr(client: ToolsClient) -> None:
     assert isinstance(result, str)
     assert result.startswith("https://")
     assert "json-to-pptx" in result
+    assert "blob.core.windows.net" in result
+
+
+@pytest.mark.vcr(match_on=["method", "scheme", "host", "port", "path", "query"])
+def test_pptx_to_page_images_tool_vcr(client: ToolsClient) -> None:
+    """PptxToPageImagesToolの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+
+    Args:
+        client: テスト用のクライアントインスタンス
+    """
+    pptx_path = "tests/data/test.pptx"
+
+    tool = PptxToPageImagesTool(client=client)
+    result = tool._run(pptx_path)
+
+    assert isinstance(result, str)
+    assert "pptx-to-page-images" in result
     assert "blob.core.windows.net" in result

@@ -64,3 +64,12 @@ class JsonToPptxExecuteResponse(BaseModel):
     important_remark_for_user: Optional[str] = Field(
         None, description="ユーザーへの重要な注意事項"
     )
+
+
+class PptxToPageImagesResponse(BaseModel):
+    """PPTX → ページ画像変換のレスポンスモデル。"""
+
+    pages: List[PageImage] = Field(..., description="各スライドの画像情報")
+    important_remark_for_user: Optional[str] = Field(
+        None, description="ユーザーへの重要な注意事項"
+    )

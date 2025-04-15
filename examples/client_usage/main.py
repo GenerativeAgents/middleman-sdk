@@ -27,6 +27,12 @@ def main() -> None:
     for page in images:
         print(f"Page {page['page_no']}: {page['image_url']}")
 
+    # PPTX → Page Images
+    images = client.pptx_to_page_images("sample.pptx")
+    print("Generated image URLs:")
+    for page in images:
+        print(f"Page {page['page_no']}: {page['image_url']}")
+
     # JSON → PPTX (analyze)
     template_id = os.getenv("MIDDLEMAN_TEMPLATE_ID", "")
     slides = client.json_to_pptx_analyze_v2(template_id)
