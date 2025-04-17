@@ -65,7 +65,7 @@ Claude Desktop アプリケーションの`claude_desktop_config.json`を以下�
   "mcpServers": {
     "middleman": {
       "command": "uvx",
-      "args": ["middleman-ai", "mcp"],
+      "args": ["--from", "middleman-ai", "mcp"],
       "env": {
         "MIDDLEMAN_API_KEY": "xxxxx"
       }

@@ -173,9 +173,14 @@ def json_to_pptx_execute(template_id: str) -> None:
         raise click.ClickException(str(e)) from e
 
 
-@cli.command()
+@click.command()
 def mcp() -> None:
-    """Run MCP server."""
+    """Run MCP server as a standalone command."""
+    _run_mcp_server()
+
+
+def _run_mcp_server() -> None:
+    """Internal function to run MCP server."""
     print("MCP server is running (transport: stdio)...")
 
     api_key = os.getenv("MIDDLEMAN_API_KEY", "")
