@@ -173,6 +173,27 @@ def json_to_pptx_execute(template_id: str) -> None:
         raise click.ClickException(str(e)) from e
 
 
+@cli.group()
+def mcp() -> None:
+    """Middleman MCP CLI tools."""
+    print("Middleman MCP CLI tools を起動しています...")
+    pass
+
+
+@mcp.command(name="server")
+def mcp_server() -> None:
+    """MCPサーバーをstdioトランスポートで実行します。"""
+    print("MCPサーバーを実行しています（トランスポート: stdio）...")
+
+    api_key = os.getenv("MIDDLEMAN_API_KEY", "")
+    if not api_key:
+        print("警告: MIDDLEMAN_API_KEY環境変数が設定されていません。")
+        print("一部の機能が正常に動作しない可能性があります。")
+
+    from ..mcp.server import run_server
+    run_server(transport="stdio")
+
+
 # モジュールとして実行された場合のエントリーポイント
 if __name__ == "__main__":
     cli()

@@ -58,7 +58,41 @@ uvx middleman json-to-pptx-execute [テンプレートID]
 - Markdown → DOCX 変換
 - Markdown → PPTX 変換
 - PDF → ページ画像変換
+- PPTX → ページ画像変換
 - JSON → PPTX 変換（テンプレート解析・実行）
+
+## MCP Server
+
+Middleman SDKはMCPサーバーを提供し、Claude Desktopアプリケーションなどから利用できます。
+
+### 使用方法
+
+```bash
+# MCPサーバーを起動
+uvx middleman-ai mcp server
+```
+
+### Claude Desktop設定
+
+Claude Desktopアプリケーションの`claude_desktop_config.json`を以下のように設定します：
+
+```json
+{
+  "mcpServers": {
+    "middleman": {
+      "command": "uvx",
+      "args": [
+        "middleman-ai",
+        "mcp",
+        "server"
+      ],
+      "env": {
+        "MIDDLEMAN_API_KEY": "xxxxx"
+      }
+    }
+  }
+}
+```
 
 ## エラーハンドリング
 
