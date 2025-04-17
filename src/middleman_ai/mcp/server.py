@@ -12,14 +12,10 @@ from mcp.server.fastmcp import FastMCP
 from middleman_ai import ToolsClient
 from middleman_ai.client import Placeholder, Presentation, Slide
 
-print("Creating FastMCP instance...", file=sys.stderr)
 mcp = FastMCP("Middleman Tools")
-print("FastMCP instance created", file=sys.stderr)
 
 api_key = os.environ.get("MIDDLEMAN_API_KEY", "")
-print(f"API Key: {'Set' if api_key else 'Not set'}", file=sys.stderr)
 client = ToolsClient(api_key=api_key)
-print("ToolsClient instance created", file=sys.stderr)
 
 
 @mcp.tool()

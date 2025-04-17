@@ -175,16 +175,16 @@ def json_to_pptx_execute(template_id: str) -> None:
 
 @cli.command()
 def mcp() -> None:
-    """MCPサーバーをstdioトランスポートで実行します。"""
-    print("MCPサーバーを実行しています（トランスポート: stdio）...")
+    """Run MCP server."""
+    print("MCP server is running (transport: stdio)...")
 
     api_key = os.getenv("MIDDLEMAN_API_KEY", "")
     if not api_key:
-        print("警告: MIDDLEMAN_API_KEY環境変数が設定されていません。")
-        print("一部の機能が正常に動作しない可能性があります。")
+        print("Warning: MIDDLEMAN_API_KEY environment variable is not set.")
 
     from ..mcp.server import run_server
-    run_server(transport="stdio")
+
+    run_server()
 
 
 # モジュールとして実行された場合のエントリーポイント
