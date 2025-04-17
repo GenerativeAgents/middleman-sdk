@@ -14,6 +14,8 @@ uv run ruff check .
 
 ### MCP サーバー実行
 
+Claude Desktop アプリケーションの`claude_desktop_config.json`を以下のように設定します：
+
 ```json
 {
   "mcpServers": {
@@ -21,7 +23,7 @@ uv run ruff check .
       "command": "/path/to/python",
       "args": ["/path/to/middleman_ai/mcp/server.py"],
       "env": {
-        "MIDDLEMAN_API_KEY": "xxx"
+        "MIDDLEMAN_API_KEY": "xxxxx"
       }
     }
   }

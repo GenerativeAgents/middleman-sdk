@@ -22,9 +22,9 @@ pdf_url = client.md_to_pdf(markdown_text)
 print(f"Generated PDF URL: {pdf_url}")
 ```
 
-## CLIの使用方法
+## CLI の使用方法
 
-SDKはコマンドラインインターフェース（CLI）も提供しています。UVを使用して以下のように実行できます：
+SDK はコマンドラインインターフェース（CLI）も提供しています。UV を使用して以下のように実行できます：
 
 ```bash
 # APIキーの設定
@@ -50,7 +50,29 @@ echo '{"slides":[{"type":"title","placeholders":[{"name":"title","content":"テ�
 uvx middleman json-to-pptx-execute [テンプレートID]
 ```
 
-各コマンドは標準入力からテキストを受け取るか、必要に応じてファイルパスやテンプレートIDを引数として受け取ります。
+各コマンドは標準入力からテキストを受け取るか、必要に応じてファイルパスやテンプレート ID を引数として受け取ります。
+
+## MCP Server
+
+Middleman SDK は MCP サーバーを提供し、Claude Desktop アプリケーションなどから利用できます。
+
+### Claude Desktop 設定
+
+Claude Desktop アプリケーションの`claude_desktop_config.json`を以下のように設定します：
+
+```json
+{
+  "mcpServers": {
+    "middleman": {
+      "command": "uvx",
+      "args": ["middleman-ai", "mcp"],
+      "env": {
+        "MIDDLEMAN_API_KEY": "xxxxx"
+      }
+    }
+  }
+}
+```
 
 ## 機能一覧
 
@@ -60,38 +82,6 @@ uvx middleman json-to-pptx-execute [テンプレートID]
 - PDF → ページ画像変換
 - PPTX → ページ画像変換
 - JSON → PPTX 変換（テンプレート解析・実行）
-
-## MCP Server
-
-Middleman SDKはMCPサーバーを提供し、Claude Desktopアプリケーションなどから利用できます。
-
-### 使用方法
-
-```bash
-# MCPサーバーを起動
-uvx middleman-ai mcp
-```
-
-### Claude Desktop設定
-
-Claude Desktopアプリケーションの`claude_desktop_config.json`を以下のように設定します：
-
-```json
-{
-  "mcpServers": {
-    "middleman": {
-      "command": "uvx",
-      "args": [
-        "middleman-ai",
-        "mcp"
-      ],
-      "env": {
-        "MIDDLEMAN_API_KEY": "xxxxx"
-      }
-    }
-  }
-}
-```
 
 ## エラーハンドリング
 
