@@ -1,26 +1,16 @@
-import sys
 import os
-from typing import List, Dict, Any, Literal
+import sys
+from typing import Any, Dict, List, Literal
 
 print("Starting server.py...", file=sys.stderr)
 print(f"Python version: {sys.version}", file=sys.stderr)
 print(f"Python executable: {sys.executable}", file=sys.stderr)
 print(f"Current directory: {os.getcwd()}", file=sys.stderr)
 
-try:
-    from mcp.server.fastmcp import FastMCP
-    print("Successfully imported FastMCP", file=sys.stderr)
-except ImportError as e:
-    print(f"Error importing FastMCP: {e}", file=sys.stderr)
-    sys.exit(1)
+from mcp.server.fastmcp import FastMCP
 
-try:
-    from middleman_ai import ToolsClient
-    from middleman_ai.client import Presentation, Slide, Placeholder
-    print("Successfully imported ToolsClient and models", file=sys.stderr)
-except ImportError as e:
-    print(f"Error importing ToolsClient: {e}", file=sys.stderr)
-    sys.exit(1)
+from middleman_ai import ToolsClient
+from middleman_ai.client import Placeholder, Presentation, Slide
 
 print("Creating FastMCP instance...", file=sys.stderr)
 mcp = FastMCP("Middleman Tools")
@@ -128,22 +118,16 @@ def json_to_pptx_execute(pptx_template_id: str, slides: List[Dict[str, Any]]) ->
     return client.json_to_pptx_execute_v2(pptx_template_id, presentation)
 
 
-def run_server(transport: Literal["stdio", "sse"] = "stdio"):
+def run_server() -> None:
     """
     MCPサーバーを実行します。
 
     Args:
         transport: 使用するトランスポート方式（"stdio", "sse"）
     """
-    print(f"Starting MCP server with transport: {transport}", file=sys.stderr)
-    try:
-        mcp.run(transport=transport)
-    except Exception as e:
-        print(f"Error running MCP server: {e}", file=sys.stderr)
-        import traceback
-        traceback.print_exc(file=sys.stderr)
-        sys.exit(1)
+    mcp.run(transport="stdio")
+
 
 if __name__ == "__main__":
     print("Running server.py as main script", file=sys.stderr)
-    run_server(transport="stdio")
+    run_server()

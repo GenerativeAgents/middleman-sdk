@@ -12,6 +12,22 @@ uv run pytest
 uv run ruff check .
 ```
 
+### MCP サーバー実行
+
+```json
+{
+  "mcpServers": {
+    "middleman": {
+      "command": "/path/to/python",
+      "args": ["/path/to/middleman_ai/mcp/server.py"],
+      "env": {
+        "MIDDLEMAN_API_KEY": "xxx"
+      }
+    }
+  }
+}
+```
+
 ## 配布
 
 事前に PyPI アカウントを作成し、`~/.pypirc`に以下を記述。
