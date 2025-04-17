@@ -20,7 +20,7 @@ def runner():
 
 def test_mcp_command(runner, mocker: "MockerFixture"):
     """mcpコマンドのテスト。"""
-    mock_run_server = mocker.patch("middleman_ai.cli.main.run_server")
+    mock_run_server = mocker.patch("middleman_ai.mcp.server.run_server")
     
     mocker.patch("os.getenv", return_value="mock_api_key")
     
