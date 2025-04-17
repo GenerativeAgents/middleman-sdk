@@ -69,7 +69,7 @@ Middleman SDKはMCPサーバーを提供し、Claude Desktopアプリケーシ�
 
 ```bash
 # MCPサーバーを起動
-uvx middleman-ai mcp server
+uvx middleman-ai mcp
 ```
 
 ### Claude Desktop設定
@@ -83,8 +83,7 @@ Claude Desktopアプリケーションの`claude_desktop_config.json`を以下�
       "command": "uvx",
       "args": [
         "middleman-ai",
-        "mcp",
-        "server"
+        "mcp"
       ],
       "env": {
         "MIDDLEMAN_API_KEY": "xxxxx"

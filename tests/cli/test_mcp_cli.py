@@ -24,7 +24,7 @@ def test_mcp_command(runner, mocker: "MockerFixture"):
     
     mocker.patch("os.getenv", return_value="mock_api_key")
     
-    result = runner.invoke(cli, ["mcp", "server"])
+    result = runner.invoke(cli, ["mcp"])
     
     assert result.exit_code == 0
     

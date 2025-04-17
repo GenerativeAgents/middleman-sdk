@@ -173,15 +173,8 @@ def json_to_pptx_execute(template_id: str) -> None:
         raise click.ClickException(str(e)) from e
 
 
-@cli.group()
+@cli.command()
 def mcp() -> None:
-    """Middleman MCP CLI tools."""
-    print("Middleman MCP CLI tools を起動しています...")
-    pass
-
-
-@mcp.command(name="server")
-def mcp_server() -> None:
     """MCPサーバーをstdioトランスポートで実行します。"""
     print("MCPサーバーを実行しています（トランスポート: stdio）...")
 
