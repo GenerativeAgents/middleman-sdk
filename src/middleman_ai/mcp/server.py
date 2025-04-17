@@ -1,13 +1,35 @@
-from mcp.server.fastmcp import FastMCP
-from middleman_ai import ToolsClient
-from middleman_ai.client import Presentation, Slide, Placeholder
+import sys
 import os
 from typing import List, Dict, Any, Literal
 
+print("Starting server.py...", file=sys.stderr)
+print(f"Python version: {sys.version}", file=sys.stderr)
+print(f"Python executable: {sys.executable}", file=sys.stderr)
+print(f"Current directory: {os.getcwd()}", file=sys.stderr)
+
+try:
+    from mcp.server.fastmcp import FastMCP
+    print("Successfully imported FastMCP", file=sys.stderr)
+except ImportError as e:
+    print(f"Error importing FastMCP: {e}", file=sys.stderr)
+    sys.exit(1)
+
+try:
+    from middleman_ai import ToolsClient
+    from middleman_ai.client import Presentation, Slide, Placeholder
+    print("Successfully imported ToolsClient and models", file=sys.stderr)
+except ImportError as e:
+    print(f"Error importing ToolsClient: {e}", file=sys.stderr)
+    sys.exit(1)
+
+print("Creating FastMCP instance...", file=sys.stderr)
 mcp = FastMCP("Middleman Tools")
+print("FastMCP instance created", file=sys.stderr)
 
 api_key = os.environ.get("MIDDLEMAN_API_KEY", "")
+print(f"API Key: {'Set' if api_key else 'Not set'}", file=sys.stderr)
 client = ToolsClient(api_key=api_key)
+print("ToolsClient instance created", file=sys.stderr)
 
 
 @mcp.tool()
@@ -113,4 +135,15 @@ def run_server(transport: Literal["stdio", "sse"] = "stdio"):
     Args:
         transport: 使用するトランスポート方式（"stdio", "sse"）
     """
-    mcp.run(transport=transport)
+    print(f"Starting MCP server with transport: {transport}", file=sys.stderr)
+    try:
+        mcp.run(transport=transport)
+    except Exception as e:
+        print(f"Error running MCP server: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(1)
+
+if __name__ == "__main__":
+    print("Running server.py as main script", file=sys.stderr)
+    run_server(transport="stdio")
