@@ -1,16 +1,17 @@
 import os
 import sys
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List
+
+from mcp.server.fastmcp import FastMCP
+
+from middleman_ai import ToolsClient
+from middleman_ai.client import Placeholder, Presentation, Slide
 
 print("Starting server.py...", file=sys.stderr)
 print(f"Python version: {sys.version}", file=sys.stderr)
 print(f"Python executable: {sys.executable}", file=sys.stderr)
 print(f"Current directory: {os.getcwd()}", file=sys.stderr)
 
-from mcp.server.fastmcp import FastMCP
-
-from middleman_ai import ToolsClient
-from middleman_ai.client import Placeholder, Presentation, Slide
 
 mcp = FastMCP("Middleman Tools")
 
@@ -19,17 +20,19 @@ client = ToolsClient(api_key=api_key)
 
 
 @mcp.tool()
-def md_to_pdf(markdown_text: str) -> str:
+def md_to_pdf(markdown_text: str, pdf_template_id: str | None = None) -> str:
     """
     Convert Markdown text to PDF and return the download URL.
 
     Args:
         markdown_text: The Markdown text to convert
+        pdf_template_id: Optional ID of the PDF template to use.
+                         if not provided, the default template will be used
 
     Returns:
         The URL to download the generated PDF
     """
-    return client.md_to_pdf(markdown_text)
+    return client.md_to_pdf(markdown_text, pdf_template_id=pdf_template_id)
 
 
 @mcp.tool()
@@ -44,20 +47,6 @@ def md_to_docx(markdown_text: str) -> str:
         The URL to download the generated DOCX
     """
     return client.md_to_docx(markdown_text)
-
-
-@mcp.tool()
-def md_to_pptx(markdown_text: str) -> str:
-    """
-    Convert Markdown text to PPTX and return the download URL.
-
-    Args:
-        markdown_text: The Markdown text to convert
-
-    Returns:
-        The URL to download the generated PPTX
-    """
-    return client.md_to_pptx(markdown_text)
 
 
 @mcp.tool()

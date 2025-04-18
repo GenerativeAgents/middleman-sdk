@@ -46,6 +46,31 @@ def test_md_to_pdf_vcr(client: ToolsClient) -> None:
 
 
 @pytest.mark.vcr()
+def test_md_to_pdf_with_template_id_vcr(client: ToolsClient) -> None:
+    """ToolsClient.md_to_pdfの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    test_markdown = """# Test Heading
+
+    This is a test markdown document.
+
+    ## Section 1
+    - Item 1
+    - Item 2
+    """
+    pdf_url = client.md_to_pdf(
+        markdown_text=test_markdown,
+        pdf_template_id="00000000-0000-0000-0000-000000000001",
+    )
+    assert pdf_url.startswith("https://")
+    assert "md-to-pdf" in pdf_url
+    assert "blob.core.windows.net" in pdf_url
+
+
+@pytest.mark.vcr()
 def test_md_to_docx_vcr(client: ToolsClient) -> None:
     """ToolsClient.md_to_docxの実際のAPIを使用したテスト。
 
@@ -65,28 +90,6 @@ def test_md_to_docx_vcr(client: ToolsClient) -> None:
     assert docx_url.startswith("https://")
     assert "md-to-docx" in docx_url
     assert "blob.core.windows.net" in docx_url
-
-
-@pytest.mark.vcr()
-def test_md_to_pptx_vcr(client: ToolsClient) -> None:
-    """ToolsClient.md_to_pptxの実際のAPIを使用したテスト。
-
-    Note:
-        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
-        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
-    """
-    test_markdown = """# Test Heading
-
-    This is a test markdown document.
-
-    ## Section 1
-    - Item 1
-    - Item 2
-    """
-    pptx_url = client.md_to_pptx(markdown_text=test_markdown)
-    assert pptx_url.startswith("https://")
-    assert "md-to-pptx" in pptx_url
-    assert "blob.core.windows.net" in pptx_url
 
 
 # マルチパートの場合リクエストごとにファイルがどこで分割されるかが異なるようなので

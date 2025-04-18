@@ -1,0 +1,41 @@
+interactions:
+- request:
+    body: '{"markdown": "# Test Heading\n\n    This is a test markdown document.\n\n    ##
+      Section 1\n    - Item 1\n    - Item 2\n    ", "pdf_template_id": "00000000-0000-0000-0000-000000000001"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '184'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v1/tools/md-to-pdf
+  response:
+    body:
+      string: '{"error_code":"UNAUTHORIZED","message":"Unauthorized"}'
+    headers:
+      content-length:
+      - '54'
+      content-type:
+      - application/json
+      date:
+      - Fri, 18 Apr 2025 03:30:32 GMT
+      server:
+      - uvicorn
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v1/tools/md-to-pdf
+    status:
+      code: 401
+      message: Unauthorized
+version: 1

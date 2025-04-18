@@ -1,3 +1,5 @@
+# mypy: disable-error-code="no-untyped-def"
+
 """Tests for the CLI implementation."""
 
 import json
@@ -17,7 +19,7 @@ def test_md_to_pdf(runner, mock_client):
     result = runner.invoke(cli, ["md-to-pdf"], input="# Test")
     assert result.exit_code == 0
     assert "https://example.com/test.pdf" in result.output
-    mock_client.md_to_pdf.assert_called_once_with("# Test")
+    mock_client.md_to_pdf.assert_called_once_with("# Test", pdf_template_id=None)
 
 
 def test_md_to_docx(runner, mock_client):
@@ -27,15 +29,6 @@ def test_md_to_docx(runner, mock_client):
     assert result.exit_code == 0
     assert "https://example.com/test.docx" in result.output
     mock_client.md_to_docx.assert_called_once_with("# Test")
-
-
-def test_md_to_pptx(runner, mock_client):
-    """Test md_to_pptx CLI command."""
-    mock_client.md_to_pptx.return_value = "https://example.com/test.pptx"
-    result = runner.invoke(cli, ["md-to-pptx"], input="# Test")
-    assert result.exit_code == 0
-    assert "https://example.com/test.pptx" in result.output
-    mock_client.md_to_pptx.assert_called_once_with("# Test")
 
 
 def test_pdf_to_page_images(runner, mock_client, tmp_path):
