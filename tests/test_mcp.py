@@ -4,7 +4,17 @@ from typing import TYPE_CHECKING
 
 from mcp.server.fastmcp import FastMCP
 
-from middleman_ai.mcp.server import mcp, md_to_docx, md_to_pdf, md_to_pptx, pdf_to_page_images, pptx_to_page_images, docx_to_page_images, json_to_pptx_analyze, json_to_pptx_execute, run_server
+from middleman_ai.mcp.server import (
+    docx_to_page_images,
+    json_to_pptx_analyze,
+    json_to_pptx_execute,
+    mcp,
+    md_to_docx,
+    md_to_pdf,
+    pdf_to_page_images,
+    pptx_to_page_images,
+    run_server,
+)
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -24,7 +34,7 @@ def test_md_to_pdf_tool(mocker: "MockerFixture") -> None:
     result = md_to_pdf("# Test")
 
     assert result == "https://example.com/test.pdf"
-    mock_client.md_to_pdf.assert_called_once_with("# Test")
+    mock_client.md_to_pdf.assert_called_once_with("# Test", pdf_template_id=None)
 
 
 def test_md_to_docx_tool(mocker: "MockerFixture") -> None:
@@ -64,6 +74,17 @@ def test_docx_to_page_images_tool(mocker: "MockerFixture") -> None:
 
     result = docx_to_page_images("/path/to/test.docx")
 
+    assert result == expected_result
+    mock_client.docx_to_page_images.assert_called_once_with("/path/to/test.docx")
+
+
+def test_run_server(mocker: "MockerFixture") -> None:
+    """run_serverのテスト。"""
+    mock_mcp = mocker.patch("middleman_ai.mcp.server.mcp")
+
+    run_server()
+
+    mock_mcp.run.assert_called_once_with(transport="stdio")
     assert result == expected_result
     mock_client.docx_to_page_images.assert_called_once_with("/path/to/test.docx")
 

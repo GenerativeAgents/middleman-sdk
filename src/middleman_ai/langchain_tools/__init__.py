@@ -6,7 +6,6 @@
 from .json_to_pptx import JsonToPptxAnalyzeTool, JsonToPptxExecuteTool
 from .md_to_docx import MdToDocxTool
 from .md_to_pdf import MdToPdfTool
-from .md_to_pptx import MdToPptxTool
 from .pdf_to_page_images import PdfToPageImagesTool
 from .pptx_to_page_images import PptxToPageImagesTool
 
@@ -15,7 +14,6 @@ __all__ = [
     "JsonToPptxExecuteTool",
     "MdToDocxTool",
     "MdToPdfTool",
-    "MdToPptxTool",
     "PdfToPageImagesTool",
     "PptxToPageImagesTool",
 ]

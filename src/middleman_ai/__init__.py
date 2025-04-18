@@ -4,7 +4,6 @@
 主な機能：
 - Markdown → PDF変換
 - Markdown → DOCX変換
-- Markdown → PPTX変換
 - PDF → ページ画像変換
 - JSON → PPTX変換（テンプレート解析・実行）
 """

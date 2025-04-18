@@ -22,7 +22,6 @@ from .models import (
     JsonToPptxExecuteResponse,
     MdToDocxResponse,
     MdToPdfResponse,
-    MdToPptxResponse,
     PdfToPageImagesResponse,
     PptxToPageImagesResponse,
     DocxToPageImagesResponse,
@@ -147,7 +146,7 @@ class ToolsClient:
         except json.JSONDecodeError as e:
             raise ValidationError("Invalid JSON response") from e
 
-    def md_to_pdf(self, markdown_text: str) -> str:
+    def md_to_pdf(self, markdown_text: str, pdf_template_id: str | None = None) -> str:
         """Markdown文字列をPDFに変換し、PDFのダウンロードURLを返します。
 
         Args:
@@ -163,7 +162,10 @@ class ToolsClient:
         try:
             response = self.session.post(
                 f"{self.base_url}/api/v1/tools/md-to-pdf",
-                json={"markdown": markdown_text},
+                json={
+                    "markdown": markdown_text,
+                    "pdf_template_id": pdf_template_id,
+                },
                 timeout=self.timeout,
             )
             data = self._handle_response(response)
@@ -196,31 +198,6 @@ class ToolsClient:
             data = self._handle_response(response)
             result = MdToDocxResponse.model_validate(data)
             return result.docx_url
-        except PydanticValidationError as e:
-            raise ValidationError(str(e)) from e
-
-    def md_to_pptx(self, markdown_text: str) -> str:
-        """Markdown文字列をPPTXに変換し、PPTXのダウンロードURLを返します。
-
-        Args:
-            markdown_text: 変換対象のMarkdown文字列
-
-        Returns:
-            str: 生成されたPPTXのURL
-
-        Raises:
-            ValidationError: 入力データが不正
-            その他、_handle_responseで定義される例外
-        """
-        try:
-            response = self.session.post(
-                f"{self.base_url}/api/v1/tools/md-to-pptx",
-                json={"markdown": markdown_text},
-                timeout=self.timeout,
-            )
-            data = self._handle_response(response)
-            result = MdToPptxResponse.model_validate(data)
-            return result.pptx_url
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
 

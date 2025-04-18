@@ -18,7 +18,7 @@ client = ToolsClient(api_key="YOUR_API_KEY")
 
 # Markdown → PDF変換
 markdown_text = "# Sample\nThis is a test."
-pdf_url = client.md_to_pdf(markdown_text)
+pdf_url = client.md_to_pdf(markdown_text, pdf_template_id="template-uuid")
 print(f"Generated PDF URL: {pdf_url}")
 ```
 
@@ -31,13 +31,10 @@ SDK はコマンドラインインターフェース（CLI）も提供してい�
 export MIDDLEMAN_API_KEY=your-api-key
 
 # Markdown → PDF変換
-echo "# テスト" | uvx middleman md-to-pdf
+echo "# テスト" | uvx middleman md-to-pdf [テンプレートID]
 
 # Markdown → DOCX変換
 echo "# テスト" | uvx middleman md-to-docx
-
-# Markdown → PPTX変換
-echo "# テスト" | uvx middleman md-to-pptx
 
 # PDF → ページ画像変換
 uvx middleman pdf-to-page-images input.pdf
@@ -73,15 +70,6 @@ Claude Desktop アプリケーションの`claude_desktop_config.json`を以下�
   }
 }
 ```
-
-## 機能一覧
-
-- Markdown → PDF 変換
-- Markdown → DOCX 変換
-- Markdown → PPTX 変換
-- PDF → ページ画像変換
-- PPTX → ページ画像変換
-- JSON → PPTX 変換（テンプレート解析・実行）
 
 ## エラーハンドリング
 

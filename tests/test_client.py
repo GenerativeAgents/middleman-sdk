@@ -62,7 +62,29 @@ def test_md_to_pdf_success(
     assert result == "https://example.com/test.pdf"
     mock_post.assert_called_once_with(
         "https://middleman-ai.com/api/v1/tools/md-to-pdf",
-        json={"markdown": "# Test"},
+        json={"markdown": "# Test", "pdf_template_id": None},
+        timeout=30.0,
+    )
+
+
+def test_md_to_pdf_success_with_template_id(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """md_to_pdf成功時のテスト。"""
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    result = client.md_to_pdf(
+        "# Test",
+        pdf_template_id="00000000-0000-0000-0000-000000000001",
+    )
+
+    assert result == "https://example.com/test.pdf"
+    mock_post.assert_called_once_with(
+        "https://middleman-ai.com/api/v1/tools/md-to-pdf",
+        json={
+            "markdown": "# Test",
+            "pdf_template_id": "00000000-0000-0000-0000-000000000001",
+        },
         timeout=30.0,
     )
 
