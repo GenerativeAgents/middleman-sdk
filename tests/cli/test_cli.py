@@ -109,3 +109,18 @@ def test_pptx_to_page_images(runner, mock_client, tmp_path) -> None:
     assert "Page 1: https://example.com/slide1.png" in result.output
     assert "Page 2: https://example.com/slide2.png" in result.output
     mock_client.pptx_to_page_images.assert_called_once_with(str(pptx_path))
+
+
+def test_docx_to_page_images(runner, mock_client, tmp_path) -> None:
+    """Test docx_to_page_images CLI command."""
+    mock_client.docx_to_page_images.return_value = [
+        {"page_no": 1, "image_url": "https://example.com/page1.png"},
+        {"page_no": 2, "image_url": "https://example.com/page2.png"},
+    ]
+    docx_path = tmp_path / "test.docx"
+    docx_path.write_bytes(b"dummy docx content")
+    result = runner.invoke(cli, ["docx-to-page-images", str(docx_path)])
+    assert result.exit_code == 0
+    assert "Page 1: https://example.com/page1.png" in result.output
+    assert "Page 2: https://example.com/page2.png" in result.output
+    mock_client.docx_to_page_images.assert_called_once_with(str(docx_path))
