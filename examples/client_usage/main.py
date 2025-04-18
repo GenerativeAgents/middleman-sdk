@@ -30,6 +30,12 @@ def main() -> None:
     for page in images:
         print(f"Page {page['page_no']}: {page['image_url']}")
 
+    # DOCX → Page Images
+    images = client.docx_to_page_images("sample.docx")
+    print("Generated image URLs:")
+    for page in images:
+        print(f"Page {page['page_no']}: {page['image_url']}")
+
     # JSON → PPTX (analyze)
     pptx_template_id = os.getenv("MIDDLEMAN_PPTX_TEMPLATE_ID", "")
     slides = client.json_to_pptx_analyze_v2(pptx_template_id)
