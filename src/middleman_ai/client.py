@@ -24,6 +24,7 @@ from .models import (
     MdToPdfResponse,
     PdfToPageImagesResponse,
     PptxToPageImagesResponse,
+    DocxToPageImagesResponse,
 )
 
 # HTTPステータスコード
@@ -280,6 +281,49 @@ class ToolsClient:
             raise ValidationError(str(e)) from e
         except OSError as e:
             raise ValidationError(f"Failed to read PPTX file: {e}") from e
+            
+    def docx_to_page_images(self, docx_file_path: str) -> List[Dict[str, Any]]:
+        """DOCXファイルをアップロードしてページごとに画像化し、それぞれの画像URLを返します。
+
+        Args:
+            docx_file_path: ローカルのDOCXファイルパス
+
+        Returns:
+            List[Dict[str, Any]]: [{"page_no": int, "image_url": str}, ...]
+
+        Raises:
+            ValidationError: 入力データが不正
+            その他、_handle_responseで定義される例外
+        """
+        try:
+            with open(docx_file_path, "rb") as f:
+                files = {
+                    "docx_file": (
+                        f.name,
+                        f.read(),
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    )
+                }
+                headers = dict(self.session.headers)
+                del headers["Content-Type"]
+                # sessionを共有するとContent-Typeがapplicatoin/jsonになるので
+                # マルチパートの送信を可能にするために直接requestsを使用
+                response = requests.post(
+                    f"{self.base_url}/api/v1/tools/docx-to-page-images",
+                    files=files,
+                    headers=headers,
+                    timeout=self.timeout,
+                )
+                data = self._handle_response(response)
+                result = DocxToPageImagesResponse.model_validate(data)
+                return [
+                    {"page_no": page.page_no, "image_url": page.image_url}
+                    for page in result.pages
+                ]
+        except PydanticValidationError as e:
+            raise ValidationError(str(e)) from e
+        except OSError as e:
+            raise ValidationError(f"Failed to read DOCX file: {e}") from e
 
     def json_to_pptx_analyze_v2(self, pptx_template_id: str) -> List[Dict[str, Any]]:
         """PPTXテンプレートの構造を解析します。
