@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: !!binary |
-      LS05YzQ2MzIwNmZmODRjNGRlMjNjNmE1Nzg0ZjhhMTEwNg0KQ29udGVudC1EaXNwb3NpdGlvbjog
+      LS1jN2IxOGI0MzU4MTViOWY3NjI2NmNmYjE0MjE2NjE2MQ0KQ29udGVudC1EaXNwb3NpdGlvbjog
       Zm9ybS1kYXRhOyBuYW1lPSJwcHR4X2ZpbGUiOyBmaWxlbmFtZT0idGVzdHMvZGF0YS90ZXN0LnBw
       dHgiDQpDb250ZW50LVR5cGU6IGFwcGxpY2F0aW9uL3ZuZC5vcGVueG1sZm9ybWF0cy1vZmZpY2Vk
       b2N1bWVudC5wcmVzZW50YXRpb25tbC5wcmVzZW50YXRpb24NCg0KUEsDBBQACAgIANSbTFoAAAAA
@@ -438,7 +438,7 @@ interactions:
       TAABAADmAQAADAAAAAAAAAAAAAAAAABDRAAAcHB0L21ldGFkYXRhUEsBAhQAFAAICAgA1JtMWrOC
       ZhAKEQAApUIAABQAAAAAAAAAAAAAAAAAfUUAAHBwdC9tZWRpYS9pbWFnZTEucG5nUEsBAhQAFAAI
       CAgA1JtMWmLQchyaAQAA+ggAABMAAAAAAAAAAAAAAAAAyVYAAFtDb250ZW50X1R5cGVzXS54bWxQ
-      SwUGAAAAABsAGwDWBwAApFgAAAAADQotLTljNDYzMjA2ZmY4NGM0ZGUyM2M2YTU3ODRmOGExMTA2
+      SwUGAAAAABsAGwDWBwAApFgAAAAADQotLWM3YjE4YjQzNTgxNWI5Zjc2MjY2Y2ZiMTQyMTY2MTYx
       LS0NCg==
     headers:
       Accept:
@@ -450,7 +450,7 @@ interactions:
       Content-Length:
       - '24970'
       Content-Type:
-      - multipart/form-data; boundary=9c463206ff84c4de23c6a5784f8a1106
+      - multipart/form-data; boundary=c7b18b435815b9f76266cfb142166161
       User-Agent:
       - python-requests/2.32.3
       authorization:
@@ -459,21 +459,25 @@ interactions:
     uri: https://middleman-ai.com/api/v1/tools/pptx-to-page-images
   response:
     body:
-      string: '{"error_code":"UNEXPECTED","message":"Internal Server Error"}'
+      string: '{"pages":[{"page_no":1,"image_url":"https://stg.middleman-ai.com/s/709dd3af/wAe2tQUmN4"},{"page_no":2,"image_url":"https://stg.middleman-ai.com/s/709dd3af/lCjjGqx9JI"}],"important_remark_for_user":"The
+        URL expires in 1 hour.Please note that you will not be able to download the
+        file after it has expired."}'
     headers:
       content-length:
-      - '61'
+      - '306'
       content-type:
       - application/json
       date:
-      - Fri, 18 Apr 2025 03:11:36 GMT
+      - FILTERED
       server:
-      - uvicorn
+      - FILTERED
       vary:
       - Accept-Encoding
       x-middleware-rewrite:
-      - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v1/tools/pptx-to-page-images
+      - FILTERED
+      x-request-id:
+      - FILTERED
     status:
-      code: 500
-      message: Internal Server Error
+      code: 200
+      message: OK
 version: 1

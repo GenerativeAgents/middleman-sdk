@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"markdown": "# Test Heading\n\n    This is a test markdown document.\n\n    ##
-      Section 1\n    - Item 1\n    - Item 2\n    ", "pdf_template_id": "00000000-0000-0000-0000-000000000001"}'
+      Section 1\n    - Item 1\n    - Item 2\n    ", "pdf_template_id": "a978ae98-d4c6-430e-a049-1f377b5d25d1"}'
     headers:
       Accept:
       - '*/*'
@@ -21,21 +21,25 @@ interactions:
     uri: https://middleman-ai.com/api/v1/tools/md-to-pdf
   response:
     body:
-      string: '{"error_code":"UNAUTHORIZED","message":"Unauthorized"}'
+      string: '{"pdf_url":"https://stg.middleman-ai.com/s/709dd3af/dUOcQYb25K","important_remark_for_user":"The
+        URL expires in 1 hour.Please note that you will not be able to download the
+        file after it has expired."}'
     headers:
       content-length:
-      - '54'
+      - '201'
       content-type:
       - application/json
       date:
-      - Fri, 18 Apr 2025 03:30:32 GMT
+      - FILTERED
       server:
-      - uvicorn
+      - FILTERED
       vary:
       - Accept-Encoding
       x-middleware-rewrite:
-      - https://middleman-backend-prod.internal.blackbush-3c0d02fc.japaneast.azurecontainerapps.io/api/v1/tools/md-to-pdf
+      - FILTERED
+      x-request-id:
+      - FILTERED
     status:
-      code: 401
-      message: Unauthorized
+      code: 200
+      message: OK
 version: 1
