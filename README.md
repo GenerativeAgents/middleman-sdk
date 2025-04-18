@@ -18,26 +18,23 @@ client = ToolsClient(api_key="YOUR_API_KEY")
 
 # Markdown → PDF変換
 markdown_text = "# Sample\nThis is a test."
-pdf_url = client.md_to_pdf(markdown_text)
+pdf_url = client.md_to_pdf(markdown_text, pdf_template_id="template-uuid")
 print(f"Generated PDF URL: {pdf_url}")
 ```
 
-## CLIの使用方法
+## CLI の使用方法
 
-SDKはコマンドラインインターフェース（CLI）も提供しています。UVを使用して以下のように実行できます：
+SDK はコマンドラインインターフェース（CLI）も提供しています。UV を使用して以下のように実行できます：
 
 ```bash
 # APIキーの設定
 export MIDDLEMAN_API_KEY=your-api-key
 
 # Markdown → PDF変換
-echo "# テスト" | uvx middleman md-to-pdf
+echo "# テスト" | uvx middleman md-to-pdf [テンプレートID]
 
 # Markdown → DOCX変換
 echo "# テスト" | uvx middleman md-to-docx
-
-# Markdown → PPTX変換
-echo "# テスト" | uvx middleman md-to-pptx
 
 # PDF → ページ画像変換
 uvx middleman pdf-to-page-images input.pdf
@@ -50,15 +47,29 @@ echo '{"slides":[{"type":"title","placeholders":[{"name":"title","content":"テ�
 uvx middleman json-to-pptx-execute [テンプレートID]
 ```
 
-各コマンドは標準入力からテキストを受け取るか、必要に応じてファイルパスやテンプレートIDを引数として受け取ります。
+各コマンドは標準入力からテキストを受け取るか、必要に応じてファイルパスやテンプレート ID を引数として受け取ります。
 
-## 機能一覧
+## MCP Server
 
-- Markdown → PDF 変換
-- Markdown → DOCX 変換
-- Markdown → PPTX 変換
-- PDF → ページ画像変換
-- JSON → PPTX 変換（テンプレート解析・実行）
+Middleman SDK は MCP サーバーを提供し、Claude Desktop アプリケーションなどから利用できます。
+
+### Claude Desktop 設定
+
+Claude Desktop アプリケーションの`claude_desktop_config.json`を以下のように設定します：
+
+```json
+{
+  "mcpServers": {
+    "middleman": {
+      "command": "uvx",
+      "args": ["--from", "middleman-ai", "mcp"],
+      "env": {
+        "MIDDLEMAN_API_KEY": "xxxxx"
+      }
+    }
+  }
+}
+```
 
 ## エラーハンドリング
 

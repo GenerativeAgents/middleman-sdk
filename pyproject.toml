@@ -1,6 +1,6 @@
 [project]
 name = "middleman-ai"
-version = "0.0.4"
+version = "0.0.4.2"
 description = "Python client SDK for Middleman.ai API"
 authors = [{ name = "Generative Agents, Inc." }]
 dependencies = [
@@ -9,6 +9,7 @@ dependencies = [
     "langchain-core>=0.3",
     "typing-extensions",
     "click>=8.0.0",
+    "mcp[cli]>=1.6.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -16,6 +17,7 @@ license = { text = "MIT" }
 
 [project.scripts]
 middleman = "middleman_ai.cli.main:cli"
+mcp = "middleman_ai.cli.main:mcp"
 
 [build-system]
 requires = ["setuptools>=64", "wheel"]

@@ -12,6 +12,50 @@ uv run pytest
 uv run ruff check .
 ```
 
+### ローカル環境で MCP サーバー実行
+
+Claude Desktop アプリケーションの`claude_desktop_config.json`を以下のように設定します：
+
+```json
+{
+  "mcpServers": {
+    "middleman": {
+      "command": "/path/to/python",
+      "args": ["/path/to/middleman_ai/mcp/server.py"],
+      "env": {
+        "MIDDLEMAN_API_KEY": "xxxxx"
+      }
+    }
+  }
+}
+```
+
+### PyPI テスト環境で MCP サーバー実行
+
+```json
+{
+  "mcpServers": {
+    "middleman": {
+      "command": "/path/to/python",
+      "args": [
+        "--index-url",
+        "https://test.pypi.org/simple/",
+        "--extra-index-url",
+        "https://pypi.org/simple/",
+        "--index-strategy",
+        "unsafe-best-match",
+        "--from",
+        "middleman-ai==0.0.x",
+        "mcp"
+      ],
+      "env": {
+        "MIDDLEMAN_API_KEY": "xxxxx"
+      }
+    }
+  }
+}
+```
+
 ## 配布
 
 事前に PyPI アカウントを作成し、`~/.pypirc`に以下を記述。

@@ -1,8 +1,7 @@
 interactions:
 - request:
-    body: '{"pptx_template_id": "19823658-6af5-4560-ab87-632da39511de", "presentation":
-      {"slides": [{"type": "title", "placeholders": [{"name": "title", "content":
-      "Test Title"}, {"name": "subtitle", "content": "Test Subtitle"}]}]}}'
+    body: '{"markdown": "# Test Heading\n\n    This is a test markdown document.\n\n    ##
+      Section 1\n    - Item 1\n    - Item 2\n    ", "pdf_template_id": "a978ae98-d4c6-430e-a049-1f377b5d25d1"}'
     headers:
       Accept:
       - '*/*'
@@ -11,7 +10,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '221'
+      - '184'
       Content-Type:
       - application/json
       User-Agent:
@@ -19,13 +18,15 @@ interactions:
       authorization:
       - DUMMY
     method: POST
-    uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/execute
+    uri: https://middleman-ai.com/api/v1/tools/md-to-pdf
   response:
     body:
-      string: '{"pptx_url":"https://stg.middleman-ai.com/s/709dd3af/6jtIBKQGb6"}'
+      string: '{"pdf_url":"https://stg.middleman-ai.com/s/709dd3af/M51KIysH9c","important_remark_for_user":"The
+        URL expires in 1 hour.Please note that you will not be able to download the
+        file after it has expired."}'
     headers:
       content-length:
-      - '65'
+      - '201'
       content-type:
       - application/json
       date:

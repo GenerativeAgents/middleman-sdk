@@ -23,15 +23,6 @@ class MdToDocxResponse(BaseModel):
     )
 
 
-class MdToPptxResponse(BaseModel):
-    """Markdown → PPTX変換のレスポンスモデル。"""
-
-    pptx_url: str = Field(..., description="生成されたPPTXのダウンロードURL")
-    important_remark_for_user: Optional[str] = Field(
-        None, description="ユーザーへの重要な注意事項"
-    )
-
-
 class PageImage(BaseModel):
     """PDFの1ページ分の画像情報。"""
 
@@ -70,6 +61,15 @@ class PptxToPageImagesResponse(BaseModel):
     """PPTX → ページ画像変換のレスポンスモデル。"""
 
     pages: List[PageImage] = Field(..., description="各スライドの画像情報")
+    important_remark_for_user: Optional[str] = Field(
+        None, description="ユーザーへの重要な注意事項"
+    )
+
+
+class DocxToPageImagesResponse(BaseModel):
+    """DOCX → ページ画像変換のレスポンスモデル。"""
+
+    pages: List[PageImage] = Field(..., description="各ページの画像情報")
     important_remark_for_user: Optional[str] = Field(
         None, description="ユーザーへの重要な注意事項"
     )

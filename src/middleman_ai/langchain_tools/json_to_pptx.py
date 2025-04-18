@@ -11,8 +11,8 @@ from middleman_ai.client import Presentation, ToolsClient
 class JsonToPptxAnalyzeInput(BaseModel):
     """PPTXテンプレート解析用の入力スキーマ。"""
 
-    template_id: str | None = Field(
-        None,
+    template_id: str = Field(
+        default="",
         description="PPTXテンプレートのID（UUID形式）。テンプレートの構造を解析するために使用します。省略した場合はデフォルトのテンプレートが利用されます。ユーザーからテンプレートIDの共有がない場合は省略してください。",
     )
 
@@ -20,8 +20,8 @@ class JsonToPptxAnalyzeInput(BaseModel):
 class JsonToPptxExecuteInput(BaseModel):
     """PPTXファイル生成用の入力スキーマ。"""
 
-    template_id: str | None = Field(
-        None,
+    template_id: str = Field(
+        default="",
         description="PPTXテンプレートのID（UUID形式）。プレゼンテーションの生成に使用します。省略した場合はデフォルトのテンプレートが利用されます。ユーザーからテンプレートIDの共有がない場合は省略してください。",
     )
     presentation: str = Field(
@@ -59,7 +59,7 @@ class JsonToPptxAnalyzeTool(BaseTool):
         kwargs["default_template_id"] = default_template_id
         super().__init__(**kwargs)
 
-    def _run(self, template_id: str | None = None) -> str:
+    def _run(self, template_id: str) -> str:
         """同期的にPPTXテンプレートを解析します。
 
         Args:
@@ -81,7 +81,7 @@ class JsonToPptxAnalyzeTool(BaseTool):
 
     async def _arun(
         self,
-        template_id: str | None = None,
+        template_id: str,
     ) -> str:
         """非同期的にPPTXテンプレートを解析します。
 
@@ -127,7 +127,7 @@ class JsonToPptxExecuteTool(BaseTool):
     def _run(
         self,
         presentation: str,
-        template_id: str | None = None,
+        template_id: str = "",
     ) -> str:
         """同期的にJSONからPPTXを生成します。
 
@@ -145,7 +145,7 @@ class JsonToPptxExecuteTool(BaseTool):
         import json
 
         template_id_to_use = template_id or self.default_template_id
-        if template_id_to_use is None:
+        if not template_id_to_use:
             raise ValueError("テンプレートIDが指定されていません")
 
         try:
@@ -163,7 +163,7 @@ class JsonToPptxExecuteTool(BaseTool):
     async def _arun(
         self,
         presentation: str,
-        template_id: str | None = None,
+        template_id: str,
     ) -> str:
         """非同期的にJSONからPPTXを生成します。
 
