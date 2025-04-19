@@ -39,6 +39,9 @@ echo "# テスト" | uvx middleman md-to-docx
 # PDF → ページ画像変換
 uvx middleman pdf-to-page-images input.pdf
 
+# DOCX → ページ画像変換
+uvx middleman docx-to-page-images input.docx
+
 # PPTXテンプレート解析
 uvx middleman json-to-pptx-analyze [テンプレートID]
 

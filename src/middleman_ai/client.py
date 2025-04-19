@@ -18,13 +18,13 @@ from .exceptions import (
     ValidationError,
 )
 from .models import (
+    DocxToPageImagesResponse,
     JsonToPptxAnalyzeResponse,
     JsonToPptxExecuteResponse,
     MdToDocxResponse,
     MdToPdfResponse,
     PdfToPageImagesResponse,
     PptxToPageImagesResponse,
-    DocxToPageImagesResponse,
 )
 
 # HTTPステータスコード
@@ -281,7 +281,7 @@ class ToolsClient:
             raise ValidationError(str(e)) from e
         except OSError as e:
             raise ValidationError(f"Failed to read PPTX file: {e}") from e
-            
+
     def docx_to_page_images(self, docx_file_path: str) -> List[Dict[str, Any]]:
         """DOCXファイルをアップロードしてページごとに画像化し、それぞれの画像URLを返します。
 

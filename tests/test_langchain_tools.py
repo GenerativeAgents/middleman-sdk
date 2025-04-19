@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from middleman_ai.client import Presentation, ToolsClient
+from middleman_ai.langchain_tools.docx_to_page_images import DocxToPageImagesTool
 from middleman_ai.langchain_tools.json_to_pptx import (
     JsonToPptxAnalyzeTool,
     JsonToPptxExecuteTool,
@@ -163,6 +164,27 @@ def test_pptx_to_page_images_tool(client: ToolsClient, mocker: "MockerFixture") 
     assert "https://example.com/slide1.png" in result
     assert "https://example.com/slide2.png" in result
     mock_pptx_to_page_images.assert_called_once_with("/path/to/test.pptx")
+
+
+def test_docx_to_page_images_tool(client: ToolsClient, mocker: "MockerFixture") -> None:
+    """DocxToPageImagesToolのテスト。"""
+    expected_result = [
+        {"page_no": 1, "image_url": "https://example.com/page1.png"},
+        {"page_no": 2, "image_url": "https://example.com/page2.png"},
+    ]
+    mock_docx_to_page_images = mocker.patch.object(
+        client,
+        "docx_to_page_images",
+        return_value=expected_result,
+    )
+
+    tool = DocxToPageImagesTool(client=client)
+    result = tool._run("/path/to/test.docx")
+
+    assert isinstance(result, str)
+    assert "https://example.com/page1.png" in result
+    assert "https://example.com/page2.png" in result
+    mock_docx_to_page_images.assert_called_once_with("/path/to/test.docx")
 
 
 def test_json_to_pptx_analyze_tool_without_default_template_id(

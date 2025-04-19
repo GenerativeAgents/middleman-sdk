@@ -8,6 +8,7 @@ import pytest
 
 import middleman_ai.exceptions
 from middleman_ai.client import Presentation, ToolsClient
+from middleman_ai.langchain_tools.docx_to_page_images import DocxToPageImagesTool
 from middleman_ai.langchain_tools.json_to_pptx import (
     JsonToPptxAnalyzeTool,
     JsonToPptxExecuteTool,
@@ -223,6 +224,26 @@ def test_pptx_to_page_images_tool_vcr(client: ToolsClient) -> None:
 
     tool = PptxToPageImagesTool(client=client)
     result = tool._run(pptx_path)
+
+    assert isinstance(result, str)
+    assert "/s/" in result
+
+
+@pytest.mark.vcr(match_on=["method", "path", "query"])
+def test_docx_to_page_images_tool_vcr(client: ToolsClient) -> None:
+    """DocxToPageImagesToolの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+
+    Args:
+        client: テスト用のクライアントインスタンス
+    """
+    docx_path = "tests/data/test.docx"
+
+    tool = DocxToPageImagesTool(client=client)
+    result = tool._run(docx_path)
 
     assert isinstance(result, str)
     assert "/s/" in result

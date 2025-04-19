@@ -184,3 +184,36 @@ def test_pptx_to_page_images_file_error(client: ToolsClient) -> None:
     """pptx_to_page_images ファイルエラー時のテスト。"""
     with pytest.raises(ValidationError, match="Failed to read PPTX file"):
         client.pptx_to_page_images("nonexistent.pptx")
+
+
+def test_docx_to_page_images_success(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """docx_to_page_images成功時のテスト。"""
+    mock_response.json.return_value = {
+        "pages": [
+            {"page_no": 1, "image_url": "https://example.com/page1.png"},
+            {"page_no": 2, "image_url": "https://example.com/page2.png"},
+        ]
+    }
+    mock_post = mocker.patch.object(requests, "post", return_value=mock_response)
+
+    mocker.patch("os.path.isfile", return_value=True)
+
+    mock_open = mocker.patch("builtins.open", mocker.mock_open(read_data="test data"))
+
+    result = client.docx_to_page_images("tests/data/test.docx")
+
+    assert len(result) == 2
+    assert result[0]["page_no"] == 1
+    assert result[0]["image_url"] == "https://example.com/page1.png"
+    assert result[1]["page_no"] == 2
+    assert result[1]["image_url"] == "https://example.com/page2.png"
+    mock_post.assert_called_once()
+    mock_open.assert_called_once_with("tests/data/test.docx", "rb")
+
+
+def test_docx_to_page_images_file_error(client: ToolsClient) -> None:
+    """docx_to_page_images ファイルエラー時のテスト。"""
+    with pytest.raises(ValidationError, match="Failed to read DOCX file"):
+        client.docx_to_page_images("nonexistent.docx")
