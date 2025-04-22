@@ -46,7 +46,7 @@ Claude Desktop アプリケーションの`claude_desktop_config.json`を以下�
         "unsafe-best-match",
         "--from",
         "middleman-ai==0.0.x",
-        "mcp"
+        "mcp-server"
       ],
       "env": {
         "MIDDLEMAN_API_KEY": "xxxxx"

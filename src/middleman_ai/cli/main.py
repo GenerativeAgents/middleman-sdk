@@ -195,7 +195,7 @@ def json_to_pptx_execute(template_id: str) -> None:
 
 
 @click.command()
-def mcp() -> None:
+def mcp_server() -> None:
     """Run MCP server as a standalone command."""
     _run_mcp_server()
 
