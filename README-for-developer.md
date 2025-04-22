@@ -36,7 +36,7 @@ Claude Desktop アプリケーションの`claude_desktop_config.json`を以下�
 {
   "mcpServers": {
     "middleman": {
-      "command": "/path/to/python",
+      "command": "uvx",
       "args": [
         "--index-url",
         "https://test.pypi.org/simple/",

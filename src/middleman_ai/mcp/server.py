@@ -27,7 +27,7 @@ def md_to_pdf(markdown_text: str, pdf_template_id: str | None = None) -> str:
     Args:
         markdown_text: The Markdown text to convert
         pdf_template_id: Optional ID of the PDF template to use.
-                         if not provided, the default template will be used
+        If not provided, the default template will be used
 
     Returns:
         The URL to download the generated PDF

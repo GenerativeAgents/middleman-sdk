@@ -147,6 +147,8 @@ def xlsx_to_page_images(xlsx_path: str) -> None:
         raise click.ClickException(str(e)) from e
 
 
+@cli.command()
+@click.argument("template_id")
 def json_to_pptx_analyze(template_id: str) -> None:
     """Analyze PPTX template."""
     try:
