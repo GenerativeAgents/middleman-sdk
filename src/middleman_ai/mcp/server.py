@@ -100,7 +100,7 @@ def xlsx_to_page_images(xlsx_file_path: str) -> List[Dict[str, Any]]:
         xlsx_file_path: Path to the local XLSX file
 
     Returns:
-        A list of dictionaries with page_no and image_url for each page
+        A list of dictionaries with sheet_name and image_url for each sheet
     """
     return client.xlsx_to_page_images(xlsx_file_path)
 

@@ -265,4 +265,3 @@ def test_docx_to_page_images_tool_vcr(client: ToolsClient) -> None:
 
     assert isinstance(result, str)
     assert "/s/" in result
-    assert "/s/" in result

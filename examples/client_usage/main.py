@@ -40,7 +40,7 @@ def main() -> None:
     images = client.xlsx_to_page_images("sample.xlsx")
     print("Generated image URLs:")
     for page in images:
-        print(f"Page {page['page_no']}: {page['image_url']}")
+        print(f"Sheet {page['sheet_name']}: {page['image_url']}")
 
     # JSON → PPTX (analyze)
     pptx_template_id = os.getenv("MIDDLEMAN_PPTX_TEMPLATE_ID", "")

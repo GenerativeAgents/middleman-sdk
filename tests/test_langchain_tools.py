@@ -582,4 +582,3 @@ def test_json_to_pptx_execute_tool_json_error(
         tool._run("invalid json", template_id="template-123")
 
     mock_execute.assert_not_called()
-    mock_execute.assert_not_called()
