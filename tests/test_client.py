@@ -217,3 +217,31 @@ def test_docx_to_page_images_file_error(client: ToolsClient) -> None:
     """docx_to_page_images ファイルエラー時のテスト。"""
     with pytest.raises(ValidationError, match="Failed to read DOCX file"):
         client.docx_to_page_images("nonexistent.docx")
+
+
+def test_xlsx_to_page_images_success(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """xlsx_to_page_images成功時のテスト。"""
+    mock_response.json.return_value = {
+        "pages": [
+            {"sheet_name": "Sheet1", "image_url": "https://example.com/page1.png"},
+            {"sheet_name": "Sheet2", "image_url": "https://example.com/page2.png"},
+        ]
+    }
+    mock_post = mocker.patch.object(requests, "post", return_value=mock_response)
+
+    result = client.xlsx_to_page_images("tests/data/test.xlsx")
+
+    assert len(result) == 2
+    assert result[0]["sheet_name"] == "Sheet1"
+    assert result[0]["image_url"] == "https://example.com/page1.png"
+    assert result[1]["sheet_name"] == "Sheet2"
+    assert result[1]["image_url"] == "https://example.com/page2.png"
+    mock_post.assert_called_once()
+
+
+def test_xlsx_to_page_images_file_error(client: ToolsClient) -> None:
+    """xlsx_to_page_images ファイルエラー時のテスト。"""
+    with pytest.raises(ValidationError, match="Failed to read XLSX file"):
+        client.xlsx_to_page_images("nonexistent.xlsx")

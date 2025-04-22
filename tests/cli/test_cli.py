@@ -124,3 +124,18 @@ def test_docx_to_page_images(runner, mock_client, tmp_path) -> None:
     assert "Page 1: https://example.com/page1.png" in result.output
     assert "Page 2: https://example.com/page2.png" in result.output
     mock_client.docx_to_page_images.assert_called_once_with(str(docx_path))
+
+
+def test_xlsx_to_page_images(runner, mock_client, tmp_path) -> None:
+    """Test xlsx_to_page_images CLI command."""
+    mock_client.xlsx_to_page_images.return_value = [
+        {"sheet_name": "Sheet1", "image_url": "https://example.com/sheet1.png"},
+        {"sheet_name": "Sheet2", "image_url": "https://example.com/sheet2.png"},
+    ]
+    xlsx_path = tmp_path / "test.xlsx"
+    xlsx_path.write_bytes(b"dummy xlsx content")
+    result = runner.invoke(cli, ["xlsx-to-page-images", str(xlsx_path)])
+    assert result.exit_code == 0
+    assert "Sheet Sheet1: https://example.com/sheet1.png" in result.output
+    assert "Sheet Sheet2: https://example.com/sheet2.png" in result.output
+    mock_client.xlsx_to_page_images.assert_called_once_with(str(xlsx_path))

@@ -92,6 +92,20 @@ def docx_to_page_images(docx_file_path: str) -> List[Dict[str, Any]]:
 
 
 @mcp.tool()
+def xlsx_to_page_images(xlsx_file_path: str) -> List[Dict[str, Any]]:
+    """
+    Convert a XLSX file to page images and return the image URLs.
+
+    Args:
+        xlsx_file_path: Path to the local XLSX file
+
+    Returns:
+        A list of dictionaries with page_no and image_url for each page
+    """
+    return client.xlsx_to_page_images(xlsx_file_path)
+
+
+@mcp.tool()
 def json_to_pptx_analyze(pptx_template_id: str) -> List[Dict[str, Any]]:
     """
     Analyze a PPTX template structure.

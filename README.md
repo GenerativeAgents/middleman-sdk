@@ -42,6 +42,12 @@ uvx middleman pdf-to-page-images input.pdf
 # DOCX → ページ画像変換
 uvx middleman docx-to-page-images input.docx
 
+# PPTX → ページ画像変換
+uvx middleman pptx-to-page-images input.pptx
+
+# XLSX → ページ画像変換
+uvx middleman xlsx-to-page-images input.xlsx
+
 # PPTXテンプレート解析
 uvx middleman json-to-pptx-analyze [テンプレートID]
 

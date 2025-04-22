@@ -131,7 +131,22 @@ def docx_to_page_images(docx_path: str) -> None:
 
 
 @cli.command()
-@click.argument("template_id")
+@click.argument("xlsx_path", type=click.Path(exists=True))
+def xlsx_to_page_images(xlsx_path: str) -> None:
+    """Convert XLSX pages to images."""
+    try:
+        client = ToolsClient(api_key=get_api_key())
+        with click.progressbar(  # type: ignore[var-annotated]
+            length=1, label="XLSXを画像に変換中...", show_eta=False
+        ) as bar:
+            results = client.xlsx_to_page_images(xlsx_path)
+            bar.update(1)
+        for page in results:
+            print(f"Sheet {page['sheet_name']}: {page['image_url']}")
+    except MiddlemanBaseException as e:
+        raise click.ClickException(str(e)) from e
+
+
 def json_to_pptx_analyze(template_id: str) -> None:
     """Analyze PPTX template."""
     try:

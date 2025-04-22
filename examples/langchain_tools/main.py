@@ -9,6 +9,7 @@ from middleman_ai.langchain_tools import (
     MdToPdfTool,
     PdfToPageImagesTool,
     PptxToPageImagesTool,
+    XlsxToPageImagesTool,
 )
 
 
@@ -31,6 +32,7 @@ def main() -> None:
         )
         pptx_to_images = PptxToPageImagesTool(client=client)
         docx_to_images = DocxToPageImagesTool(client=client)
+        xlsx_to_images = XlsxToPageImagesTool(client=client)
         # Test each tool's _run method
         markdown_text = "# Sample\nThis is a test."
 
@@ -51,6 +53,10 @@ def main() -> None:
 
         # DOCX to images
         images_result = docx_to_images.run("sample.docx")
+        print(f"Generated image URLs: {images_result}")
+
+        # XLSX to images
+        images_result = xlsx_to_images.run("sample.xlsx")
         print(f"Generated image URLs: {images_result}")
 
         # JSON to PPTX

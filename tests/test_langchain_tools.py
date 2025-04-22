@@ -14,6 +14,7 @@ from middleman_ai.langchain_tools.md_to_docx import MdToDocxTool
 from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
 from middleman_ai.langchain_tools.pdf_to_page_images import PdfToPageImagesTool
 from middleman_ai.langchain_tools.pptx_to_page_images import PptxToPageImagesTool
+from middleman_ai.langchain_tools.xlsx_to_page_images import XlsxToPageImagesTool
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -185,6 +186,27 @@ def test_docx_to_page_images_tool(client: ToolsClient, mocker: "MockerFixture") 
     assert "https://example.com/page1.png" in result
     assert "https://example.com/page2.png" in result
     mock_docx_to_page_images.assert_called_once_with("/path/to/test.docx")
+
+
+def test_xlsx_to_page_images_tool(client: ToolsClient, mocker: "MockerFixture") -> None:
+    """XlsxToPageImagesToolのテスト。"""
+    expected_result = [
+        {"sheet_name": "Sheet1", "image_url": "https://example.com/sheet1.png"},
+        {"sheet_name": "Sheet2", "image_url": "https://example.com/sheet2.png"},
+    ]
+    mock_xlsx_to_page_images = mocker.patch.object(
+        client,
+        "xlsx_to_page_images",
+        return_value=expected_result,
+    )
+
+    tool = XlsxToPageImagesTool(client=client)
+    result = tool._run("/path/to/test.xlsx")
+
+    assert isinstance(result, str)
+    assert "https://example.com/sheet1.png" in result
+    assert "https://example.com/sheet2.png" in result
+    mock_xlsx_to_page_images.assert_called_once_with("/path/to/test.xlsx")
 
 
 def test_json_to_pptx_analyze_tool_without_default_template_id(
@@ -559,4 +581,5 @@ def test_json_to_pptx_execute_tool_json_error(
     with pytest.raises(ValueError, match="不正なJSON形式です"):
         tool._run("invalid json", template_id="template-123")
 
+    mock_execute.assert_not_called()
     mock_execute.assert_not_called()

@@ -9,6 +9,7 @@ from .md_to_docx import MdToDocxTool
 from .md_to_pdf import MdToPdfTool
 from .pdf_to_page_images import PdfToPageImagesTool
 from .pptx_to_page_images import PptxToPageImagesTool
+from .xlsx_to_page_images import XlsxToPageImagesTool
 
 __all__ = [
     "DocxToPageImagesTool",
@@ -18,4 +19,5 @@ __all__ = [
     "MdToPdfTool",
     "PdfToPageImagesTool",
     "PptxToPageImagesTool",
+    "XlsxToPageImagesTool",
 ]

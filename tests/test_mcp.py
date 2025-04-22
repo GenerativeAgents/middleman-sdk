@@ -15,6 +15,7 @@ from middleman_ai.mcp.server import (
     pdf_to_page_images,
     pptx_to_page_images,
     run_server,
+    xlsx_to_page_images,
 )
 
 if TYPE_CHECKING:
@@ -77,6 +78,21 @@ def test_docx_to_page_images_tool(mocker: "MockerFixture") -> None:
 
     assert result == expected_result
     mock_client.docx_to_page_images.assert_called_once_with("/path/to/test.docx")
+
+
+def test_xlsx_to_page_images_tool(mocker: "MockerFixture") -> None:
+    """xlsx_to_page_imagesツールのテスト。"""
+    expected_result = [
+        {"sheet_name": "Sheet1", "image_url": "https://example.com/sheet1.png"},
+        {"sheet_name": "Sheet2", "image_url": "https://example.com/sheet2.png"},
+    ]
+    mock_client = mocker.patch("middleman_ai.mcp.server.client")
+    mock_client.xlsx_to_page_images.return_value = expected_result
+
+    result = xlsx_to_page_images("/path/to/test.xlsx")
+
+    assert result == expected_result
+    mock_client.xlsx_to_page_images.assert_called_once_with("/path/to/test.xlsx")
 
 
 def test_pdf_to_page_images_tool(mocker: "MockerFixture") -> None:
