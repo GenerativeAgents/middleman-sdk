@@ -123,7 +123,7 @@ def test_md_to_docx_tool_vcr(client: ToolsClient) -> None:
     assert "/s/" in result
 
 
-@pytest.mark.vcr()
+@pytest.mark.vcr(match_on=["method", "path", "query"])
 def test_xlsx_to_page_images_tool_vcr(client: ToolsClient) -> None:
     """XlsxToPageImagesToolの実際のAPIを使用したテスト。
 

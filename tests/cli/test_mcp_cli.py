@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import pytest
 from click.testing import CliRunner
 
-from middleman_ai.cli.main import mcp as mcp_command
+from middleman_ai.cli.main import mcp_server as mcp_command
 from middleman_ai.mcp import server as mcp_server
 
 if TYPE_CHECKING:
