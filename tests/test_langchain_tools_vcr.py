@@ -17,6 +17,7 @@ from middleman_ai.langchain_tools.md_to_docx import MdToDocxTool
 from middleman_ai.langchain_tools.md_to_pdf import MdToPdfTool
 from middleman_ai.langchain_tools.pdf_to_page_images import PdfToPageImagesTool
 from middleman_ai.langchain_tools.pptx_to_page_images import PptxToPageImagesTool
+from middleman_ai.langchain_tools.xlsx_to_page_images import XlsxToPageImagesTool
 
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest  # noqa: F401
@@ -119,6 +120,23 @@ def test_md_to_docx_tool_vcr(client: ToolsClient) -> None:
 
     assert isinstance(result, str)
     assert result.startswith("https://")
+    assert "/s/" in result
+
+
+@pytest.mark.vcr()
+def test_xlsx_to_page_images_tool_vcr(client: ToolsClient) -> None:
+    """XlsxToPageImagesToolの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    xlsx_path = "tests/data/test.xlsx"
+
+    tool = XlsxToPageImagesTool(client=client)
+    result = tool._run(xlsx_path)
+
+    assert isinstance(result, str)
     assert "/s/" in result
 
 

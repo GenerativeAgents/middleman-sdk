@@ -25,6 +25,7 @@ from .models import (
     MdToPdfResponse,
     PdfToPageImagesResponse,
     PptxToPageImagesResponse,
+    XlsxToPageImagesResponse,
 )
 
 # HTTPステータスコード
@@ -324,6 +325,49 @@ class ToolsClient:
             raise ValidationError(str(e)) from e
         except OSError as e:
             raise ValidationError(f"Failed to read DOCX file: {e}") from e
+
+    def xlsx_to_page_images(self, xlsx_file_path: str) -> List[Dict[str, Any]]:
+        """XLSXファイルをアップロードしてページごとに画像化し、それぞれの画像URLを返します。
+
+        Args:
+            xlsx_file_path: ローカルのXLSXファイルパス
+
+        Returns:
+            List[Dict[str, Any]]: [{"page_no": int, "image_url": str}, ...]
+
+        Raises:
+            ValidationError: 入力データが不正
+            その他、_handle_responseで定義される例外
+        """
+        try:
+            with open(xlsx_file_path, "rb") as f:
+                files = {
+                    "xlsx_file": (
+                        f.name,
+                        f.read(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    )
+                }
+                headers = dict(self.session.headers)
+                del headers["Content-Type"]
+                # sessionを共有するとContent-Typeがapplicatoin/jsonになるので
+                # マルチパートの送信を可能にするために直接requestsを使用
+                response = requests.post(
+                    f"{self.base_url}/api/v1/tools/xlsx-to-page-images",
+                    files=files,
+                    headers=headers,
+                    timeout=self.timeout,
+                )
+                data = self._handle_response(response)
+                result = XlsxToPageImagesResponse.model_validate(data)
+                return [
+                    {"sheet_name": page.sheet_name, "image_url": page.image_url}
+                    for page in result.pages
+                ]
+        except PydanticValidationError as e:
+            raise ValidationError(str(e)) from e
+        except OSError as e:
+            raise ValidationError(f"Failed to read XLSX file: {e}") from e
 
     def json_to_pptx_analyze_v2(self, pptx_template_id: str) -> List[Dict[str, Any]]:
         """PPTXテンプレートの構造を解析します。

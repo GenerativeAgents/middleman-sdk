@@ -27,7 +27,7 @@ def md_to_pdf(markdown_text: str, pdf_template_id: str | None = None) -> str:
     Args:
         markdown_text: The Markdown text to convert
         pdf_template_id: Optional ID of the PDF template to use.
-                         if not provided, the default template will be used
+        If not provided, the default template will be used
 
     Returns:
         The URL to download the generated PDF
@@ -89,6 +89,20 @@ def docx_to_page_images(docx_file_path: str) -> List[Dict[str, Any]]:
         A list of dictionaries with page_no and image_url for each page
     """
     return client.docx_to_page_images(docx_file_path)
+
+
+@mcp.tool()
+def xlsx_to_page_images(xlsx_file_path: str) -> List[Dict[str, Any]]:
+    """
+    Convert a XLSX file to page images and return the image URLs.
+
+    Args:
+        xlsx_file_path: Path to the local XLSX file
+
+    Returns:
+        A list of dictionaries with sheet_name and image_url for each sheet
+    """
+    return client.xlsx_to_page_images(xlsx_file_path)
 
 
 @mcp.tool()

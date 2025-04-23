@@ -206,3 +206,21 @@ def test_docx_to_page_images_vcr(client: ToolsClient) -> None:
     assert all("page_no" in page and "image_url" in page for page in pages)
     assert all(page["image_url"].startswith("https://") for page in pages)
     assert all("/s/" in page["image_url"] for page in pages)
+
+
+@pytest.mark.vcr(match_on=["method", "scheme", "port", "path", "query"])
+def test_xlsx_to_page_images_vcr(client: ToolsClient) -> None:
+    """ToolsClient.xlsx_to_page_imagesの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    xlsx_file_path = "tests/data/test.xlsx"
+    pages = client.xlsx_to_page_images(xlsx_file_path=xlsx_file_path)
+    assert isinstance(pages, list)
+    assert len(pages) > 0
+    assert all(isinstance(page, dict) for page in pages)
+    assert all("sheet_name" in page and "image_url" in page for page in pages)
+    assert all(page["image_url"].startswith("https://") for page in pages)
+    assert all("/s/" in page["image_url"] for page in pages)
