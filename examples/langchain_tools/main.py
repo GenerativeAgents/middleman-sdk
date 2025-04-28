@@ -37,7 +37,9 @@ def main() -> None:
         markdown_text = "# Sample\nThis is a test."
 
         # Markdown conversions
-        pdf_url = md_to_pdf.run(markdown_text, pdf_template_id=pdf_template_id)
+        pdf_url = md_to_pdf.run(
+            {"text": markdown_text, "pdf_template_id": pdf_template_id}
+        )
         print(f"Generated PDF URL: {pdf_url}")
 
         docx_url = md_to_docx.run(markdown_text)
