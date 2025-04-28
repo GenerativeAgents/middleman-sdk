@@ -78,11 +78,14 @@ password: <APIキー>
 ```
 
 ```bash
+# mainブランチにいるかを確認
+git branch
+
 # 事前にテストを実行
 uv run pytest
 
 # 事前にpyproject.tomlのversionを更新
-cat pyproject.toml
+cat pyproject.toml | grep version
 
 # 古いビルド成果物を削除
 rm -rf dist/
