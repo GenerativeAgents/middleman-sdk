@@ -1,44 +1,45 @@
 interactions:
-- request:
-    body: '{"pptx_template_id": "19823658-6af5-4560-ab87-632da39511de", "presentation":
-      {"slides": [{"type": "title", "placeholders": [{"name": "title", "content":
-      "Test Title"}, {"name": "subtitle", "content": "Test Subtitle"}]}]}}'
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '221'
-      Content-Type:
-      - application/json
-      User-Agent:
-      - python-requests/2.32.3
-      authorization:
-      - DUMMY
-    method: POST
-    uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/execute
-  response:
-    body:
-      string: '{"pptx_url":"https://stg.middleman-ai.com/s/709dd3af/NUEbhdogrO"}'
-    headers:
-      content-length:
-      - '65'
-      content-type:
-      - application/json
-      date:
-      - FILTERED
-      server:
-      - FILTERED
-      vary:
-      - Accept-Encoding
-      x-middleware-rewrite:
-      - FILTERED
-      x-request-id:
-      - FILTERED
-    status:
-      code: 200
-      message: OK
+  - request:
+      body:
+        '{"pptx_template_id": "19823658-6af5-4560-ab87-632da39511de", "presentation":
+        {"slides": [{"type": "title", "placeholders": [{"name": "title", "content":
+        "Test Title"}, {"name": "subtitle", "content": "Test Subtitle"}]}]}}'
+      headers:
+        Accept:
+          - "*/*"
+        Accept-Encoding:
+          - gzip, deflate, zstd
+        Connection:
+          - keep-alive
+        Content-Length:
+          - "221"
+        Content-Type:
+          - application/json
+        User-Agent:
+          - python-requests/2.32.3
+        authorization:
+          - DUMMY
+      method: POST
+      uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/execute
+    response:
+      body:
+        string: '{"pptx_url":"https://middleman-ai.com/s/709dd3af/NUEbhdogrO"}'
+      headers:
+        content-length:
+          - "65"
+        content-type:
+          - application/json
+        date:
+          - FILTERED
+        server:
+          - FILTERED
+        vary:
+          - Accept-Encoding
+        x-middleware-rewrite:
+          - FILTERED
+        x-request-id:
+          - FILTERED
+      status:
+        code: 200
+        message: OK
 version: 1

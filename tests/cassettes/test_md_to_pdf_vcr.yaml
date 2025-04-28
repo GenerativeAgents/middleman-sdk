@@ -1,45 +1,47 @@
 interactions:
-- request:
-    body: '{"markdown": "# Test Heading\n\n    This is a test markdown document.\n\n    ##
-      Section 1\n    - Item 1\n    - Item 2\n    ", "pdf_template_id": null}'
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '150'
-      Content-Type:
-      - application/json
-      User-Agent:
-      - python-requests/2.32.3
-      authorization:
-      - DUMMY
-    method: POST
-    uri: https://middleman-ai.com/api/v1/tools/md-to-pdf
-  response:
-    body:
-      string: '{"pdf_url":"https://stg.middleman-ai.com/s/709dd3af/E9S5ohwi9r","important_remark_for_user":"The
-        URL expires in 1 hour.Please note that you will not be able to download the
-        file after it has expired."}'
-    headers:
-      content-length:
-      - '201'
-      content-type:
-      - application/json
-      date:
-      - FILTERED
-      server:
-      - FILTERED
-      vary:
-      - Accept-Encoding
-      x-middleware-rewrite:
-      - FILTERED
-      x-request-id:
-      - FILTERED
-    status:
-      code: 200
-      message: OK
+  - request:
+      body:
+        '{"markdown": "# Test Heading\n\n    This is a test markdown document.\n\n    ##
+        Section 1\n    - Item 1\n    - Item 2\n    ", "pdf_template_id": null}'
+      headers:
+        Accept:
+          - "*/*"
+        Accept-Encoding:
+          - gzip, deflate, zstd
+        Connection:
+          - keep-alive
+        Content-Length:
+          - "150"
+        Content-Type:
+          - application/json
+        User-Agent:
+          - python-requests/2.32.3
+        authorization:
+          - DUMMY
+      method: POST
+      uri: https://middleman-ai.com/api/v1/tools/md-to-pdf
+    response:
+      body:
+        string:
+          '{"pdf_url":"https://middleman-ai.com/s/709dd3af/E9S5ohwi9r","important_remark_for_user":"The
+          URL expires in 1 hour.Please note that you will not be able to download the
+          file after it has expired."}'
+      headers:
+        content-length:
+          - "201"
+        content-type:
+          - application/json
+        date:
+          - FILTERED
+        server:
+          - FILTERED
+        vary:
+          - Accept-Encoding
+        x-middleware-rewrite:
+          - FILTERED
+        x-request-id:
+          - FILTERED
+      status:
+        code: 200
+        message: OK
 version: 1
