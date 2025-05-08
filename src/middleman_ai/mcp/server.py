@@ -50,10 +50,15 @@ def md_file_to_pdf(md_file_full_path: str, pdf_template_id: str | None = None) -
     Returns:
         The URL to download the generated PDF
     """
-    if not md_file_full_path.startswith("/"):
-        raise ValueError("md_file_full_path must start with '/'")
+    file_path = Path(md_file_full_path)
+    if not file_path.exists():
+        raise ValueError(f"File not found: {md_file_full_path}")
+    if not file_path.is_file():
+        raise ValueError(f"Path is not a file: {md_file_full_path}")
+    if not os.access(file_path, os.R_OK):
+        raise ValueError(f"File not readable: {md_file_full_path}")
 
-    with Path(md_file_full_path).open("r") as f:
+    with file_path.open("r") as f:
         md_text = f.read()
     return client.md_to_pdf(md_text, pdf_template_id=pdf_template_id)
 
@@ -83,10 +88,15 @@ def md_file_to_docx(md_file_full_path: str) -> str:
     Returns:
         The URL to download the generated DOCX
     """
-    if not md_file_full_path.startswith("/"):
-        raise ValueError("md_file_full_path must start with '/'")
+    file_path = Path(md_file_full_path)
+    if not file_path.exists():
+        raise ValueError(f"File not found: {md_file_full_path}")
+    if not file_path.is_file():
+        raise ValueError(f"Path is not a file: {md_file_full_path}")
+    if not os.access(file_path, os.R_OK):
+        raise ValueError(f"File not readable: {md_file_full_path}")
 
-    with Path(md_file_full_path).open("r") as f:
+    with file_path.open("r") as f:
         md_text = f.read()
     return client.md_to_docx(md_text)
 
