@@ -10,6 +10,8 @@ from middleman_ai.mcp.server import (
     json_to_pptx_analyze,
     json_to_pptx_execute,
     mcp,
+    md_file_to_docx,
+    md_file_to_pdf,
     md_to_docx,
     md_to_pdf,
     pdf_to_page_images,
@@ -150,3 +152,51 @@ def test_run_server(mocker: "MockerFixture") -> None:
     run_server()
 
     mock_mcp.run.assert_called_once_with(transport="stdio")
+
+
+def test_md_file_to_pdf_tool(mocker: "MockerFixture") -> None:
+    """md_file_to_pdfツールのテスト。"""
+    mock_client = mocker.patch("middleman_ai.mcp.server.client")
+    mock_path = mocker.patch("middleman_ai.mcp.server.Path")
+    mock_os_access = mocker.patch("middleman_ai.mcp.server.os.access")
+    # mock_open を変数に束縛せず、Pathオブジェクトのopenメソッドのモックを設定
+    mock_file_handle = mocker.MagicMock()
+    mock_file_handle.read.return_value = "# Test MD"
+    mock_path.return_value.open.return_value.__enter__.return_value = mock_file_handle
+
+    mock_path.return_value.exists.return_value = True
+    mock_path.return_value.is_file.return_value = True
+    mock_client.md_to_pdf.return_value = "https://example.com/test_file.pdf"
+
+    file_path = "/fake/path/to/test.md"
+    result = md_file_to_pdf(file_path)
+
+    assert result == "https://example.com/test_file.pdf"
+    mock_path.assert_called_once_with(file_path)
+    mock_path.return_value.open.assert_called_once_with("r")
+    mock_client.md_to_pdf.assert_called_once_with("# Test MD", pdf_template_id=None)
+    mock_os_access.assert_called_once_with(mock_path.return_value, mocker.ANY)
+
+
+def test_md_file_to_docx_tool(mocker: "MockerFixture") -> None:
+    """md_file_to_docxツールのテスト。"""
+    mock_client = mocker.patch("middleman_ai.mcp.server.client")
+    mock_path = mocker.patch("middleman_ai.mcp.server.Path")
+    mock_os_access = mocker.patch("middleman_ai.mcp.server.os.access")
+    # mock_open を変数に束縛せず、Pathオブジェクトのopenメソッドのモックを設定
+    mock_file_handle = mocker.MagicMock()
+    mock_file_handle.read.return_value = "# Test MD"
+    mock_path.return_value.open.return_value.__enter__.return_value = mock_file_handle
+
+    mock_path.return_value.exists.return_value = True
+    mock_path.return_value.is_file.return_value = True
+    mock_client.md_to_docx.return_value = "https://example.com/test_file.docx"
+
+    file_path = "/fake/path/to/test.md"
+    result = md_file_to_docx(file_path)
+
+    assert result == "https://example.com/test_file.docx"
+    mock_path.assert_called_once_with(file_path)
+    mock_path.return_value.open.assert_called_once_with("r")
+    mock_client.md_to_docx.assert_called_once_with("# Test MD")
+    mock_os_access.assert_called_once_with(mock_path.return_value, mocker.ANY)
