@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 from typing import Any, Dict, List
 
 from mcp.server.fastmcp import FastMCP
@@ -37,6 +38,27 @@ def md_to_pdf(markdown_text: str, pdf_template_id: str | None = None) -> str:
 
 
 @mcp.tool()
+def md_file_to_pdf(md_file_full_path: str, pdf_template_id: str | None = None) -> str:
+    """
+    Convert a Markdown file to PDF and return the download URL.
+
+    Args:
+        md_file_full_path: Path to the local Markdown file
+        pdf_template_id: Optional ID of the PDF template to use.
+        If not provided, the default template will be used
+
+    Returns:
+        The URL to download the generated PDF
+    """
+    if not md_file_full_path.startswith("/"):
+        raise ValueError("md_file_full_path must start with '/'")
+
+    with Path(md_file_full_path).open("r") as f:
+        md_text = f.read()
+    return client.md_to_pdf(md_text, pdf_template_id=pdf_template_id)
+
+
+@mcp.tool()
 def md_to_docx(markdown_text: str) -> str:
     """
     Convert Markdown text to DOCX and return the download URL.
@@ -48,6 +70,25 @@ def md_to_docx(markdown_text: str) -> str:
         The URL to download the generated DOCX
     """
     return client.md_to_docx(markdown_text)
+
+
+@mcp.tool()
+def md_file_to_docx(md_file_full_path: str) -> str:
+    """
+    Convert a Markdown file to DOCX and return the download URL.
+
+    Args:
+        md_file_full_path: Path to the local Markdown file
+
+    Returns:
+        The URL to download the generated DOCX
+    """
+    if not md_file_full_path.startswith("/"):
+        raise ValueError("md_file_full_path must start with '/'")
+
+    with Path(md_file_full_path).open("r") as f:
+        md_text = f.read()
+    return client.md_to_docx(md_text)
 
 
 @mcp.tool()
