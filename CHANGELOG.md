@@ -4,6 +4,13 @@
 
 フォーマットは[Keep a Changelog](https://keepachangelog.com/ja/)に基づいています。
 
+## [v0.1.1] - 2025-05-09
+
+### 追加
+
+- ローカルの Markdown ファイルパスを指定して PDF に変換する MCP ツール (`md_file_to_pdf`) を追加
+- ローカルの Markdown ファイルパスを指定して DOCX に変換する MCP ツール (`md_file_to_docx`) を追加
+
 ## [v0.1.0] - 2025-04-28
 
 ### 追加
