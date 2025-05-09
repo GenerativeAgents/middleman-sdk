@@ -17,7 +17,7 @@ print(f"Current directory: {os.getcwd()}", file=sys.stderr)
 mcp = FastMCP("Middleman Tools")
 
 api_key = os.environ.get("MIDDLEMAN_API_KEY", "")
-base_url = os.environ.get("MIDDLEMAN_BASE_URL_VCR", "https://middleman-ai.com/")
+base_url = os.environ.get("MIDDLEMAN_BASE_URL", "https://middleman-ai.com/")
 client = ToolsClient(api_key=api_key, base_url=base_url)
 
 

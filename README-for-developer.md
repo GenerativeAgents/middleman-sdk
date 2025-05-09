@@ -24,7 +24,7 @@ Claude Desktop アプリケーションの`claude_desktop_config.json`を以下�
       "args": ["/path/to/middleman_ai/mcp/server.py"],
       "env": {
         "MIDDLEMAN_API_KEY": "xxxxx",
-        "MIDDLEMAN_BASE_URL_VCR": "http://0.0.0.0:8000"
+        "MIDDLEMAN_BASE_URL": "http://0.0.0.0:8000"
       }
     }
   }
@@ -53,7 +53,7 @@ Claude Desktop アプリケーションの`claude_desktop_config.json`を以下�
       ],
       "env": {
         "MIDDLEMAN_API_KEY": "xxxxx",
-        "MIDDLEMAN_BASE_URL_VCR": "https://stg.middleman-ai.com/"
+        "MIDDLEMAN_BASE_URL": "https://stg.middleman-ai.com/"
       }
     }
   }
