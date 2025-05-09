@@ -21,7 +21,7 @@ def client() -> ToolsClient:
         ToolsClient: テスト用のクライアントインスタンス
     """
     return ToolsClient(
-        base_url=os.getenv("MIDDLEMAN_BASE_URL_VCR") or "https://middleman-ai.com",
+        base_url=os.getenv("MIDDLEMAN_BASE_URL") or "https://middleman-ai.com",
         api_key=os.getenv("MIDDLEMAN_API_KEY_VCR") or "",
     )
 

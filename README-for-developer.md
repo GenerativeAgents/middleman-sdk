@@ -23,7 +23,8 @@ Claude Desktop アプリケーションの`claude_desktop_config.json`を以下�
       "command": "/path/to/python",
       "args": ["/path/to/middleman_ai/mcp/server.py"],
       "env": {
-        "MIDDLEMAN_API_KEY": "xxxxx"
+        "MIDDLEMAN_API_KEY": "xxxxx",
+        "MIDDLEMAN_BASE_URL": "http://0.0.0.0:8000"
       }
     }
   }
@@ -31,6 +32,8 @@ Claude Desktop アプリケーションの`claude_desktop_config.json`を以下�
 ```
 
 ### PyPI テスト環境で MCP サーバー実行
+
+⚠ 配布直後、最新のバージョンが反映されるまで数分かかることがあります。
 
 ```json
 {
@@ -45,11 +48,12 @@ Claude Desktop アプリケーションの`claude_desktop_config.json`を以下�
         "--index-strategy",
         "unsafe-best-match",
         "--from",
-        "middleman-ai==0.0.x",
+        "middleman-ai",
         "mcp-server"
       ],
       "env": {
-        "MIDDLEMAN_API_KEY": "xxxxx"
+        "MIDDLEMAN_API_KEY": "xxxxx",
+        "MIDDLEMAN_BASE_URL": "https://stg.middleman-ai.com/"
       }
     }
   }

@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 from typing import Any, Dict, List
 
 from mcp.server.fastmcp import FastMCP
@@ -16,7 +17,8 @@ print(f"Current directory: {os.getcwd()}", file=sys.stderr)
 mcp = FastMCP("Middleman Tools")
 
 api_key = os.environ.get("MIDDLEMAN_API_KEY", "")
-client = ToolsClient(api_key=api_key)
+base_url = os.environ.get("MIDDLEMAN_BASE_URL", "https://middleman-ai.com/")
+client = ToolsClient(api_key=api_key, base_url=base_url)
 
 
 @mcp.tool()
@@ -36,6 +38,32 @@ def md_to_pdf(markdown_text: str, pdf_template_id: str | None = None) -> str:
 
 
 @mcp.tool()
+def md_file_to_pdf(md_file_full_path: str, pdf_template_id: str | None = None) -> str:
+    """
+    Convert a Markdown file to PDF and return the download URL.
+
+    Args:
+        md_file_full_path: Path to the local Markdown file
+        pdf_template_id: Optional ID of the PDF template to use.
+        If not provided, the default template will be used
+
+    Returns:
+        The URL to download the generated PDF
+    """
+    file_path = Path(md_file_full_path)
+    if not file_path.exists():
+        raise ValueError(f"File not found: {md_file_full_path}")
+    if not file_path.is_file():
+        raise ValueError(f"Path is not a file: {md_file_full_path}")
+    if not os.access(file_path, os.R_OK):
+        raise ValueError(f"File not readable: {md_file_full_path}")
+
+    with file_path.open("r") as f:
+        md_text = f.read()
+    return client.md_to_pdf(md_text, pdf_template_id=pdf_template_id)
+
+
+@mcp.tool()
 def md_to_docx(markdown_text: str) -> str:
     """
     Convert Markdown text to DOCX and return the download URL.
@@ -47,6 +75,30 @@ def md_to_docx(markdown_text: str) -> str:
         The URL to download the generated DOCX
     """
     return client.md_to_docx(markdown_text)
+
+
+@mcp.tool()
+def md_file_to_docx(md_file_full_path: str) -> str:
+    """
+    Convert a Markdown file to DOCX and return the download URL.
+
+    Args:
+        md_file_full_path: Path to the local Markdown file
+
+    Returns:
+        The URL to download the generated DOCX
+    """
+    file_path = Path(md_file_full_path)
+    if not file_path.exists():
+        raise ValueError(f"File not found: {md_file_full_path}")
+    if not file_path.is_file():
+        raise ValueError(f"Path is not a file: {md_file_full_path}")
+    if not os.access(file_path, os.R_OK):
+        raise ValueError(f"File not readable: {md_file_full_path}")
+
+    with file_path.open("r") as f:
+        md_text = f.read()
+    return client.md_to_docx(md_text)
 
 
 @mcp.tool()
