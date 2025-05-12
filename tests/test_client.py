@@ -245,3 +245,41 @@ def test_xlsx_to_page_images_file_error(client: ToolsClient) -> None:
     """xlsx_to_page_images ファイルエラー時のテスト。"""
     with pytest.raises(ValidationError, match="Failed to read XLSX file"):
         client.xlsx_to_page_images("nonexistent.xlsx")
+
+
+def test_md_to_docx_success(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """md_to_docx成功時のテスト。"""
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    result = client.md_to_docx("# Test")
+
+    assert result == "https://example.com/test.pdf"
+    mock_post.assert_called_once_with(
+        "https://middleman-ai.com/api/v1/tools/md-to-docx",
+        json={"markdown": "# Test", "template_id": None},
+        timeout=30.0,
+    )
+
+
+def test_md_to_docx_success_with_template_id(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """md_to_docx成功時のテスト（template_id指定あり）。"""
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    result = client.md_to_docx(
+        "# Test",
+        template_id="00000000-0000-0000-0000-000000000001",
+    )
+
+    assert result == "https://example.com/test.pdf"
+    mock_post.assert_called_once_with(
+        "https://middleman-ai.com/api/v1/tools/md-to-docx",
+        json={
+            "markdown": "# Test",
+            "template_id": "00000000-0000-0000-0000-000000000001",
+        },
+        timeout=30.0,
+    )

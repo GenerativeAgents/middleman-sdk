@@ -1,6 +1,6 @@
 """LangChainのMarkdown to DOCX変換ツール。"""
 
-from typing import Any
+from typing import Any, Optional
 
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, Field
@@ -14,6 +14,10 @@ class MdToDocxInput(BaseModel):
     text: str = Field(
         ...,
         description="変換対象のMarkdown文字列。有効なMarkdown形式である必要があります。",
+    )
+    template_id: Optional[str] = Field(
+        default=None,
+        description="使用するテンプレートのID（任意）",
     )
 
 
@@ -39,25 +43,27 @@ class MdToDocxTool(BaseTool):
         kwargs["client"] = client
         super().__init__(**kwargs)
 
-    def _run(self, text: str) -> str:
+    def _run(self, text: str, template_id: Optional[str] = None) -> str:
         """同期的にMarkdown文字列をDOCXに変換します。
 
         Args:
             text: 変換対象のMarkdown文字列
+            template_id: 使用するテンプレートのID（任意）
 
         Returns:
             str: 生成されたDOCXのURL
         """
-        return self.client.md_to_docx(text)
+        return self.client.md_to_docx(markdown_text=text, template_id=template_id)
 
-    async def _arun(self, text: str) -> str:
+    async def _arun(self, text: str, template_id: Optional[str] = None) -> str:
         """非同期的にMarkdown文字列をDOCXに変換します。
 
         Args:
             text: 変換対象のMarkdown文字列
+            template_id: 使用するテンプレートのID（任意）
 
         Returns:
             str: 生成されたDOCXのURL
         """
         # 現時点では同期メソッドを呼び出し
-        return self._run(text)
+        return self._run(text=text, template_id=template_id)

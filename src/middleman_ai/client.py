@@ -2,7 +2,7 @@
 
 import json
 import logging
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Optional, cast
 
 import requests
 from pydantic import BaseModel, Field
@@ -177,23 +177,27 @@ class ToolsClient:
         except requests.exceptions.RequestException as e:
             raise ConnectionError() from e
 
-    def md_to_docx(self, markdown_text: str) -> str:
+    def md_to_docx(self, markdown_text: str, template_id: Optional[str] = None) -> str:
         """Markdown文字列をDOCXに変換し、DOCXのダウンロードURLを返します。
 
         Args:
             markdown_text: 変換対象のMarkdown文字列
+            template_id: 使用するテンプレートのID（任意）
 
         Returns:
             str: 生成されたDOCXのURL
 
         Raises:
             ValidationError: 入力データが不正
-            その他、_handle_responseで定義される例外
+            ConnectionError: API接続に失敗した場合
+            ForbiddenError: API認証に失敗した場合
+            NotFoundError: リソースが見つからなかった場合
+            InternalError: サーバ内部エラーが発生した場合
         """
         try:
             response = self.session.post(
                 f"{self.base_url}/api/v1/tools/md-to-docx",
-                json={"markdown": markdown_text},
+                json={"markdown": markdown_text, "template_id": template_id},
                 timeout=self.timeout,
             )
             data = self._handle_response(response)
@@ -201,6 +205,8 @@ class ToolsClient:
             return result.docx_url
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
+        except requests.exceptions.RequestException as e:
+            raise ConnectionError() from e
 
     def pdf_to_page_images(self, pdf_file_path: str) -> List[Dict[str, Any]]:
         """PDFファイルをアップロードしてページごとに画像化し、それぞれの画像URLを返します。

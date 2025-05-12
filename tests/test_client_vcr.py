@@ -92,6 +92,30 @@ def test_md_to_docx_vcr(client: ToolsClient) -> None:
     assert "/s/" in docx_url
 
 
+@pytest.mark.vcr()
+def test_md_to_docx_with_template_id_vcr(client: ToolsClient) -> None:
+    """ToolsClient.md_to_docxの実際のAPIを使用したテスト。テンプレートID指定あり。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    test_markdown = """# Test Heading
+
+    This is a test markdown document.
+
+    ## Section 1
+    - Item 1
+    - Item 2
+    """
+    docx_url = client.md_to_docx(
+        markdown_text=test_markdown,
+        template_id=os.getenv("MIDDLEMAN_TEST_DOCX_TEMPLATE_ID") or "",
+    )
+    assert docx_url.startswith("https://")
+    assert "/s/" in docx_url
+
+
 # マルチパートの場合リクエストごとにファイルがどこで分割されるかが異なるようなので
 # bodyをマッチ判定の対象外にしている
 @pytest.mark.vcr(match_on=["method", "scheme", "port", "path", "query"])

@@ -54,7 +54,8 @@ def md_to_pdf(template_id: str | None = None) -> None:
 
 
 @cli.command()
-def md_to_docx() -> None:
+@click.argument("template_id", required=False)
+def md_to_docx(template_id: str | None = None) -> None:
     """Convert Markdown to DOCX."""
     print("md_to_docx コマンドを実行しています...")
     try:
@@ -68,9 +69,11 @@ def md_to_docx() -> None:
             length=1, label="DOCXに変換中...", show_eta=False
         ) as bar:
             print("APIを呼び出しています...")
-            docx_url = client.md_to_docx(markdown_text)
+            docx_url = client.md_to_docx(markdown_text, template_id=template_id)
             bar.update(1)
         print(f"変換結果URL: {docx_url}")
+        if template_id:
+            print(f"使用したテンプレートID: {template_id}")
     except MiddlemanBaseException as e:
         print(f"エラーが発生しました: {e!s}")
         raise click.ClickException(str(e)) from e

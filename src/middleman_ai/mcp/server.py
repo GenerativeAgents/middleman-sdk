@@ -36,17 +36,19 @@ def md_to_pdf(markdown_text: str, pdf_template_id: str | None = None) -> str:
 
 
 @mcp.tool()
-def md_to_docx(markdown_text: str) -> str:
+def md_to_docx(markdown_text: str, template_id: str | None = None) -> str:
     """
     Convert Markdown text to DOCX and return the download URL.
 
     Args:
         markdown_text: The Markdown text to convert
+        template_id: Optional ID of the DOCX template to use.
+        If not provided, the default template will be used
 
     Returns:
         The URL to download the generated DOCX
     """
-    return client.md_to_docx(markdown_text)
+    return client.md_to_docx(markdown_text, template_id=template_id)
 
 
 @mcp.tool()
