@@ -35,7 +35,7 @@ def test_md_to_pdf_tool(client: ToolsClient, mocker: "MockerFixture") -> None:
     )
 
     tool = MdToPdfTool(client=client)
-    result = tool._run("# Test")
+    result = tool.run("# Test")
 
     assert result == "https://example.com/test.pdf"
     mock_md_to_pdf.assert_called_once_with("# Test", pdf_template_id=None)
@@ -52,7 +52,12 @@ def test_md_to_pdf_tool_with_template_id(
     )
 
     tool = MdToPdfTool(client=client)
-    result = tool._run("# Test", pdf_template_id="00000000-0000-0000-0000-000000000001")
+    result = tool.run(
+        {
+            "text": "# Test",
+            "pdf_template_id": "00000000-0000-0000-0000-000000000001",
+        }
+    )
 
     assert result == "https://example.com/test.pdf"
     mock_md_to_pdf.assert_called_once_with(
@@ -75,7 +80,7 @@ def test_md_to_pdf_tool_with_default_template_id(
         client=client,
         default_template_id="00000000-0000-0000-0000-000000000001",
     )
-    result = tool._run("# Test")
+    result = tool.run("# Test")
 
     assert result == "https://example.com/test.pdf"
     mock_md_to_pdf.assert_called_once_with(
@@ -98,9 +103,11 @@ def test_md_to_pdf_tool_with_both_template_id_and_default_template_id(
         client=client,
         default_template_id="00000000-0000-0000-0000-000000000001",
     )
-    result = tool._run(
-        "# Test",
-        pdf_template_id="00000000-0000-0000-0000-000000000002",
+    result = tool.run(
+        {
+            "text": "# Test",
+            "pdf_template_id": "00000000-0000-0000-0000-000000000002",
+        }
     )
 
     assert result == "https://example.com/test.pdf"
@@ -119,10 +126,89 @@ def test_md_to_docx_tool(client: ToolsClient, mocker: "MockerFixture") -> None:
     )
 
     tool = MdToDocxTool(client=client)
-    result = tool._run("# Test")
+    result = tool.run("# Test")
 
     assert result == "https://example.com/test.docx"
-    mock_md_to_docx.assert_called_once_with("# Test")
+    mock_md_to_docx.assert_called_once_with("# Test", docx_template_id=None)
+
+
+def test_md_to_docx_tool_with_template_id(
+    client: ToolsClient,
+    mocker: "MockerFixture",
+) -> None:
+    """MdToDocxToolのテスト。"""
+    mock_md_to_docx = mocker.patch.object(
+        client,
+        "md_to_docx",
+        return_value="https://example.com/test.docx",
+    )
+
+    tool = MdToDocxTool(client=client)
+    result = tool.run(
+        {
+            "text": "# Test",
+            "docx_template_id": "00000000-0000-0000-0000-000000000001",
+        }
+    )
+
+    assert result == "https://example.com/test.docx"
+    mock_md_to_docx.assert_called_once_with(
+        "# Test",
+        docx_template_id="00000000-0000-0000-0000-000000000001",
+    )
+
+
+def test_md_to_docx_tool_with_default_template_id(
+    client: ToolsClient,
+    mocker: "MockerFixture",
+) -> None:
+    """MdToDocxToolのテスト。"""
+    mock_md_to_docx = mocker.patch.object(
+        client,
+        "md_to_docx",
+        return_value="https://example.com/test.docx",
+    )
+
+    tool = MdToDocxTool(
+        client=client,
+        default_template_id="00000000-0000-0000-0000-000000000001",
+    )
+    result = tool.run("# Test")
+
+    assert result == "https://example.com/test.docx"
+    mock_md_to_docx.assert_called_once_with(
+        "# Test",
+        docx_template_id="00000000-0000-0000-0000-000000000001",
+    )
+
+
+def test_md_to_docx_tool_with_both_template_id_and_default_template_id(
+    client: ToolsClient,
+    mocker: "MockerFixture",
+) -> None:
+    """MdToDocxToolのテスト。"""
+    mock_md_to_docx = mocker.patch.object(
+        client,
+        "md_to_docx",
+        return_value="https://example.com/test.docx",
+    )
+
+    tool = MdToDocxTool(
+        client=client,
+        default_template_id="00000000-0000-0000-0000-000000000001",
+    )
+    result = tool.run(
+        {
+            "text": "# Test",
+            "docx_template_id": "00000000-0000-0000-0000-000000000002",
+        }
+    )
+
+    assert result == "https://example.com/test.docx"
+    mock_md_to_docx.assert_called_once_with(
+        "# Test",
+        docx_template_id="00000000-0000-0000-0000-000000000002",
+    )
 
 
 def test_pdf_to_page_images_tool(client: ToolsClient, mocker: "MockerFixture") -> None:
@@ -138,7 +224,7 @@ def test_pdf_to_page_images_tool(client: ToolsClient, mocker: "MockerFixture") -
     )
 
     tool = PdfToPageImagesTool(client=client)
-    result = tool._run("/path/to/test.pdf")
+    result = tool.run("/path/to/test.pdf")
 
     assert isinstance(result, str)
     assert "https://example.com/page1.png" in result
@@ -159,7 +245,7 @@ def test_pptx_to_page_images_tool(client: ToolsClient, mocker: "MockerFixture") 
     )
 
     tool = PptxToPageImagesTool(client=client)
-    result = tool._run("/path/to/test.pptx")
+    result = tool.run("/path/to/test.pptx")
 
     assert isinstance(result, str)
     assert "https://example.com/slide1.png" in result
@@ -180,7 +266,7 @@ def test_docx_to_page_images_tool(client: ToolsClient, mocker: "MockerFixture") 
     )
 
     tool = DocxToPageImagesTool(client=client)
-    result = tool._run("/path/to/test.docx")
+    result = tool.run("/path/to/test.docx")
 
     assert isinstance(result, str)
     assert "https://example.com/page1.png" in result
@@ -201,7 +287,7 @@ def test_xlsx_to_page_images_tool(client: ToolsClient, mocker: "MockerFixture") 
     )
 
     tool = XlsxToPageImagesTool(client=client)
-    result = tool._run("/path/to/test.xlsx")
+    result = tool.run("/path/to/test.xlsx")
 
     assert isinstance(result, str)
     assert "https://example.com/sheet1.png" in result
@@ -253,10 +339,10 @@ def test_json_to_pptx_analyze_tool_without_default_template_id(
 
     # テンプレートIDが指定されていない場合はエラー
     with pytest.raises(ValueError, match="テンプレートIDが指定されていません"):
-        tool._run("")
+        tool.run("")
 
     # テンプレートIDが指定された場合は成功
-    result = tool._run("template-123")
+    result = tool.run("template-123")
     assert isinstance(result, str)
     assert "Title Slide" in result
     assert "Content Slide" in result
@@ -312,7 +398,7 @@ def test_json_to_pptx_analyze_tool_with_default_template_id(
     )
 
     tool = JsonToPptxAnalyzeTool(client=client, default_template_id="template-123")
-    result = tool._run("")
+    result = tool.run("")
 
     assert isinstance(result, str)
     assert "Title Slide" in result
@@ -369,7 +455,7 @@ def test_json_to_pptx_analyze_tool_with_both_template_id_and_default_template_id
     )
 
     tool = JsonToPptxAnalyzeTool(client=client, default_template_id="template-123")
-    result = tool._run(template_id="template-456")
+    result = tool.run("template-456")
 
     assert isinstance(result, str)
     assert "Title Slide" in result
@@ -418,18 +504,22 @@ def test_json_to_pptx_execute_tool_without_default_template_id(
 
     # テンプレートIDが指定されていない場合はエラー
     with pytest.raises(ValueError, match="テンプレートIDが指定されていません"):
-        tool._run(
-            presentation=Presentation.model_validate(
-                presentation_data,
-            ).model_dump_json(),
+        tool.run(
+            {
+                "presentation": Presentation.model_validate(
+                    presentation_data,
+                ).model_dump_json(),
+            }
         )
 
     # テンプレートIDが指定された場合は成功
-    result = tool._run(
-        presentation=Presentation.model_validate(
-            presentation_data,
-        ).model_dump_json(),
-        template_id=template_id,
+    result = tool.run(
+        {
+            "presentation": Presentation.model_validate(
+                presentation_data,
+            ).model_dump_json(),
+            "template_id": template_id,
+        }
     )
     assert result == "https://example.com/result.pptx"
     mock_execute.assert_called_once_with(
@@ -470,10 +560,12 @@ def test_json_to_pptx_execute_tool_with_default_template_id(
     )
 
     tool = JsonToPptxExecuteTool(client=client, default_template_id=template_id)
-    result = tool._run(
-        presentation=Presentation.model_validate(
-            presentation_data,
-        ).model_dump_json(),
+    result = tool.run(
+        {
+            "presentation": Presentation.model_validate(
+                presentation_data,
+            ).model_dump_json(),
+        }
     )
 
     assert result == "https://example.com/result.pptx"
@@ -514,11 +606,13 @@ def test_json_to_pptx_execute_tool_with_both_template_id_and_default_template_id
     )
 
     tool = JsonToPptxExecuteTool(client=client, default_template_id="template-123")
-    result = tool._run(
-        presentation=Presentation.model_validate(
-            presentation_data,
-        ).model_dump_json(),
-        template_id="template-456",
+    result = tool.run(
+        {
+            "presentation": Presentation.model_validate(
+                presentation_data,
+            ).model_dump_json(),
+            "template_id": "template-456",
+        }
     )
 
     assert result == "https://example.com/result.pptx"
@@ -543,7 +637,7 @@ def test_json_to_pptx_analyze_tool_template_id_error(
     # テンプレートIDが指定されていない場合
     tool = JsonToPptxAnalyzeTool(client=client)
     with pytest.raises(ValueError, match="テンプレートIDが指定されていません"):
-        tool._run("")
+        tool.run("")
 
     mock_analyze.assert_not_called()
 
@@ -562,7 +656,11 @@ def test_json_to_pptx_execute_tool_template_id_error(
     tool = JsonToPptxExecuteTool(client=client)
     test_json = '{"slides": []}'
     with pytest.raises(ValueError, match="テンプレートIDが指定されていません"):
-        tool._run(test_json)
+        tool.run(
+            {
+                "presentation": test_json,
+            }
+        )
 
     mock_execute.assert_not_called()
 
@@ -579,6 +677,11 @@ def test_json_to_pptx_execute_tool_json_error(
 
     tool = JsonToPptxExecuteTool(client=client)
     with pytest.raises(ValueError, match="不正なJSON形式です"):
-        tool._run("invalid json", template_id="template-123")
+        tool.run(
+            {
+                "presentation": "invalid json",
+                "template_id": "template-123",
+            }
+        )
 
     mock_execute.assert_not_called()

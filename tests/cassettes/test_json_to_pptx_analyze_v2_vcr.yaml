@@ -1,63 +1,64 @@
 interactions:
-- request:
-    body: '{"pptx_template_id": "19823658-6af5-4560-ab87-632da39511de"}'
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '60'
-      Content-Type:
-      - application/json
-      User-Agent:
-      - python-requests/2.32.3
-      authorization:
-      - DUMMY
-    method: POST
-    uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/analyze
-  response:
-    body:
-      string: '{"important_remark_for_user":"- The ''slides'' field contains the slides
-        definition provided in the template.\n- Generate the presentation content
-        by filling in the placeholder values for the slide you selected to use according
-        to the JSON schema defined in ''json_to_pptx_presentation_schema''.\n- When
-        calling the json-to-pptx/execute endpoint, use the provided schema to structure
-        your ''presentation'' field data. \n- The URL expires in 1 hour. Please note
-        that you will not be able to download the file after it has expired.","slides":[{"position":1,"type":"Title","description":"Please
-        use this slide to create title slide of presentation","placeholders":[{"name":"title","description":"Presentation
-        title"}]},{"position":2,"type":"Common","description":"Please use this slide
-        to create content.","placeholders":[{"name":"title","description":"Input slide
-        title here"},{"name":"content","description":"Input slide content here"},{"name":"image","description":"Input
-        slide image url here"}]}],"json_to_pptx_presentation_schema":{"$defs":{"Placeholder":{"properties":{"name":{"description":"The
-        key of the placeholder","title":"Name","type":"string"},"content":{"description":"The
-        content of the placeholder","title":"Content","type":"string"}},"required":["name","content"],"title":"Placeholder","type":"object"},"Slide":{"properties":{"type":{"description":"The
-        type of the slide","title":"Type","type":"string"},"placeholders":{"description":"The
-        placeholders of the slide","items":{"$ref":"#/$defs/Placeholder"},"title":"Placeholders","type":"array"},"speaker_notes":{"anyOf":[{"type":"string"},{"type":"null"}],"default":null,"description":"Additional
-        notes for the slide intended for the presenter. These notes provide extra
-        context or cues during the presentation and are not visible to the audience.","title":"Speaker
-        Notes"}},"required":["type","placeholders"],"title":"Slide","type":"object"}},"properties":{"slides":{"description":"The
-        slides of the presentation","items":{"$ref":"#/$defs/Slide"},"title":"Slides","type":"array"}},"required":["slides"],"title":"Presentation","type":"object"}}'
-    headers:
-      content-encoding:
-      - gzip
-      content-type:
-      - application/json
-      date:
-      - FILTERED
-      server:
-      - FILTERED
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-middleware-rewrite:
-      - FILTERED
-      x-request-id:
-      - FILTERED
-    status:
-      code: 200
-      message: OK
+  - request:
+      body: '{"pptx_template_id": "TEMPLATE_ID"}'
+      headers:
+        Accept:
+          - "*/*"
+        Accept-Encoding:
+          - gzip, deflate, zstd
+        Connection:
+          - keep-alive
+        Content-Length:
+          - "60"
+        Content-Type:
+          - application/json
+        User-Agent:
+          - python-requests/2.32.3
+        authorization:
+          - DUMMY
+      method: POST
+      uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/analyze
+    response:
+      body:
+        string:
+          '{"important_remark_for_user":"- The ''slides'' field contains the slides
+          definition provided in the template.\n- Generate the presentation content
+          by filling in the placeholder values for the slide you selected to use according
+          to the JSON schema defined in ''json_to_pptx_presentation_schema''.\n- When
+          calling the json-to-pptx/execute endpoint, use the provided schema to structure
+          your ''presentation'' field data. \n- The URL expires in 1 hour. Please note
+          that you will not be able to download the file after it has expired.","slides":[{"position":1,"type":"Title","description":"Please
+          use this slide to create title slide of presentation","placeholders":[{"name":"title","description":"Presentation
+          title"}]},{"position":2,"type":"Common","description":"Please use this slide
+          to create content.","placeholders":[{"name":"title","description":"Input slide
+          title here"},{"name":"content","description":"Input slide content here"},{"name":"image","description":"Input
+          slide image url here"}]}],"json_to_pptx_presentation_schema":{"$defs":{"Placeholder":{"properties":{"name":{"description":"The
+          key of the placeholder","title":"Name","type":"string"},"content":{"description":"The
+          content of the placeholder","title":"Content","type":"string"}},"required":["name","content"],"title":"Placeholder","type":"object"},"Slide":{"properties":{"type":{"description":"The
+          type of the slide","title":"Type","type":"string"},"placeholders":{"description":"The
+          placeholders of the slide","items":{"$ref":"#/$defs/Placeholder"},"title":"Placeholders","type":"array"},"speaker_notes":{"anyOf":[{"type":"string"},{"type":"null"}],"default":null,"description":"Additional
+          notes for the slide intended for the presenter. These notes provide extra
+          context or cues during the presentation and are not visible to the audience.","title":"Speaker
+          Notes"}},"required":["type","placeholders"],"title":"Slide","type":"object"}},"properties":{"slides":{"description":"The
+          slides of the presentation","items":{"$ref":"#/$defs/Slide"},"title":"Slides","type":"array"}},"required":["slides"],"title":"Presentation","type":"object"}}'
+      headers:
+        content-encoding:
+          - gzip
+        content-type:
+          - application/json
+        date:
+          - FILTERED
+        server:
+          - FILTERED
+        transfer-encoding:
+          - chunked
+        vary:
+          - Accept-Encoding
+        x-middleware-rewrite:
+          - FILTERED
+        x-request-id:
+          - FILTERED
+      status:
+        code: 200
+        message: OK
 version: 1

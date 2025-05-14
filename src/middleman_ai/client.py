@@ -9,10 +9,10 @@ from pydantic import BaseModel, Field
 from pydantic import ValidationError as PydanticValidationError
 
 from .exceptions import (
+    BadRequestError,
     ConnectionError,
     ForbiddenError,
     InternalError,
-    MiddlemanBaseException,
     NotEnoughCreditError,
     NotFoundError,
     ValidationError,
@@ -29,6 +29,7 @@ from .models import (
 )
 
 # HTTPステータスコード
+HTTP_BAD_REQUEST = 400
 HTTP_PAYMENT_REQUIRED = 402
 HTTP_UNAUTHORIZED = 401
 HTTP_FORBIDDEN = 403
@@ -116,6 +117,8 @@ class ToolsClient:
             except json.JSONDecodeError:
                 pass
 
+            if response.status_code == HTTP_BAD_REQUEST:
+                raise BadRequestError() from e
             if response.status_code == HTTP_PAYMENT_REQUIRED:
                 raise NotEnoughCreditError() from e
             if response.status_code in (HTTP_UNAUTHORIZED, HTTP_FORBIDDEN):
@@ -141,7 +144,7 @@ class ToolsClient:
                     f"Validation error: {error_body}" if error_body else str(e)
                 )
                 raise ValidationError(error_message) from e
-            raise MiddlemanBaseException(str(e)) from e
+            raise BadRequestError(str(e)) from e
         except requests.exceptions.RequestException as e:
             raise ConnectionError() from e
         except json.JSONDecodeError as e:
@@ -152,6 +155,7 @@ class ToolsClient:
 
         Args:
             markdown_text: 変換対象のMarkdown文字列
+            pdf_template_id: テンプレートID(UUID)
 
         Returns:
             str: 生成されたPDFのURL
@@ -177,11 +181,16 @@ class ToolsClient:
         except requests.exceptions.RequestException as e:
             raise ConnectionError() from e
 
-    def md_to_docx(self, markdown_text: str) -> str:
+    def md_to_docx(
+        self,
+        markdown_text: str,
+        docx_template_id: str | None = None,
+    ) -> str:
         """Markdown文字列をDOCXに変換し、DOCXのダウンロードURLを返します。
 
         Args:
             markdown_text: 変換対象のMarkdown文字列
+            docx_template_id: テンプレートID(UUID)
 
         Returns:
             str: 生成されたDOCXのURL
@@ -193,7 +202,10 @@ class ToolsClient:
         try:
             response = self.session.post(
                 f"{self.base_url}/api/v1/tools/md-to-docx",
-                json={"markdown": markdown_text},
+                json={
+                    "markdown": markdown_text,
+                    "docx_template_id": docx_template_id,
+                },
                 timeout=self.timeout,
             )
             data = self._handle_response(response)

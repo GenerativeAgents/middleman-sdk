@@ -32,7 +32,7 @@ def client() -> ToolsClient:
     """
     return ToolsClient(
         base_url=os.getenv("MIDDLEMAN_BASE_URL") or "https://middleman-ai.com",
-        api_key=os.getenv("MIDDLEMAN_API_KEY_VCR") or "",
+        api_key=os.getenv("MIDDLEMAN_API_KEY") or "",
     )
 
 

@@ -1,5 +1,3 @@
-# ruff: noqa: PLR2004
-
 """LangChainツール群のVCRテストモジュール。"""
 
 import os
@@ -22,7 +20,7 @@ def client() -> ToolsClient:
     """
     return ToolsClient(
         base_url=os.getenv("MIDDLEMAN_BASE_URL") or "https://middleman-ai.com",
-        api_key=os.getenv("MIDDLEMAN_API_KEY_VCR") or "",
+        api_key=os.getenv("MIDDLEMAN_API_KEY") or "",
     )
 
 
@@ -88,6 +86,30 @@ def test_md_to_docx_vcr(client: ToolsClient) -> None:
     - Item 2
     """
     docx_url = client.md_to_docx(markdown_text=test_markdown)
+    assert docx_url.startswith("https://")
+    assert "/s/" in docx_url
+
+
+@pytest.mark.vcr()
+def test_md_to_docx_with_template_id_vcr(client: ToolsClient) -> None:
+    """ToolsClient.md_to_docxの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    test_markdown = """# Test Heading
+
+    This is a test markdown document.
+
+    ## Section 1
+    - Item 1
+    - Item 2
+    """
+    docx_url = client.md_to_docx(
+        markdown_text=test_markdown,
+        docx_template_id=os.getenv("MIDDLEMAN_TEST_DOCX_TEMPLATE_ID") or "",
+    )
     assert docx_url.startswith("https://")
     assert "/s/" in docx_url
 

@@ -1,7 +1,6 @@
 interactions:
   - request:
-      body:
-        '{"pptx_template_id": "19823658-6af5-4560-ab87-632da39511de", "presentation":
+      body: '{"pptx_template_id": "TEMPLATE_ID", "presentation":
         {"slides": [{"type": "title", "placeholders": [{"name": "title", "content":
         "Test Title"}, {"name": "subtitle", "content": "Test Subtitle"}]}]}}'
       headers:
