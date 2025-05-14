@@ -49,7 +49,6 @@ def _mask_request_uri(request: Any) -> Any:
 def scrub_request(request: Any) -> Any:
     """
     環境差異によってエラーが発生しないよう、環境依存のパラメータの値をカセットに記録する差異に統一する
-    また、
     """
     # リクエストのURI からホスト名を標準化してmiddleman-ai.comに置換する
     # 本番環境以外のURLが露出することを避けるための処置です

@@ -44,6 +44,7 @@ class MdToDocxTool(BaseTool):
 
         Args:
             client: Middleman.ai APIクライアント
+            default_template_id: デフォルトのDOCXテンプレートのID（UUID）
             **kwargs: BaseTool用の追加引数
         """
         kwargs["client"] = client
