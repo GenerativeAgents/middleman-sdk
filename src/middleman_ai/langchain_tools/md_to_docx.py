@@ -15,6 +15,10 @@ class MdToDocxInput(BaseModel):
         ...,
         description="変換対象のMarkdown文字列。有効なMarkdown形式である必要があります。",
     )
+    docx_template_id: str | None = Field(
+        None,
+        description="DOCXテンプレートのID（UUID）。プレゼンテーションの生成に使用します。省略した場合はデフォルトのテンプレートが利用されます。ユーザーからテンプレートIDの共有がない場合は省略してください。",
+    )
 
 
 class MdToDocxTool(BaseTool):
@@ -28,8 +32,14 @@ class MdToDocxTool(BaseTool):
     )
     args_schema: type[BaseModel] = MdToDocxInput
     client: ToolsClient = Field(..., exclude=True)
+    default_template_id: str | None = Field(..., exclude=True)
 
-    def __init__(self, client: ToolsClient, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        client: ToolsClient,
+        default_template_id: str | None = None,
+        **kwargs: Any,
+    ) -> None:
         """ツールを初期化します。
 
         Args:
@@ -37,9 +47,10 @@ class MdToDocxTool(BaseTool):
             **kwargs: BaseTool用の追加引数
         """
         kwargs["client"] = client
+        kwargs["default_template_id"] = default_template_id
         super().__init__(**kwargs)
 
-    def _run(self, text: str) -> str:
+    def _run(self, text: str, docx_template_id: str | None = None) -> str:
         """同期的にMarkdown文字列をDOCXに変換します。
 
         Args:
@@ -48,9 +59,14 @@ class MdToDocxTool(BaseTool):
         Returns:
             str: 生成されたDOCXのURL
         """
-        return self.client.md_to_docx(text)
+        docx_template_id_to_use = (
+            docx_template_id
+            if docx_template_id is not None
+            else self.default_template_id
+        )
+        return self.client.md_to_docx(text, docx_template_id=docx_template_id_to_use)
 
-    async def _arun(self, text: str) -> str:
+    async def _arun(self, text: str, docx_template_id: str | None = None) -> str:
         """非同期的にMarkdown文字列をDOCXに変換します。
 
         Args:
@@ -60,4 +76,4 @@ class MdToDocxTool(BaseTool):
             str: 生成されたDOCXのURL
         """
         # 現時点では同期メソッドを呼び出し
-        return self._run(text)
+        return self._run(text, docx_template_id)
