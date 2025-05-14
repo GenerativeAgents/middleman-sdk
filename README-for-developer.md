@@ -53,7 +53,7 @@ Claude Desktop アプリケーションの`claude_desktop_config.json`を以下�
       ],
       "env": {
         "MIDDLEMAN_API_KEY": "xxxxx",
-        "MIDDLEMAN_BASE_URL": "https://stg.middleman-ai.com/"
+        "MIDDLEMAN_BASE_URL": "${各環境のAPIベースURL}"
       }
     }
   }

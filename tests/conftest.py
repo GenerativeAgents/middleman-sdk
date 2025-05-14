@@ -75,7 +75,10 @@ VCRHTTPResponse.version_string = property(_get_version_string, _set_version_stri
 
 
 def scrub_uri_request(request: Any) -> Any:
-    """リクエストのURI からホスト名を標準化してmiddleman-ai.comに置換する"""
+    """
+    リクエストのURI からホスト名を標準化してmiddleman-ai.comに置換する
+    本番環境以外のURLが露出することを避けるための処置です
+    """
     req = copy.deepcopy(request)  # ミュータブルに触らず安全に
     p = urlparse(req.uri)
     redacted = urlunparse(
