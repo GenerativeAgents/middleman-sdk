@@ -9,7 +9,7 @@ import click
 from middleman_ai.cli.main import cli
 
 
-def test_md_to_pdf(runner, mock_client):
+def test_md_to_pdf_cli(runner, mock_client):
     """Test md_to_pdf CLI command."""
     mock_client.md_to_pdf.return_value = "https://example.com/test.pdf"
     result = runner.invoke(cli, ["md-to-pdf"], input="# Test")
@@ -18,16 +18,36 @@ def test_md_to_pdf(runner, mock_client):
     mock_client.md_to_pdf.assert_called_once_with("# Test", pdf_template_id=None)
 
 
-def test_md_to_docx(runner, mock_client):
+def test_md_to_pdf_cli_with_template_id(runner, mock_client):
+    mock_client.md_to_pdf.return_value = "https://example.com/test.pdf"
+    result = runner.invoke(cli, ["md-to-pdf", "TEMPLATE_ID"], input="# Test")
+    assert result.exit_code == 0
+    assert "https://example.com/test.pdf" in result.output
+    mock_client.md_to_pdf.assert_called_once_with(
+        "# Test", pdf_template_id="TEMPLATE_ID"
+    )
+
+
+def test_md_to_docx_cli(runner, mock_client):
     """Test md_to_docx CLI command."""
     mock_client.md_to_docx.return_value = "https://example.com/test.docx"
     result = runner.invoke(cli, ["md-to-docx"], input="# Test")
     assert result.exit_code == 0
     assert "https://example.com/test.docx" in result.output
-    mock_client.md_to_docx.assert_called_once_with("# Test")
+    mock_client.md_to_docx.assert_called_once_with("# Test", docx_template_id=None)
 
 
-def test_pdf_to_page_images(runner, mock_client, tmp_path):
+def test_md_to_docx_cli_with_template_id(runner, mock_client):
+    mock_client.md_to_docx.return_value = "https://example.com/test.docx"
+    result = runner.invoke(cli, ["md-to-docx", "TEMPLATE_ID"], input="# Test")
+    assert result.exit_code == 0
+    assert "https://example.com/test.docx" in result.output
+    mock_client.md_to_docx.assert_called_once_with(
+        "# Test", docx_template_id="TEMPLATE_ID"
+    )
+
+
+def test_pdf_to_page_images_cli(runner, mock_client, tmp_path):
     """Test pdf_to_page_images CLI command."""
     mock_client.pdf_to_page_images.return_value = [
         {"page_no": 1, "image_url": "https://example.com/page1.png"},
@@ -42,7 +62,7 @@ def test_pdf_to_page_images(runner, mock_client, tmp_path):
     mock_client.pdf_to_page_images.assert_called_once_with(str(pdf_path))
 
 
-def test_json_to_pptx_analyze(runner, mock_client):
+def test_json_to_pptx_analyze_cli(runner, mock_client):
     """Test json_to_pptx_analyze CLI command."""
     mock_client.json_to_pptx_analyze_v2.return_value = [
         {"type": "title", "placeholders": [{"name": "title", "content": ""}]}
@@ -53,7 +73,7 @@ def test_json_to_pptx_analyze(runner, mock_client):
     mock_client.json_to_pptx_analyze_v2.assert_called_once_with("template-123")
 
 
-def test_json_to_pptx_execute(runner, mock_client):
+def test_json_to_pptx_execute_cli(runner, mock_client):
     """Test json_to_pptx_execute CLI command."""
     mock_client.json_to_pptx_execute_v2.return_value = "https://example.com/result.pptx"
     input_data = {
@@ -72,7 +92,7 @@ def test_json_to_pptx_execute(runner, mock_client):
     mock_client.json_to_pptx_execute_v2.assert_called_once()
 
 
-def test_missing_api_key(runner, mocker):
+def test_missing_api_key_cli(runner, mocker):
     """Test error handling when API key is missing."""
     mocker.patch(
         "middleman_ai.cli.main.get_api_key",
@@ -83,7 +103,7 @@ def test_missing_api_key(runner, mocker):
     assert "API key not set" in result.output
 
 
-def test_invalid_json_input(runner, mock_client):
+def test_invalid_json_input_cli(runner, mock_client):
     """Test error handling for invalid JSON input."""
     result = runner.invoke(
         cli, ["json-to-pptx-execute", "template-123"], input="invalid json"
@@ -92,7 +112,7 @@ def test_invalid_json_input(runner, mock_client):
     assert "Invalid JSON input" in result.output
 
 
-def test_pptx_to_page_images(runner, mock_client, tmp_path) -> None:
+def test_pptx_to_page_images_cli(runner, mock_client, tmp_path) -> None:
     """Test pptx_to_page_images CLI command."""
     mock_client.pptx_to_page_images.return_value = [
         {"page_no": 1, "image_url": "https://example.com/slide1.png"},
@@ -107,7 +127,7 @@ def test_pptx_to_page_images(runner, mock_client, tmp_path) -> None:
     mock_client.pptx_to_page_images.assert_called_once_with(str(pptx_path))
 
 
-def test_docx_to_page_images(runner, mock_client, tmp_path) -> None:
+def test_docx_to_page_images_cli(runner, mock_client, tmp_path) -> None:
     """Test docx_to_page_images CLI command."""
     mock_client.docx_to_page_images.return_value = [
         {"page_no": 1, "image_url": "https://example.com/page1.png"},
@@ -122,7 +142,7 @@ def test_docx_to_page_images(runner, mock_client, tmp_path) -> None:
     mock_client.docx_to_page_images.assert_called_once_with(str(docx_path))
 
 
-def test_xlsx_to_page_images(runner, mock_client, tmp_path) -> None:
+def test_xlsx_to_page_images_cli(runner, mock_client, tmp_path) -> None:
     """Test xlsx_to_page_images CLI command."""
     mock_client.xlsx_to_page_images.return_value = [
         {"sheet_name": "Sheet1", "image_url": "https://example.com/sheet1.png"},
