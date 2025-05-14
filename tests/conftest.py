@@ -1,16 +1,16 @@
 """テスト実行のための設定モジュール。"""
 
-import copy
 import logging
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict
-from urllib.parse import urlparse, urlunparse
 
 import pytest
 from dotenv import load_dotenv
 from vcr.cassette import Cassette  # type: ignore
-from vcr.stubs import VCRHTTPResponse  # type: ignore
+from vcr.stubs import VCRHTTPResponse
+
+from tests.vcr_utils import scrub_request, scrub_response  # type: ignore
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture  # noqa: F401
@@ -67,58 +67,6 @@ def _set_version_string(self: VCRHTTPResponse, value: str) -> None:
 
 
 VCRHTTPResponse.version_string = property(_get_version_string, _set_version_string)
-
-
-def scrub_request(request: Any) -> Any:
-    """
-    環境差異によってエラーが発生しないよう、環境依存のパラメータの値をカセットに記録する差異に統一する
-    また、本番環境以外のURLが露出することを避けるなどカセットに秘匿情報が出ないための処置を行う
-    """
-    # リクエストのURI からホスト名を標準化してmiddleman-ai.comに置換する
-    # 本番環境以外のURLが露出することを避けるための処置です
-    req = copy.deepcopy(request)
-    p = urlparse(req.uri)
-    redacted = urlunparse(
-        (p.scheme, "middleman-ai.com", p.path, p.params, p.query, p.fragment)
-    )
-    req.uri = redacted
-    return req
-
-
-def scrub_response(response: Any) -> Any:
-    """レスポンスの機密情報や環境依存情報を削除・置換する
-
-    特定のヘッダー（x-middleware-rewrite, x-request-id など）を削除し、
-    レスポンス中のURLを標準化します。
-    """
-    # レスポンス本体のディープコピーを作成
-    resp = copy.deepcopy(response)
-
-    # 環境依存の情報が含まれるヘッダーを削除または置換
-    headers_to_filter = [
-        "x-middleware-rewrite",
-        "x-request-id",
-        "date",
-        "server",
-    ]
-
-    for header in headers_to_filter:
-        if header in resp["headers"]:
-            resp["headers"][header] = ["FILTERED"]
-
-    # リダイレクト先URLがあればそれも標準化
-    if "location" in resp["headers"]:
-        location = resp["headers"]["location"][0]
-        p = urlparse(location)
-        if p.netloc and "middleman-ai.com" in p.netloc:
-            standardized = urlunparse(
-                (p.scheme, "middleman-ai.com", p.path, p.params, p.query, p.fragment)
-            )
-            resp["headers"]["location"] = [standardized]
-
-    # レスポンス本文内のURLパターンも置換できますが、ここでは実装していません
-
-    return resp
 
 
 @pytest.fixture(scope="module")

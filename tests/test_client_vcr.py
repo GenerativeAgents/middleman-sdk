@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 import pytest
 
 from middleman_ai.client import Presentation, ToolsClient
-from tests.vcr_utils import generate_filter_request_body_function
 
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest  # noqa: F401
@@ -46,11 +45,7 @@ def test_md_to_pdf_vcr(client: ToolsClient) -> None:
     assert "/s/" in pdf_url
 
 
-@pytest.mark.vcr(
-    before_record_request=generate_filter_request_body_function(
-        "pdf_template_id", "TEMPLATE_ID"
-    ),
-)
+@pytest.mark.vcr()
 def test_md_to_pdf_with_template_id_vcr(client: ToolsClient) -> None:
     """ToolsClient.md_to_pdfの実際のAPIを使用したテスト。
 
@@ -95,12 +90,7 @@ def test_md_to_docx_vcr(client: ToolsClient) -> None:
     assert "/s/" in docx_url
 
 
-@pytest.mark.vcr(
-    before_record_request=generate_filter_request_body_function(
-        "docx_template_id",
-        "TEMPLATE_ID",
-    ),
-)
+@pytest.mark.vcr()
 def test_md_to_docx_with_template_id_vcr(client: ToolsClient) -> None:
     """ToolsClient.md_to_docxの実際のAPIを使用したテスト。
 
@@ -144,12 +134,7 @@ def test_pdf_to_page_images_vcr(client: ToolsClient) -> None:
     assert all("/s/" in page["image_url"] for page in pages)
 
 
-@pytest.mark.vcr(
-    before_record_request=generate_filter_request_body_function(
-        "pptx_template_id",
-        "TEMPLATE_ID",
-    ),
-)
+@pytest.mark.vcr()
 def test_json_to_pptx_analyze_v2_vcr(client: ToolsClient) -> None:
     """ToolsClient.json_to_pptx_analyze_v2の実際のAPIを使用したテスト。
 
@@ -176,12 +161,7 @@ def test_json_to_pptx_analyze_v2_vcr(client: ToolsClient) -> None:
         assert all("description" in placeholder for placeholder in placeholders)
 
 
-@pytest.mark.vcr(
-    before_record_request=generate_filter_request_body_function(
-        "pptx_template_id",
-        "TEMPLATE_ID",
-    ),
-)
+@pytest.mark.vcr()
 def test_json_to_pptx_execute_v2_vcr(client: ToolsClient) -> None:
     """ToolsClient.json_to_pptx_execute_v2の実際のAPIを使用したテスト。
 
