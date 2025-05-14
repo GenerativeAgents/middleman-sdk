@@ -10,6 +10,12 @@ from middleman_ai.client import Placeholder, Presentation, Slide, ToolsClient
 from middleman_ai.exceptions import MiddlemanBaseException
 
 
+def get_base_url() -> str:
+    """Get base URL from environment variable."""
+    base_url = os.getenv("MIDDLEMAN_BASE_URL", "https://middleman-ai.com")
+    return base_url
+
+
 def get_api_key() -> str:
     """Get API key from environment variable."""
     api_key = os.getenv("MIDDLEMAN_API_KEY")
@@ -17,6 +23,13 @@ def get_api_key() -> str:
     if not api_key:
         raise click.ClickException("MIDDLEMAN_API_KEY environment variable is required")
     return api_key
+
+
+def get_client() -> ToolsClient:
+    """Get client from environment variable."""
+    base_url = get_base_url()
+    api_key = get_api_key()
+    return ToolsClient(base_url=base_url, api_key=api_key)
 
 
 @click.group()
@@ -32,7 +45,7 @@ def md_to_pdf(template_id: str | None = None) -> None:
     """Convert Markdown to PDF."""
     print("md_to_pdf コマンドを実行しています...")
     try:
-        client = ToolsClient(api_key=get_api_key())
+        client = get_client()
         print("標準入力からMarkdownを読み込んでいます...")
         markdown_text = sys.stdin.read()
         print(
@@ -59,7 +72,7 @@ def md_to_docx(template_id: str | None = None) -> None:
     """Convert Markdown to DOCX."""
     print("md_to_docx コマンドを実行しています...")
     try:
-        client = ToolsClient(api_key=get_api_key())
+        client = get_client()
         print("標準入力からMarkdownを読み込んでいます...")
         markdown_text = sys.stdin.read()
         print(
@@ -87,7 +100,7 @@ def md_to_docx(template_id: str | None = None) -> None:
 def pdf_to_page_images(pdf_path: str) -> None:
     """Convert PDF pages to images."""
     try:
-        client = ToolsClient(api_key=get_api_key())
+        client = get_client()
         with click.progressbar(  # type: ignore[var-annotated]
             length=1, label="PDFを画像に変換中...", show_eta=False
         ) as bar:
@@ -104,7 +117,7 @@ def pdf_to_page_images(pdf_path: str) -> None:
 def pptx_to_page_images(pptx_path: str) -> None:
     """Convert PPTX pages to images."""
     try:
-        client = ToolsClient(api_key=get_api_key())
+        client = get_client()
         with click.progressbar(  # type: ignore[var-annotated]
             length=1, label="PPTXを画像に変換中...", show_eta=False
         ) as bar:
@@ -121,7 +134,7 @@ def pptx_to_page_images(pptx_path: str) -> None:
 def docx_to_page_images(docx_path: str) -> None:
     """Convert DOCX pages to images."""
     try:
-        client = ToolsClient(api_key=get_api_key())
+        client = get_client()
         with click.progressbar(  # type: ignore[var-annotated]
             length=1, label="DOCXを画像に変換中...", show_eta=False
         ) as bar:
@@ -138,7 +151,7 @@ def docx_to_page_images(docx_path: str) -> None:
 def xlsx_to_page_images(xlsx_path: str) -> None:
     """Convert XLSX pages to images."""
     try:
-        client = ToolsClient(api_key=get_api_key())
+        client = get_client()
         with click.progressbar(  # type: ignore[var-annotated]
             length=1, label="XLSXを画像に変換中...", show_eta=False
         ) as bar:
@@ -155,7 +168,7 @@ def xlsx_to_page_images(xlsx_path: str) -> None:
 def json_to_pptx_analyze(template_id: str) -> None:
     """Analyze PPTX template."""
     try:
-        client = ToolsClient(api_key=get_api_key())
+        client = get_client()
         with click.progressbar(  # type: ignore[var-annotated]
             length=1, label="テンプレートを解析中...", show_eta=False
         ) as bar:
@@ -171,7 +184,7 @@ def json_to_pptx_analyze(template_id: str) -> None:
 def json_to_pptx_execute(template_id: str) -> None:
     """Execute PPTX template with data from stdin."""
     try:
-        client = ToolsClient(api_key=get_api_key())
+        client = get_client()
         data = json.loads(sys.stdin.read())
         presentation = Presentation(
             slides=[
