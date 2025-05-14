@@ -46,7 +46,7 @@ def test_init(client: ToolsClient) -> None:
     """初期化のテスト。"""
     assert client.api_key == "test_api_key"
     assert client.base_url == "https://middleman-ai.com"
-    assert client.timeout == 30.0  # noqa: PLR2004
+    assert client.timeout == 30.0
     assert client.session.headers["Authorization"] == "Bearer test_api_key"
     assert client.session.headers["Content-Type"] == "application/json"
 

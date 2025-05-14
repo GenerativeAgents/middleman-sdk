@@ -36,6 +36,9 @@ lint.ignore = ["RUF001", "RUF002", "RUF022", "N818"]
 [tool.ruff.isort]
 known-first-party = ["middleman_ai"]
 
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/**/*.py" = ["PLR2004"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]

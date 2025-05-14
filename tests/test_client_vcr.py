@@ -1,5 +1,3 @@
-# ruff: noqa: PLR2004
-
 """LangChainツール群のVCRテストモジュール。"""
 
 import os
