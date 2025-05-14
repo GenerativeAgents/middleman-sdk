@@ -19,11 +19,11 @@ interactions:
         authorization:
           - DUMMY
       method: POST
-      uri: https://stg.middleman-ai.com/api/v1/tools/md-to-docx
+      uri: https://middleman-ai.com/api/v1/tools/md-to-docx
     response:
       body:
         string:
-          '{"docx_url":"https://stg.middleman-ai.com/s/abfbc7fe/scLdYIML1z","important_remark_for_user":"The
+          '{"docx_url":"https://middleman-ai.com/s/abfbc7fe/scLdYIML1z","important_remark_for_user":"The
           URL expires in 1 hour.Please note that you will not be able to download the
           file after it has expired."}'
       headers:
