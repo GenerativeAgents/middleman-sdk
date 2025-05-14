@@ -37,11 +37,6 @@ def pytest_configure(config: pytest.Config) -> None:
     if env_file.exists():
         load_dotenv(env_file)
 
-    # Skip API key check for CLI tests which use mocks
-    if "test_cli.py" not in str(config.invocation_params.dir):
-        if not os.getenv("MIDDLEMAN_API_KEY"):
-            pytest.skip("MIDDLEMAN_API_KEY is not set")
-
 
 # オリジナルの play_response メソッドを保存
 _original_play_response = Cassette.play_response
@@ -74,12 +69,14 @@ def _set_version_string(self: VCRHTTPResponse, value: str) -> None:
 VCRHTTPResponse.version_string = property(_get_version_string, _set_version_string)
 
 
-def scrub_uri_request(request: Any) -> Any:
+def scrub_request(request: Any) -> Any:
     """
-    リクエストのURI からホスト名を標準化してmiddleman-ai.comに置換する
-    本番環境以外のURLが露出することを避けるための処置です
+    環境差異によってエラーが発生しないよう、環境依存のパラメータの値をカセットに記録する差異に統一する
+    また、本番環境以外のURLが露出することを避けるなどカセットに秘匿情報が出ないための処置を行う
     """
-    req = copy.deepcopy(request)  # ミュータブルに触らず安全に
+    # リクエストのURI からホスト名を標準化してmiddleman-ai.comに置換する
+    # 本番環境以外のURLが露出することを避けるための処置です
+    req = copy.deepcopy(request)
     p = urlparse(req.uri)
     redacted = urlunparse(
         (p.scheme, "middleman-ai.com", p.path, p.params, p.query, p.fragment)
@@ -138,6 +135,6 @@ def vcr_config() -> Dict[str, Any]:
         "record_mode": "once",
         "match_on": ["method", "path", "query", "body"],
         "ignore_localhost": True,
-        "before_record_request": scrub_uri_request,
+        "before_record_request": scrub_request,
         "before_record_response": scrub_response,
     }

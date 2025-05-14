@@ -3,14 +3,10 @@
 """Tests for the CLI implementation."""
 
 import json
-import os
 
 import click
 
 from middleman_ai.cli.main import cli
-
-# Set dummy API key for tests
-os.environ["MIDDLEMAN_API_KEY"] = "test-key"
 
 
 def test_md_to_pdf(runner, mock_client):

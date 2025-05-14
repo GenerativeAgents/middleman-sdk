@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from middleman_ai.client import Presentation, ToolsClient
+from tests.vcr_utils import generate_filter_request_body_function
 
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest  # noqa: F401
@@ -45,7 +46,11 @@ def test_md_to_pdf_vcr(client: ToolsClient) -> None:
     assert "/s/" in pdf_url
 
 
-@pytest.mark.vcr()
+@pytest.mark.vcr(
+    before_record_request=generate_filter_request_body_function(
+        "pdf_template_id", "TEMPLATE_ID"
+    ),
+)
 def test_md_to_pdf_with_template_id_vcr(client: ToolsClient) -> None:
     """ToolsClient.md_to_pdfの実際のAPIを使用したテスト。
 
@@ -90,6 +95,35 @@ def test_md_to_docx_vcr(client: ToolsClient) -> None:
     assert "/s/" in docx_url
 
 
+@pytest.mark.vcr(
+    before_record_request=generate_filter_request_body_function(
+        "docx_template_id",
+        "TEMPLATE_ID",
+    ),
+)
+def test_md_to_docx_with_template_id_vcr(client: ToolsClient) -> None:
+    """ToolsClient.md_to_docxの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    test_markdown = """# Test Heading
+
+    This is a test markdown document.
+
+    ## Section 1
+    - Item 1
+    - Item 2
+    """
+    docx_url = client.md_to_docx(
+        markdown_text=test_markdown,
+        docx_template_id=os.getenv("MIDDLEMAN_TEST_DOCX_TEMPLATE_ID") or "",
+    )
+    assert docx_url.startswith("https://")
+    assert "/s/" in docx_url
+
+
 # マルチパートの場合リクエストごとにファイルがどこで分割されるかが異なるようなので
 # bodyをマッチ判定の対象外にしている
 @pytest.mark.vcr(match_on=["method", "scheme", "port", "path", "query"])
@@ -110,7 +144,12 @@ def test_pdf_to_page_images_vcr(client: ToolsClient) -> None:
     assert all("/s/" in page["image_url"] for page in pages)
 
 
-@pytest.mark.vcr()
+@pytest.mark.vcr(
+    before_record_request=generate_filter_request_body_function(
+        "pptx_template_id",
+        "TEMPLATE_ID",
+    ),
+)
 def test_json_to_pptx_analyze_v2_vcr(client: ToolsClient) -> None:
     """ToolsClient.json_to_pptx_analyze_v2の実際のAPIを使用したテスト。
 
@@ -137,7 +176,12 @@ def test_json_to_pptx_analyze_v2_vcr(client: ToolsClient) -> None:
         assert all("description" in placeholder for placeholder in placeholders)
 
 
-@pytest.mark.vcr()
+@pytest.mark.vcr(
+    before_record_request=generate_filter_request_body_function(
+        "pptx_template_id",
+        "TEMPLATE_ID",
+    ),
+)
 def test_json_to_pptx_execute_v2_vcr(client: ToolsClient) -> None:
     """ToolsClient.json_to_pptx_execute_v2の実際のAPIを使用したテスト。
 

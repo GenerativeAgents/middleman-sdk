@@ -204,7 +204,7 @@ class ToolsClient:
                 f"{self.base_url}/api/v1/tools/md-to-docx",
                 json={
                     "markdown": markdown_text,
-                    "template_id": docx_template_id,
+                    "docx_template_id": docx_template_id,
                 },
                 timeout=self.timeout,
             )
