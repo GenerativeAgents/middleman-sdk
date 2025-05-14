@@ -9,10 +9,10 @@ from pydantic import BaseModel, Field
 from pydantic import ValidationError as PydanticValidationError
 
 from .exceptions import (
+    BadRequestError,
     ConnectionError,
     ForbiddenError,
     InternalError,
-    MiddlemanBaseException,
     NotEnoughCreditError,
     NotFoundError,
     ValidationError,
@@ -29,6 +29,7 @@ from .models import (
 )
 
 # HTTPステータスコード
+HTTP_BAD_REQUEST = 400
 HTTP_PAYMENT_REQUIRED = 402
 HTTP_UNAUTHORIZED = 401
 HTTP_FORBIDDEN = 403
@@ -116,6 +117,8 @@ class ToolsClient:
             except json.JSONDecodeError:
                 pass
 
+            if response.status_code == HTTP_BAD_REQUEST:
+                raise BadRequestError() from e
             if response.status_code == HTTP_PAYMENT_REQUIRED:
                 raise NotEnoughCreditError() from e
             if response.status_code in (HTTP_UNAUTHORIZED, HTTP_FORBIDDEN):
@@ -141,7 +144,7 @@ class ToolsClient:
                     f"Validation error: {error_body}" if error_body else str(e)
                 )
                 raise ValidationError(error_message) from e
-            raise MiddlemanBaseException(str(e)) from e
+            raise BadRequestError(str(e)) from e
         except requests.exceptions.RequestException as e:
             raise ConnectionError() from e
         except json.JSONDecodeError as e:
