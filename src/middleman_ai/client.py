@@ -155,6 +155,7 @@ class ToolsClient:
 
         Args:
             markdown_text: 変換対象のMarkdown文字列
+            pdf_template_id: テンプレートID(UUID)
 
         Returns:
             str: 生成されたPDFのURL
@@ -180,11 +181,16 @@ class ToolsClient:
         except requests.exceptions.RequestException as e:
             raise ConnectionError() from e
 
-    def md_to_docx(self, markdown_text: str) -> str:
+    def md_to_docx(
+        self,
+        markdown_text: str,
+        docx_template_id: str | None = None,
+    ) -> str:
         """Markdown文字列をDOCXに変換し、DOCXのダウンロードURLを返します。
 
         Args:
             markdown_text: 変換対象のMarkdown文字列
+            docx_template_id: テンプレートID(UUID)
 
         Returns:
             str: 生成されたDOCXのURL
@@ -196,7 +202,10 @@ class ToolsClient:
         try:
             response = self.session.post(
                 f"{self.base_url}/api/v1/tools/md-to-docx",
-                json={"markdown": markdown_text},
+                json={
+                    "markdown": markdown_text,
+                    "template_id": docx_template_id,
+                },
                 timeout=self.timeout,
             )
             data = self._handle_response(response)
