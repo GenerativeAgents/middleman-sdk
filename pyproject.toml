@@ -33,7 +33,7 @@ target-version = "py38"
 lint.select = ["E", "F", "I", "N", "W", "B", "UP", "PL", "RUF"]
 lint.ignore = ["RUF001", "RUF002", "RUF022", "N818"]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["middleman_ai"]
 
 [tool.ruff.lint.extend-per-file-ignores]
