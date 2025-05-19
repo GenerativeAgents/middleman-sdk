@@ -11,7 +11,7 @@ alwaysApply: true
 Middleman SDKは、以下の4種類の方法でMiddlemanのAPIへのアクセスを提供します。
 
 - Pythonクライアント： Pythonコードから簡単にAPI呼び出しができるクライアント（実装： [client.py](mdc:src/middleman_ai/client.py)）
-- LangChainツール： AIエージェントを作るためのPythonフレームワークLangChain/LangGraphと結合できるツール（実装： src/middlema_ai/langchain_tools）
+- LangChainツール： AIエージェントを作るためのPythonフレームワークLangChain/LangGraphと結合できるツール（実装： src/middleman_ai/langchain_tools）
 - CLI： コマンドラインから簡単にAPI呼び出すことができるCLI（実装： [main.py](mdc:src/middleman_ai/cli/main.py)）
 - MCP（Model Context Protocol）： AIエージェントが外部APIやツールを呼び出すためのプロトコル（実装： [server.py](mdc:src/middleman_ai/mcp/server.py)）
 
