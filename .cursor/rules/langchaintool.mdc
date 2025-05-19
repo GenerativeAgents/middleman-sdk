@@ -1,0 +1,64 @@
+---
+description: 
+globs: src/middleman_ai/langchain_tools/*.py
+alwaysApply: false
+---
+# LangChain Tool実装ルール
+
+このドキュメントにはMiddleman SDKでLangChain向けに提供されるツール実装に関するルールをまとめます。
+
+## 実装の概要
+
+LangChainツールは [langchain_tools](mdc:src/middleman_ai/langchain_tools) ディレクトリに実装されており、AIエージェントがMiddleman.ai APIを利用できるように設計されています。
+
+## 実装ルール
+
+- 各ツールはLangChainの`BaseTool`を継承する
+- ツールにはわかりやすい名前と説明を付ける
+- 入力スキーマはPydanticモデルで定義する
+- `_run`メソッドと`_arun`メソッドを実装する（非同期処理がない場合は`_arun`は`_run`を呼び出す）
+
+## テストルール
+
+LangChainツール実装のテストは以下の2箇所で実装します。
+
+- [test_langchain_tools.py](mdc:tests/test_langchain_tools.py): 単体テスト
+- [test_langchain_tools_vcr.py](mdc:tests/test_langchain_tools_vcr.py): VCRテスト
+
+### test_langchain_tools.py の共通ルール
+
+APIリクエストをモック化して実装部分のみをテストします。
+
+1. **クライアントとAPIのモック**: pytestのモックの仕組みを利用してクライアントのメソッドをモック化し、Tool単体での動作テストにします
+   ```python
+   mock_md_to_pdf = mocker.patch.object(client, "md_to_pdf", return_value="https://example.com/test.pdf")
+   ```
+
+2. **複数テストケース**: パラメータパターンがある場合にはパターンごとにテストケースを分け、どんなパターンに対応しているかがわかりやすいテストケース名をつける
+   ```python
+   def test_md_to_pdf_tool_with_template_id(client: ToolsClient, mocker: "MockerFixture") -> None:
+   ```
+
+3. **エラーケースのテスト**: バリデーションエラーや不正な入力のチェックが実装されている場合、異常系テストも実装
+   ```python
+   def test_json_to_pptx_analyze_tool_template_id_error(client: ToolsClient, mocker: "MockerFixture") -> None:
+   ```
+
+### test_langchain_tools_vcr.py の共通ルール
+
+VCRテストでは、以下のルールに従ってテストを実装します。
+なお、 [vcr.mdc](mdc:.cursor/rules/vcr.mdc) に記載の共通ルールも守るようにしてください。
+
+1. **テスト関数の命名**: 関数名の末尾に `_vcr` を付与
+   ```python
+   def test_md_to_pdf_tool_vcr(client: ToolsClient) -> None:
+   ```
+
+
+2. **テスト実行方法**: ツールの`run`メソッドを直接呼び出し、返り値を検証する。決してプライベートメソッドである `_run` や `_arun` を直接呼び出すテストにしないこと
+   ```python
+   tool = MdToPdfTool(client=client)
+   result = tool.run(test_markdown)
+   assert isinstance(result, str)
+   assert result.startswith("https://")
+   ```

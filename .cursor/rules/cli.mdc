@@ -1,0 +1,82 @@
+---
+description: 
+globs: src/middleman_ai/cli/*.py,tests/cli/*.py
+alwaysApply: false
+---
+# CLI実装ルール
+
+このドキュメントにはMiddleman SDK用のコマンドラインインターフェース（CLI）に関するルールをまとめます。
+
+## 実装の概要
+
+CLIは [cli](mdc:src/middleman_ai/cli) ディレクトリに実装されており、コマンドラインからMiddleman.ai APIを呼び出すための機能を提供しています。実装にはclick（https://click.palletsprojects.com/en/stable/）を使用しています。
+
+## 実装ルール
+
+- 各コマンドは `@cli.command()` デコレータで定義する
+- 環境変数 `MIDDLEMAN_API_KEY` からAPIキーを取得する
+- 入力データは標準入力から受け取る
+- コマンドの引数はClickの型アノテーションで定義する、引数が必須なのか非必須なのかは注意すること
+- エラーハンドリングは `click.ClickException` を使用する
+- 進捗状況は `click.progressbar` で表示する
+- 今何をしているかがわかりやすいよう、利用者向けのログをprintで適宜表示する
+
+```python
+@cli.command()
+@click.argument("template_id", required=False)
+def md_to_pdf(template_id: str | None = None) -> None:
+    """Convert Markdown to PDF."""
+    try:
+        client = get_client()
+        markdown_text = sys.stdin.read()
+        with click.progressbar(length=1, label="PDFに変換中...") as bar:
+            pdf_url = client.md_to_pdf(markdown_text, pdf_template_id=template_id)
+            bar.update(1)
+        print(f"変換結果URL: {pdf_url}")
+    except MiddlemanBaseException as e:
+        raise click.ClickException(str(e)) from e
+```
+
+## テストルール
+
+CLIのテストは [tests/cli](mdc:tests/cli) ディレクトリに実装されています。
+
+### test_cli.py の共通ルール
+
+1. **テストフィクスチャ**: CLI実装の部分のみがテスト対象のため、中で利用しているクライアント部分をモック化してテストする
+   ```python
+   def test_md_to_pdf_cli(runner, mock_client):
+   ```
+
+2. **コマンド呼び出し**: `runner.invoke` でCLIコマンドを実行し、標準入力はオプション引数 `input` で渡す
+   ```python
+   result = runner.invoke(cli, ["md-to-pdf"], input="# Test")
+   ```
+
+3. **結果検証**: 終了コード、出力内容、モックの呼び出し状況を検証
+   ```python
+   assert result.exit_code == 0
+   assert "https://example.com/test.pdf" in result.output
+   mock_client.md_to_pdf.assert_called_once_with("# Test", pdf_template_id=None)
+   ```
+
+4. **エラー処理のテスト**: APIキー未設定などのエラーケースもテスト
+   ```python
+   def test_missing_api_key_cli(runner, mocker):
+   ```
+
+### test_mcp_cli.py
+
+MCPサーバーコマンドのテストを実装しています。
+MCPサーバー立ち上げコマンドのみ、他とは特徴が違います。
+このコマンドはMiddlemanのAPIコールをするのではなくMCPサーバーを立ち上げる役割になります。
+
+```python
+def test_mcp_command(runner: CliRunner, mocker: "MockerFixture") -> None:
+    """mcpコマンドのテスト。"""
+    mock_run_server = mocker.patch.object(mcp_server, "run_server")
+    result = runner.invoke(mcp_command)
+    assert result.exit_code == 0
+    assert "MCP server is running" in result.output
+    mock_run_server.assert_called_once_with()
+```
