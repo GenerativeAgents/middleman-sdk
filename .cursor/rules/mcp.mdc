@@ -1,0 +1,34 @@
+---
+description: 
+globs: src/middleman_ai/mcp/*.py,test_mcp_cli.py,test_mcp.py
+alwaysApply: false
+---
+# MCP実装ルール
+
+このドキュメントにはMiddleman SDKがModel Context Protocol（MCP）に準拠したサーバー実装に関するルールをまとめます。
+
+## 実装の概要
+
+MCPサーバーは [mcp](mdc:src/middleman_ai/mcp) ディレクトリに実装されています。MCPはAnthropicが提供する標準プロトコルで、AI（LLM）とツールを接続するための仕組みを提供します。これにより、Claude、Cursor、ZedなどのMCP対応クライアントからMiddleman.ai APIを直接利用できるようになります。
+
+実装には`FastMCP`フレームワークを使用し、各ツールを関数としてMCPサーバーに登録しています。
+
+## 実装ルール
+
+- 各ツールは`@mcp.tool()`デコレータを使用して定義する
+- 引数の型はPythonの型アノテーションを使用して明示する
+- サーバー起動時には環境変数（`MIDDLEMAN_API_KEY`）からAPIキーを取得する
+- ファイル読み込み機能を持つツールでは、パスの存在やアクセス権を確認する
+
+## テストルール
+
+MCPサーバーのテストは [test_mcp.py](mdc:tests/test_mcp.py) に実装されています。
+
+### test_mcp.py の共通ルール
+
+1. **モックの使用**: MCPの実装のみをテストしたいのでクライアントの処理はモック化します
+   ```python
+   mock_client = mocker.patch("middleman_ai.mcp.server.client")
+   mock_client.md_to_pdf.return_value = "https://example.com/test.pdf"
+   ```
+

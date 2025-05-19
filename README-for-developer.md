@@ -10,6 +10,7 @@ uv run pytest
 
 ```bash
 uv run ruff check .
+uv run mypy ./src
 ```
 
 ### ローカル環境で MCP サーバー実行
