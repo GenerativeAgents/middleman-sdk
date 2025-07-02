@@ -1,6 +1,6 @@
 """Middleman.ai SDKのデータモデルを定義するモジュール。"""
 
-from typing import List, Literal, Optional
+from typing import List, Literal
 
 from pydantic import BaseModel, Field
 
@@ -9,7 +9,7 @@ class MdToPdfResponse(BaseModel):
     """Markdown → PDF変換のレスポンスモデル。"""
 
     pdf_url: str = Field(..., description="生成されたPDFのダウンロードURL")
-    important_remark_for_user: Optional[str] = Field(
+    important_remark_for_user: str | None = Field(
         None, description="ユーザーへの重要な注意事項"
     )
 
@@ -18,7 +18,7 @@ class MdToDocxResponse(BaseModel):
     """Markdown → DOCX変換のレスポンスモデル。"""
 
     docx_url: str = Field(..., description="生成されたDOCXのダウンロードURL")
-    important_remark_for_user: Optional[str] = Field(
+    important_remark_for_user: str | None = Field(
         None, description="ユーザーへの重要な注意事項"
     )
 
@@ -34,7 +34,7 @@ class PdfToPageImagesResponse(BaseModel):
     """PDF → ページ画像変換のレスポンスモデル。"""
 
     pages: List[PageImage] = Field(..., description="各ページの画像情報")
-    important_remark_for_user: Optional[str] = Field(
+    important_remark_for_user: str | None = Field(
         None, description="ユーザーへの重要な注意事項"
     )
 
@@ -43,7 +43,7 @@ class JsonToPptxAnalyzeResponse(BaseModel):
     """PPTX テンプレート解析のレスポンスモデル。"""
 
     slides: List[dict] = Field(..., description="テンプレートの構造情報")
-    important_remark_for_user: Optional[str] = Field(
+    important_remark_for_user: str | None = Field(
         None, description="ユーザーへの重要な注意事項"
     )
 
@@ -52,7 +52,7 @@ class JsonToPptxExecuteResponse(BaseModel):
     """JSON → PPTX変換実行のレスポンスモデル。"""
 
     pptx_url: str = Field(..., description="生成されたPPTXのダウンロードURL")
-    important_remark_for_user: Optional[str] = Field(
+    important_remark_for_user: str | None = Field(
         None, description="ユーザーへの重要な注意事項"
     )
 
@@ -61,7 +61,7 @@ class PptxToPageImagesResponse(BaseModel):
     """PPTX → ページ画像変換のレスポンスモデル。"""
 
     pages: List[PageImage] = Field(..., description="各スライドの画像情報")
-    important_remark_for_user: Optional[str] = Field(
+    important_remark_for_user: str | None = Field(
         None, description="ユーザーへの重要な注意事項"
     )
 
@@ -70,7 +70,7 @@ class DocxToPageImagesResponse(BaseModel):
     """DOCX → ページ画像変換のレスポンスモデル。"""
 
     pages: List[PageImage] = Field(..., description="各ページの画像情報")
-    important_remark_for_user: Optional[str] = Field(
+    important_remark_for_user: str | None = Field(
         None, description="ユーザーへの重要な注意事項"
     )
 
@@ -86,7 +86,7 @@ class XlsxToPageImagesResponse(BaseModel):
     """XLSX → ページ画像変換のレスポンスモデル。"""
 
     pages: List[XlsxPageImage] = Field(..., description="各シートの画像情報")
-    important_remark_for_user: Optional[str] = Field(
+    important_remark_for_user: str | None = Field(
         None, description="ユーザーへの重要な注意事項"
     )
 
@@ -101,13 +101,13 @@ class CustomSize(BaseModel):
 class MermaidToImageOptions(BaseModel):
     """Mermaid → 画像変換のオプション設定。"""
 
-    theme: Literal["default", "dark", "forest", "neutral"] = Field(
-        default="default", description="Mermaidテーマ"
+    theme: Literal["default", "dark", "forest", "neutral"] | None = Field(
+        default=None, description="Mermaidテーマ"
     )
-    background_color: str = Field(
-        default="#ffffff", description="背景色（透明またはRGBカラー）"
+    background_color: str | None = Field(
+        default=None, description="背景色（透明またはRGBカラー）"
     )
-    custom_size: Optional[CustomSize] = Field(
+    custom_size: CustomSize | None = Field(
         default=None, description="カスタムサイズ設定"
     )
 
@@ -117,6 +117,6 @@ class MermaidToImageResponse(BaseModel):
 
     image_url: str = Field(..., description="生成された画像のダウンロードURL")
     format: str = Field(..., description="出力フォーマット（例: png）")
-    important_remark_for_user: Optional[str] = Field(
+    important_remark_for_user: str | None = Field(
         None, description="ユーザーへの重要な注意事項"
     )

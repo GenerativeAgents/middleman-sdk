@@ -22,6 +22,7 @@ from middleman_ai.exceptions import (
     NotFoundError,
     ValidationError,
 )
+from middleman_ai.models import CustomSize, MermaidToImageOptions
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -247,14 +248,14 @@ def test_xlsx_to_page_images_file_error(client: ToolsClient) -> None:
         client.xlsx_to_page_images("nonexistent.xlsx")
 
 
-def test_mermaid_to_image_success(
+def test_mermaid_to_image_without_options(
     client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
 ) -> None:
-    """mermaid_to_image成功時のテスト。"""
+    """mermaid_to_image オプションなし成功時のテスト。"""
     mock_response.json.return_value = {
         "image_url": "https://example.com/mermaid.png",
         "format": "png",
-        "important_remark_for_user": "The URL expires in 1 hour."
+        "important_remark_for_user": "The URL expires in 1 hour.",
     }
     mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
 
@@ -264,11 +265,7 @@ def test_mermaid_to_image_success(
     mock_post.assert_called_once_with(
         "https://middleman-ai.com/api/v1/tools/mermaid-to-image",
         json={
-            "content": "graph TD; A-->B",
-            "options": {
-                "theme": "default",
-                "background_color": "#ffffff"
-            }
+            "content": "graph TD; A-->B"
         },
         timeout=30.0,
     )
@@ -278,21 +275,20 @@ def test_mermaid_to_image_success_with_options(
     client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
 ) -> None:
     """mermaid_to_image オプション付き成功時のテスト。"""
-    from middleman_ai.models import MermaidToImageOptions, CustomSize
-    
+
     mock_response.json.return_value = {
         "image_url": "https://example.com/mermaid.png",
         "format": "png",
-        "important_remark_for_user": "The URL expires in 1 hour."
+        "important_remark_for_user": "The URL expires in 1 hour.",
     }
     mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
 
     options = MermaidToImageOptions(
         theme="dark",
         background_color="transparent",
-        custom_size=CustomSize(width=800, height=600)
+        custom_size=CustomSize(width=800, height=600),
     )
-    
+
     result = client.mermaid_to_image("graph LR; A-->B", options=options)
 
     assert result == "https://example.com/mermaid.png"
@@ -303,11 +299,8 @@ def test_mermaid_to_image_success_with_options(
             "options": {
                 "theme": "dark",
                 "background_color": "transparent",
-                "custom_size": {
-                    "width": 800,
-                    "height": 600
-                }
-            }
+                "custom_size": {"width": 800, "height": 600},
+            },
         },
         timeout=30.0,
     )
@@ -337,7 +330,7 @@ def test_mermaid_to_image_error_responses(
     mock_response.url = "https://middleman-ai.com/api/v1/tools/mermaid-to-image"
     mock_response.headers = {}
     mock_response.text = ""
-    
+
     mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
 
     with pytest.raises(expected_exception):

@@ -1,8 +1,7 @@
 interactions:
 - request:
     body: '{"content": "graph TD\n    A[Start] --> B[Process]\n    B --> C{Decision}\n    C
-      -->|Yes| D[End]\n    C -->|No| B", "options": {"theme": "default", "background_color":
-      "#ffffff"}}'
+      -->|Yes| D[End]\n    C -->|No| B"}'
     headers:
       Accept:
       - '*/*'
@@ -11,7 +10,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '179'
+      - '115'
       Content-Type:
       - application/json
       User-Agent:
@@ -22,7 +21,7 @@ interactions:
     uri: https://middleman-ai.com/api/v1/tools/mermaid-to-image
   response:
     body:
-      string: '{"image_url":"https://middleman-ai.com/s/dc6f1fab/sV0t1928ik","format":"png","important_remark_for_user":"The
+      string: '{"image_url":"https://middleman-ai.com/s/dc6f1fab/2AMlGuC5se","format":"png","important_remark_for_user":"The
         URL expires in 1 hour. Please note that you will not be able to download the
         file after it has expired."}'
     headers:

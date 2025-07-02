@@ -474,13 +474,14 @@ class ToolsClient:
             その他、_handle_responseで定義される例外
         """
         try:
-            if options is None:
-                options = MermaidToImageOptions()
-
             request_data = {
                 "content": mermaid_text,
-                "options": options.model_dump(exclude_none=True),
             }
+            
+            if options is not None:
+                options_dict = options.model_dump(exclude_none=True)
+                if options_dict:  # 空でない場合のみ追加
+                    request_data["options"] = options_dict
 
             response = self.session.post(
                 f"{self.base_url}/api/v1/tools/mermaid-to-image",
