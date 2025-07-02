@@ -246,3 +246,50 @@ def test_xlsx_to_page_images_vcr(client: ToolsClient) -> None:
     assert all("sheet_name" in page and "image_url" in page for page in pages)
     assert all(page["image_url"].startswith("https://") for page in pages)
     assert all("/s/" in page["image_url"] for page in pages)
+
+
+@pytest.mark.vcr()
+def test_mermaid_to_image_vcr(client: ToolsClient) -> None:
+    """ToolsClient.mermaid_to_imageの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    test_mermaid = """graph TD
+    A[Start] --> B[Process]
+    B --> C{Decision}
+    C -->|Yes| D[End]
+    C -->|No| B"""
+
+    image_url = client.mermaid_to_image(mermaid_text=test_mermaid)
+    assert isinstance(image_url, str)
+    assert image_url.startswith("https://")
+    assert "/s/" in image_url
+
+
+@pytest.mark.vcr()
+def test_mermaid_to_image_with_options_vcr(client: ToolsClient) -> None:
+    """ToolsClient.mermaid_to_imageのオプション付きテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    from middleman_ai.models import CustomSize, MermaidToImageOptions
+
+    test_mermaid = """graph LR
+    A[User] --> B[API]
+    B --> C[Response]
+    C --> A"""
+
+    options = MermaidToImageOptions(
+        theme="dark",
+        background_color="transparent",
+        custom_size=CustomSize(width=800, height=600)
+    )
+
+    image_url = client.mermaid_to_image(mermaid_text=test_mermaid, options=options)
+    assert isinstance(image_url, str)
+    assert image_url.startswith("https://")
+    assert "/s/" in image_url
