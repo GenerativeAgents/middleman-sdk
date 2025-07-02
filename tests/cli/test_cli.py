@@ -155,3 +155,155 @@ def test_xlsx_to_page_images_cli(runner, mock_client, tmp_path) -> None:
     assert "Sheet Sheet1: https://example.com/sheet1.png" in result.output
     assert "Sheet Sheet2: https://example.com/sheet2.png" in result.output
     mock_client.xlsx_to_page_images.assert_called_once_with(str(xlsx_path))
+
+
+def test_mermaid_to_image_cli_without_options(runner, mock_client):
+    """Test mermaid_to_image CLI command without options."""
+    mock_client.mermaid_to_image.return_value = "https://example.com/mermaid.png"
+
+    mermaid_input = """graph TD
+    A[Start] --> B[Process]
+    B --> C{Decision}
+    C -->|Yes| D[End]
+    C -->|No| B"""
+
+    result = runner.invoke(cli, ["mermaid-to-image"], input=mermaid_input)
+    assert result.exit_code == 0
+    assert "https://example.com/mermaid.png" in result.output
+    mock_client.mermaid_to_image.assert_called_once_with(mermaid_input, options=None)
+
+
+def test_mermaid_to_image_cli_with_all_options(runner, mock_client):
+    """Test mermaid_to_image CLI command with all options."""
+    mock_client.mermaid_to_image.return_value = "https://example.com/mermaid.png"
+
+    mermaid_input = "graph LR; A --> B"
+
+    result = runner.invoke(
+        cli,
+        [
+            "mermaid-to-image",
+            "--theme",
+            "forest",
+            "--background-color",
+            "transparent",
+            "--width",
+            "800",
+            "--height",
+            "600",
+        ],
+        input=mermaid_input,
+    )
+    assert result.exit_code == 0
+    assert "https://example.com/mermaid.png" in result.output
+
+    # options引数をチェック
+    call_args = mock_client.mermaid_to_image.call_args
+    assert call_args[0][0] == mermaid_input
+    options = call_args[1]["options"]
+    assert options is not None
+    assert options.theme == "forest"
+    assert options.background_color == "transparent"
+    assert options.custom_size is not None
+    assert options.custom_size.width == 800
+    assert options.custom_size.height == 600
+
+
+def test_mermaid_to_image_cli_with_theme_option(runner, mock_client):
+    """Test mermaid_to_image CLI command with theme option."""
+    mock_client.mermaid_to_image.return_value = "https://example.com/mermaid.png"
+
+    mermaid_input = "graph LR; A --> B"
+
+    result = runner.invoke(
+        cli, ["mermaid-to-image", "--theme", "dark"], input=mermaid_input
+    )
+    assert result.exit_code == 0
+    assert "https://example.com/mermaid.png" in result.output
+
+    # options引数をチェック
+    call_args = mock_client.mermaid_to_image.call_args
+    assert call_args[0][0] == mermaid_input  # mermaid_text
+    options = call_args[1]["options"]  # options keyword argument
+    assert options is not None
+    assert options.theme == "dark"
+    assert options.background_color is None
+    assert options.custom_size is None
+
+
+def test_mermaid_to_image_cli_with_background_color_only(runner, mock_client):
+    """Test mermaid_to_image CLI command with background-color option only."""
+    mock_client.mermaid_to_image.return_value = "https://example.com/mermaid.png"
+
+    mermaid_input = "graph LR; A --> B"
+
+    result = runner.invoke(
+        cli, ["mermaid-to-image", "--background-color", "#ff0000"], input=mermaid_input
+    )
+    assert result.exit_code == 0
+    assert "https://example.com/mermaid.png" in result.output
+
+    # options引数をチェック
+    call_args = mock_client.mermaid_to_image.call_args
+    assert call_args[0][0] == mermaid_input
+    options = call_args[1]["options"]
+    assert options is not None
+    assert options.theme is None
+    assert options.background_color == "#ff0000"
+    assert options.custom_size is None
+
+
+def test_mermaid_to_image_cli_with_width_height_only(runner, mock_client):
+    """Test mermaid_to_image CLI command with width and height options only."""
+    mock_client.mermaid_to_image.return_value = "https://example.com/mermaid.png"
+
+    mermaid_input = "graph LR; A --> B"
+
+    result = runner.invoke(
+        cli,
+        ["mermaid-to-image", "--width", "1000", "--height", "800"],
+        input=mermaid_input,
+    )
+    assert result.exit_code == 0
+    assert "https://example.com/mermaid.png" in result.output
+
+    # options引数をチェック
+    call_args = mock_client.mermaid_to_image.call_args
+    assert call_args[0][0] == mermaid_input
+    options = call_args[1]["options"]
+    assert options is not None
+    assert options.theme is None
+    assert options.background_color is None
+    assert options.custom_size is not None
+    assert options.custom_size.width == 1000
+    assert options.custom_size.height == 800
+
+
+def test_mermaid_to_image_cli_width_height_validation(runner, mock_client):
+    """Test mermaid_to_image CLI command width/height validation."""
+    mermaid_input = "graph LR; A --> B"
+
+    # width のみ指定(エラーになるべき)
+    result = runner.invoke(
+        cli, ["mermaid-to-image", "--width", "800"], input=mermaid_input
+    )
+    assert result.exit_code != 0
+    assert "widthとheightは両方指定するか、両方省略してください" in result.output
+
+    # height のみ指定(エラーになるべき)
+    result = runner.invoke(
+        cli, ["mermaid-to-image", "--height", "600"], input=mermaid_input
+    )
+    assert result.exit_code != 0
+    assert "widthとheightは両方指定するか、両方省略してください" in result.output
+
+
+def test_mermaid_to_image_cli_invalid_theme_choice(runner, mock_client):
+    """Test mermaid_to_image CLI command with invalid theme choice."""
+    mermaid_input = "graph LR; A --> B"
+
+    result = runner.invoke(
+        cli, ["mermaid-to-image", "--theme", "invalid"], input=mermaid_input
+    )
+    assert result.exit_code != 0
+    assert "Invalid value for '--theme'" in result.output

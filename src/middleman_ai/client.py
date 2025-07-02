@@ -477,7 +477,7 @@ class ToolsClient:
             request_data = {
                 "content": mermaid_text,
             }
-            
+
             if options is not None:
                 options_dict = options.model_dump(exclude_none=True)
                 if options_dict:  # 空でない場合のみ追加
