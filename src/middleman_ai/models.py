@@ -94,8 +94,18 @@ class XlsxToPageImagesResponse(BaseModel):
 class CustomSize(BaseModel):
     """Mermaid画像のカスタムサイズ設定。"""
 
-    width: int = Field(..., ge=100, le=1200, description="画像幅（100-1200ピクセル）")
-    height: int = Field(..., ge=100, le=1200, description="画像高さ（100-1200ピクセル）")
+    width: int = Field(
+        ...,
+        ge=100,
+        le=1200,
+        description="画像幅（100-1200ピクセル）",
+    )
+    height: int = Field(
+        ...,
+        ge=100,
+        le=1200,
+        description="画像高さ（100-1200ピクセル）",
+    )
 
 
 class MermaidToImageOptions(BaseModel):

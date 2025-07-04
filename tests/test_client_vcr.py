@@ -1,4 +1,4 @@
-"""LangChainツール群のVCRテストモジュール。"""
+"""Pythonクライアント用のVCRテストモジュール。"""
 
 import os
 from typing import TYPE_CHECKING
@@ -286,7 +286,7 @@ def test_mermaid_to_image_with_options_vcr(client: ToolsClient) -> None:
     options = MermaidToImageOptions(
         theme="dark",
         background_color="transparent",
-        custom_size=CustomSize(width=800, height=600)
+        custom_size=CustomSize(width=800, height=600),
     )
 
     image_url = client.mermaid_to_image(mermaid_text=test_mermaid, options=options)

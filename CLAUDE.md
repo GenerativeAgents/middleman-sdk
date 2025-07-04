@@ -47,21 +47,14 @@ Middleman.ai API 用の Python SDK で、3 つの主要なインターフェー�
 - `exceptions.py`でカスタム例外による集約エラーハンドリング
 - `models.py`で Pydantic モデルとしてレスポンス定義
 
-### 2. LangChain ツール (`src/middleman_ai/langchain_tools/`)
-
-- 各ツールは LangChain の`BaseTool`を継承
-- AI エージェント用にクライアントメソッドをラップ
-- `_run`と`_arun`メソッド両方を実装
-- ツール例: `MdToPdfTool`, `JsonToPptxAnalyzeTool`など
-
-### 3. MCP サーバー (`src/middleman_ai/mcp/server.py`)
+### 2. MCP サーバー (`src/middleman_ai/mcp/server.py`)
 
 - FastMCP を使用した Model Context Protocol 実装
 - Claude Desktop やその他 MCP クライアントにツールを公開
 - `@mcp.tool()`デコレータによる自動登録
 - テキスト入力とファイルパス入力の両方をサポート
 
-### 4. CLI インターフェース (`src/middleman_ai/cli/main.py`)
+### 3. CLI インターフェース (`src/middleman_ai/cli/main.py`)
 
 - Click ベースのコマンドラインインターフェース
 - 標準入力またはファイル引数からの読み込み

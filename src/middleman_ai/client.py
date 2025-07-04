@@ -474,7 +474,7 @@ class ToolsClient:
             その他、_handle_responseで定義される例外
         """
         try:
-            request_data = {
+            request_data: Dict[str, Any] = {
                 "content": mermaid_text,
             }
 
