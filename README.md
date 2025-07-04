@@ -54,6 +54,9 @@ uvx middleman json-to-pptx-analyze [テンプレートID]
 # PPTXテンプレート実行
 echo '{"slides":[{"type":"title","placeholders":[{"name":"title","content":"テストタイトル"}]}]}' | \
 uvx middleman json-to-pptx-execute [テンプレートID]
+
+# Mermaid図表 → 画像変換
+echo "graph TD; A-->B" | uvx middleman mermaid-to-image
 ```
 
 各コマンドは標準入力からテキストを受け取るか、必要に応じてファイルパスやテンプレート ID を引数として受け取ります。

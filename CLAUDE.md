@@ -1,10 +1,11 @@
 # CLAUDE.md
 
-このファイルはこのリポジトリでコードを扱う際のClaude Code (claude.ai/code) へのガイダンスを提供します。
+このファイルはこのリポジトリでコードを扱う際の Claude Code (claude.ai/code) へのガイダンスを提供します。
 
 ## コマンド
 
 ### 開発用コマンド
+
 ```bash
 # テスト実行
 uv run pytest
@@ -21,9 +22,11 @@ uv run black .
 ```
 
 ### ビルドと配布
+
 詳細は [README-for-developer.md](README-for-developer.md) の「配布」セクションを参照してください。
 
-### CLIテスト
+### CLI テスト
+
 ```bash
 # APIキー設定
 export MIDDLEMAN_API_KEY=your-api-key
@@ -35,62 +38,72 @@ uvx middleman pdf-to-page-images input.pdf
 
 ## アーキテクチャ
 
-Middleman.ai API用のPython SDKで、3つの主要なインターフェース層から構成されています：
+Middleman.ai API 用の Python SDK で、3 つの主要なインターフェース層から構成されています：
 
 ### 1. コアクライアント (`src/middleman_ai/client.py`)
-- `ToolsClient`: HTTPセッション管理を含むメインAPIクライアントクラス
-- 全APIエンドポイント実装: `md_to_pdf`, `md_to_docx`, `pdf_to_page_images`など
-- `exceptions.py`でカスタム例外による集約エラーハンドリング
-- `models.py`でPydanticモデルとしてレスポンス定義
 
-### 2. LangChainツール (`src/middleman_ai/langchain_tools/`)
-- 各ツールはLangChainの`BaseTool`を継承
-- AIエージェント用にクライアントメソッドをラップ
+- `ToolsClient`: HTTP セッション管理を含むメイン API クライアントクラス
+- 全 API エンドポイント実装: `md_to_pdf`, `md_to_docx`, `pdf_to_page_images`など
+- `exceptions.py`でカスタム例外による集約エラーハンドリング
+- `models.py`で Pydantic モデルとしてレスポンス定義
+
+### 2. LangChain ツール (`src/middleman_ai/langchain_tools/`)
+
+- 各ツールは LangChain の`BaseTool`を継承
+- AI エージェント用にクライアントメソッドをラップ
 - `_run`と`_arun`メソッド両方を実装
 - ツール例: `MdToPdfTool`, `JsonToPptxAnalyzeTool`など
 
-### 3. MCPサーバー (`src/middleman_ai/mcp/server.py`)
-- FastMCPを使用したModel Context Protocol実装
-- Claude Desktopやその他MCPクライアントにツールを公開
+### 3. MCP サーバー (`src/middleman_ai/mcp/server.py`)
+
+- FastMCP を使用した Model Context Protocol 実装
+- Claude Desktop やその他 MCP クライアントにツールを公開
 - `@mcp.tool()`デコレータによる自動登録
 - テキスト入力とファイルパス入力の両方をサポート
 
-### 4. CLIインターフェース (`src/middleman_ai/cli/main.py`)
-- Clickベースのコマンドラインインターフェース
+### 4. CLI インターフェース (`src/middleman_ai/cli/main.py`)
+
+- Click ベースのコマンドラインインターフェース
 - 標準入力またはファイル引数からの読み込み
 - 環境変数設定 (`MIDDLEMAN_API_KEY`, `MIDDLEMAN_BASE_URL`)
 
 ## テスト戦略
 
 ### 単体テスト (`tests/test_*.py`)
-- pytest-mockを使用してHTTPリクエストをモック
-- API呼び出しなしでクライアントロジックをテスト
+
+- pytest-mock を使用して HTTP リクエストをモック
+- API 呼び出しなしでクライアントロジックをテスト
 - 成功/エラーシナリオとパラメータ検証をカバー
 
-### VCRテスト (`tests/test_*_vcr.py`)
-- VCR.pyカセットを使用した実際のAPI統合テスト
-- 環境に依存しないアサーション（正確な値ではなくURLパターンをチェック）
-- テンプレートIDや機密データには環境変数を使用
+### VCR テスト (`tests/test_*_vcr.py`)
+
+- VCR.py カセットを使用した実際の API 統合テスト
+- 環境に依存しないアサーション（正確な値ではなく URL パターンをチェック）
+- テンプレート ID や機密データには環境変数を使用
 
 ### テストデータ
+
 - `tests/data/`にサンプルファイル
-- `tests/cassettes/`にVCRカセット
+- `tests/cassettes/`に VCR カセット
 - `vcr_utils.py`にテストユーティリティ
 
 ## 主要な実装ルール
 
 ### エラーハンドリング
+
 - クライアントで集約例外ハンドリングを使用
-- HTTPステータスコードを特定の例外タイプにマップ
-- 適切なエラー伝播でPydanticレスポンスを解析
+- HTTP ステータスコードを特定の例外タイプにマップ
+- 適切なエラー伝播で Pydantic レスポンスを解析
 
 ### コードスタイル
-- Blackフォーマット（行長: 88）
-- 特定のルールセットでRuffリンティング
-- 型ヒント必須（mypyで強制）
-- 全API リクエスト/レスポンスデータにPydanticモデル
+
+- Black フォーマット（行長: 88）
+- 特定のルールセットで Ruff リンティング
+- 型ヒント必須（mypy で強制）
+- 全 API リクエスト/レスポンスデータに Pydantic モデル
 
 ### 環境設定
-- `MIDDLEMAN_API_KEY`: API認証に必須
-- `MIDDLEMAN_BASE_URL`: APIベースURL（デフォルトは本番環境）
-- VCRテストでテンプレートID用のテスト環境変数
+
+- `MIDDLEMAN_API_KEY`: API 認証に必須
+- `MIDDLEMAN_BASE_URL`: API ベース URL（デフォルトは本番環境）
+- VCR テストでテンプレート ID 用のテスト環境変数
