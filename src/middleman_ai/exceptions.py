@@ -19,6 +19,10 @@ class NotEnoughCreditError(MiddlemanBaseException):
     """クレジット不足によりAPIの実行ができません。"""
 
 
+class BadRequestError(MiddlemanBaseException):
+    """リクエストが不正です。"""
+
+
 class ForbiddenError(MiddlemanBaseException):
     """APIキーが無効か、アクセス権限がありません。"""
 

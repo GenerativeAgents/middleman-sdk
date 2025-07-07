@@ -2,7 +2,7 @@ interactions:
   - request:
       body:
         '{"markdown": "# Test Heading\n\n    This is a test markdown document.\n\n    ##
-        Section 1\n    - Item 1\n    - Item 2\n    ", "docx_template_id": null}'
+        Section 1\n    - Item 1\n    - Item 2\n    ", "docx_template_id": "TEMPLATE_ID"}'
       headers:
         Accept:
           - "*/*"
@@ -11,7 +11,7 @@ interactions:
         Connection:
           - keep-alive
         Content-Length:
-          - "125"
+          - "180"
         Content-Type:
           - application/json
         User-Agent:
@@ -23,7 +23,7 @@ interactions:
     response:
       body:
         string:
-          '{"docx_url":"https://middleman-ai.com/s/709dd3af/zljyFkYtnl","important_remark_for_user":"The
+          '{"docx_url":"https://middleman-ai.com/s/abfbc7fe/scLdYIML1z","important_remark_for_user":"The
           URL expires in 1 hour.Please note that you will not be able to download the
           file after it has expired."}'
       headers:

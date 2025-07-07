@@ -1,0 +1,44 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+# Middleman SDK
+
+## 概要
+
+このリポジトリでは AI エージェントが利用できるツールを API として提供するサービス「Middleman」の API を簡単に利用できるようにするためのクライアントコードを SDK として管理しています。
+
+Middleman SDK は、以下の 3 種類の方法で Middleman の API へのアクセスを提供します。
+
+- Python クライアント： Python コードから簡単に API 呼び出しができるクライアント（実装： [client.py](mdc:src/middleman_ai/client.py)）
+- CLI： コマンドラインから簡単に API 呼び出すことができる CLI（実装： [main.py](mdc:src/middleman_ai/cli/main.py)）
+- MCP（Model Context Protocol）： AI エージェントが外部 API やツールを呼び出すためのプロトコル（実装： [server.py](mdc:src/middleman_ai/mcp/server.py)）
+
+※ Model Context Protocol 参考サイト： https://modelcontextprotocol.io/introduction
+
+# 開発ルール
+
+## テスト
+
+### ルール
+
+- ユーザーからの依頼に対応後、必ず単体テストを実行し実装が妥当かどうかを確認する
+- 新しい引数が増えたなど、テストすべき新しい観点が発生した場合にはテストケースの追加・修正が必要である
+
+### テスト実行
+
+```bash
+uv run pytest
+uv run pytest -v
+uv run pytest -v path/to/test
+uv run pytest -k search_keyword
+```
+
+### リンター実行
+
+```bash
+uv run ruff check .
+uv run mypy ./src
+```

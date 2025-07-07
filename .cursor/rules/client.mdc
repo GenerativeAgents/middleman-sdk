@@ -1,0 +1,63 @@
+---
+description: 
+globs: client.py,test_client.py,test_client_vcr.py
+alwaysApply: false
+---
+# Pythonクライアント実装ルール
+
+このドキュメントにはMiddleman SDKにアクセスできるPythonクライアント [client.py](mdc:src/middleman_ai/client.py) の実装ルールをまとめます。
+
+## 実装ルール
+
+- エラー処理は分散させずに共通化する
+- レスポンスは正しいPydanticモデルでパースする
+
+## テストルール
+
+Pythonクライアントのテストは以下の2箇所で実装します。
+
+- [test_client.py](mdc:tests/test_client.py)： 単体テスト
+- [test_client_vcr.py](mdc:tests/test_client_vcr.py)： VCRテスト
+
+### test_client.py
+
+API呼び出しをpytestを使ってモック化することで、クライアントコードのみをテストする単体テストを記載します。
+正常系、異常系やAPIに渡すパラメータパターンごとにテストケースが分かれれいます。
+
+```python
+# 例
+def test_md_to_pdf_success(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """md_to_pdf成功時のテスト。"""
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    result = client.md_to_pdf("# Test")
+
+    assert result == "https://example.com/test.pdf"
+    mock_post.assert_called_once_with(
+        "https://middleman-ai.com/api/v1/tools/md-to-pdf",
+        json={"markdown": "# Test", "pdf_template_id": None},
+        timeout=30.0,
+    )
+```
+
+### test_client_vcr.py の共通ルール
+
+VCRテストでは、以下のルールに従ってテストを実装します。
+なお、 [vcr.mdc](mdc:.cursor/rules/vcr.mdc) に記載の共通ルールも守るようにしてください。
+
+
+1. **テスト内のアサーション**: 環境に依存する値や戻り値が呼び出しごとに違う値は、環境によらずに成功するアサーションにします
+   ```python
+   # https://xxx.xxx/s/xxxxx というURLであることを検証する場合の例、xxxの部分は環境依存
+   assert pdf_url.startswith("https://")
+   assert "/s/" in pdf_url
+   ```
+
+2. **環境変数の利用**: テンプレートIDなど環境依存の値は環境変数から取得する
+   ```python
+   template_id = os.getenv("MIDDLEMAN_TEST_PPTX_TEMPLATE_ID") or ""
+   ```
+
+

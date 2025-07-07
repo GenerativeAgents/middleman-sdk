@@ -2,7 +2,7 @@ interactions:
   - request:
       body:
         '{"markdown": "# Test Heading\n\n    This is a test markdown document.\n\n    ##
-        Section 1\n    - Item 1\n    - Item 2\n    ", "pdf_template_id": "a978ae98-d4c6-430e-a049-1f377b5d25d1"}'
+        Section 1\n    - Item 1\n    - Item 2\n    ", "pdf_template_id": "TEMPLATE_ID"}'
       headers:
         Accept:
           - "*/*"

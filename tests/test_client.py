@@ -22,6 +22,7 @@ from middleman_ai.exceptions import (
     NotFoundError,
     ValidationError,
 )
+from middleman_ai.models import CustomSize, MermaidToImageOptions
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -46,7 +47,7 @@ def test_init(client: ToolsClient) -> None:
     """初期化のテスト。"""
     assert client.api_key == "test_api_key"
     assert client.base_url == "https://middleman-ai.com"
-    assert client.timeout == 30.0  # noqa: PLR2004
+    assert client.timeout == 30.0
     assert client.session.headers["Authorization"] == "Bearer test_api_key"
     assert client.session.headers["Content-Type"] == "application/json"
 
@@ -245,3 +246,121 @@ def test_xlsx_to_page_images_file_error(client: ToolsClient) -> None:
     """xlsx_to_page_images ファイルエラー時のテスト。"""
     with pytest.raises(ValidationError, match="Failed to read XLSX file"):
         client.xlsx_to_page_images("nonexistent.xlsx")
+
+
+def test_mermaid_to_image_without_options(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """mermaid_to_image オプションなし成功時のテスト。"""
+    mock_response.json.return_value = {
+        "image_url": "https://example.com/mermaid.png",
+        "format": "png",
+        "important_remark_for_user": "The URL expires in 1 hour.",
+    }
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    result = client.mermaid_to_image("graph TD; A-->B")
+
+    assert result == "https://example.com/mermaid.png"
+    mock_post.assert_called_once_with(
+        "https://middleman-ai.com/api/v1/tools/mermaid-to-image",
+        json={
+            "content": "graph TD; A-->B"
+        },
+        timeout=30.0,
+    )
+
+
+def test_mermaid_to_image_success_with_options(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """mermaid_to_image オプション付き成功時のテスト。"""
+
+    mock_response.json.return_value = {
+        "image_url": "https://example.com/mermaid.png",
+        "format": "png",
+        "important_remark_for_user": "The URL expires in 1 hour.",
+    }
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    options = MermaidToImageOptions(
+        theme="dark",
+        background_color="transparent",
+        custom_size=CustomSize(width=800, height=600),
+    )
+
+    result = client.mermaid_to_image("graph LR; A-->B", options=options)
+
+    assert result == "https://example.com/mermaid.png"
+    mock_post.assert_called_once_with(
+        "https://middleman-ai.com/api/v1/tools/mermaid-to-image",
+        json={
+            "content": "graph LR; A-->B",
+            "options": {
+                "theme": "dark",
+                "background_color": "transparent",
+                "custom_size": {"width": 800, "height": 600},
+            },
+        },
+        timeout=30.0,
+    )
+
+
+@pytest.mark.parametrize(
+    "status_code,expected_exception",
+    [
+        (HTTP_PAYMENT_REQUIRED, NotEnoughCreditError),
+        (HTTP_UNAUTHORIZED, ForbiddenError),
+        (HTTP_FORBIDDEN, ForbiddenError),
+        (HTTP_NOT_FOUND, NotFoundError),
+        (HTTP_INTERNAL_SERVER_ERROR, InternalError),
+    ],
+)
+def test_mermaid_to_image_error_responses(
+    client: ToolsClient,
+    mocker: "MockerFixture",
+    status_code: int,
+    expected_exception: type,
+) -> None:
+    """mermaid_to_image エラーレスポンス時のテスト。"""
+    mock_response = Mock(spec=requests.Response)
+    mock_response.status_code = status_code
+    mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError()
+    mock_response.json.return_value = {}
+    mock_response.url = "https://middleman-ai.com/api/v1/tools/mermaid-to-image"
+    mock_response.headers = {}
+    mock_response.text = ""
+
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    with pytest.raises(expected_exception):
+        client.mermaid_to_image("graph TD; A-->B")
+
+    mock_post.assert_called_once()
+
+
+def test_mermaid_to_image_connection_error(
+    client: ToolsClient, mocker: "MockerFixture"
+) -> None:
+    """mermaid_to_image 接続エラー時のテスト。"""
+    mock_post = mocker.patch.object(
+        client.session, "post", side_effect=requests.exceptions.ConnectionError()
+    )
+
+    with pytest.raises(ConnectionError):
+        client.mermaid_to_image("graph TD; A-->B")
+
+    mock_post.assert_called_once()
+
+
+def test_mermaid_to_image_validation_error(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """mermaid_to_image バリデーションエラー時のテスト。"""
+    mock_response.json.return_value = {"invalid": "response"}
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    with pytest.raises(ValidationError):
+        client.mermaid_to_image("graph TD; A-->B")
+
+    mock_post.assert_called_once()
