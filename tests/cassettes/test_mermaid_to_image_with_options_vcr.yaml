@@ -1,0 +1,46 @@
+interactions:
+- request:
+    body: '{"content": "graph LR\n    A[User] --> B[API]\n    B --> C[Response]\n    C
+      --> A", "options": {"theme": "dark", "background_color": "transparent", "custom_size":
+      {"width": 800, "height": 600}}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '194'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v1/tools/mermaid-to-image
+  response:
+    body:
+      string: '{"image_url":"https://middleman-ai.com/s/dc6f1fab/dyFvUzr9Oi","format":"png","important_remark_for_user":"The
+        URL expires in 1 hour. Please note that you will not be able to download the
+        file after it has expired."}'
+    headers:
+      content-length:
+      - '215'
+      content-type:
+      - application/json
+      date:
+      - FILTERED
+      server:
+      - FILTERED
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - FILTERED
+      x-request-id:
+      - FILTERED
+    status:
+      code: 200
+      message: OK
+version: 1

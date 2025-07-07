@@ -15,6 +15,8 @@ from middleman_ai.mcp.server import (
     md_file_to_pdf,
     md_to_docx,
     md_to_pdf,
+    mermaid_file_to_image,
+    mermaid_to_image,
     pdf_to_page_images,
     pptx_to_page_images,
     run_server,
@@ -235,6 +237,37 @@ def test_json_to_pptx_execute_tool_mcp(mocker: "MockerFixture") -> None:
     # expected_arg の定義を複数行に分割
     expected_arg = Presentation(slides=[Slide(type="title_slide", placeholders=[])])
     mock_execute.assert_called_once_with(template_id, expected_arg)
+
+
+def test_mermaid_to_image_tool_mcp(mocker: "MockerFixture") -> None:
+    """mermaid_to_imageツールのテスト。"""
+    mock_client = mocker.patch("middleman_ai.mcp.server.client")
+    mock_client.mermaid_to_image.return_value = "https://example.com/mermaid.png"
+
+    result = mermaid_to_image("graph TD; A-->B")
+
+    assert result == "https://example.com/mermaid.png"
+    mock_client.mermaid_to_image.assert_called_once_with(
+        "graph TD; A-->B", options=None
+    )
+
+
+def test_mermaid_file_to_image_tool_mcp(mocker: "MockerFixture") -> None:
+    """mermaid_file_to_imageツールのテスト。"""
+    from pathlib import Path
+
+    mock_client = mocker.patch("middleman_ai.mcp.server.client")
+    mock_client.mermaid_to_image.return_value = "https://example.com/mermaid_file.png"
+
+    # 実際のテストファイルを使用
+    test_file = Path(__file__).parent / "data" / "test.mmd"
+    result = mermaid_file_to_image(str(test_file))
+
+    assert result == "https://example.com/mermaid_file.png"
+    # 実際のファイル内容がクライアントに渡されることを確認
+    call_args = mock_client.mermaid_to_image.call_args
+    assert "graph TD" in call_args[0][0]  # Mermaidファイルの内容
+    assert call_args[1]["options"] is None
 
 
 def test_run_server_mcp(mocker: "MockerFixture") -> None:

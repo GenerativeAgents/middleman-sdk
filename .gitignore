@@ -191,3 +191,8 @@ spec.md
 .env.production
 .env.development.local
 .env.production.local
+
+# Claude Code
+.claude/
+.cursor/mcp.json
+

@@ -42,6 +42,18 @@ def main() -> None:
     for page in images:
         print(f"Sheet {page['sheet_name']}: {page['image_url']}")
 
+    # Mermaid → Image
+    mermaid_text = """
+graph TD
+    A[Start] --> B{Decision}
+    B -->|Yes| C[Process 1]
+    B -->|No| D[Process 2]
+    C --> E[End]
+    D --> E
+    """
+    image_url = client.mermaid_to_image(mermaid_text)
+    print(f"Generated Mermaid image URL: {image_url}")
+
     # JSON → PPTX (analyze)
     pptx_template_id = os.getenv("MIDDLEMAN_PPTX_TEMPLATE_ID", "")
     slides = client.json_to_pptx_analyze_v2(pptx_template_id)

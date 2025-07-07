@@ -1,12 +1,11 @@
 [project]
 name = "middleman-ai"
-version = "0.1.2"
+version = "0.2.0"
 description = "Python client SDK for Middleman.ai API"
 authors = [{ name = "Generative Agents, Inc." }]
 dependencies = [
     "requests>=2",
     "pydantic>=2",
-    "langchain-core>=0.3",
     "typing-extensions",
     "click>=8.0.0",
     "mcp[cli]>=1.6.0",

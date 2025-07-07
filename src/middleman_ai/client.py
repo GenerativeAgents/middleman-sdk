@@ -23,6 +23,8 @@ from .models import (
     JsonToPptxExecuteResponse,
     MdToDocxResponse,
     MdToPdfResponse,
+    MermaidToImageOptions,
+    MermaidToImageResponse,
     PdfToPageImagesResponse,
     PptxToPageImagesResponse,
     XlsxToPageImagesResponse,
@@ -452,3 +454,44 @@ class ToolsClient:
             return result.pptx_url
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
+
+    def mermaid_to_image(
+        self,
+        mermaid_text: str,
+        options: MermaidToImageOptions | None = None,
+    ) -> str:
+        """Mermaidダイアグラムを画像に変換し、画像のダウンロードURLを返します。
+
+        Args:
+            mermaid_text: 変換対象のMermaidダイアグラムテキスト
+            options: 変換オプション（テーマ、背景色、サイズなど）
+
+        Returns:
+            str: 生成された画像のURL
+
+        Raises:
+            ValidationError: 入力データが不正
+            その他、_handle_responseで定義される例外
+        """
+        try:
+            request_data: Dict[str, Any] = {
+                "content": mermaid_text,
+            }
+
+            if options is not None:
+                options_dict = options.model_dump(exclude_none=True)
+                if options_dict:  # 空でない場合のみ追加
+                    request_data["options"] = options_dict
+
+            response = self.session.post(
+                f"{self.base_url}/api/v1/tools/mermaid-to-image",
+                json=request_data,
+                timeout=self.timeout,
+            )
+            data = self._handle_response(response)
+            result = MermaidToImageResponse.model_validate(data)
+            return result.image_url
+        except PydanticValidationError as e:
+            raise ValidationError(str(e)) from e
+        except requests.exceptions.RequestException as e:
+            raise ConnectionError() from e
