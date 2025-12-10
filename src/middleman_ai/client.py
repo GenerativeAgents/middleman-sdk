@@ -19,6 +19,8 @@ from .exceptions import (
 )
 from .models import (
     DocxToPageImagesResponse,
+    ExcelToPdfAnalyzeResponse,
+    ExcelToPdfExecuteResponse,
     JsonToPptxAnalyzeResponse,
     JsonToPptxExecuteResponse,
     MdToDocxResponse,
@@ -491,6 +493,77 @@ class ToolsClient:
             data = self._handle_response(response)
             result = MermaidToImageResponse.model_validate(data)
             return result.image_url
+        except PydanticValidationError as e:
+            raise ValidationError(str(e)) from e
+        except requests.exceptions.RequestException as e:
+            raise ConnectionError() from e
+
+    def excel_to_pdf_analyze(
+        self,
+        excel_template_id: str,
+        sheet_name: str | None = None,
+    ) -> ExcelToPdfAnalyzeResponse:
+        """Excelテンプレートを解析し、プレースホルダー情報を返します。
+
+        Args:
+            excel_template_id: ExcelテンプレートID(UUID)
+            sheet_name: 解析対象のシート名（省略時は最初のシート）
+
+        Returns:
+            ExcelToPdfAnalyzeResponse: 解析結果（シート名、プレースホルダー一覧）
+
+        Raises:
+            ValidationError: 入力データが不正
+            その他、_handle_responseで定義される例外
+        """
+        try:
+            response = self.session.post(
+                f"{self.base_url}/api/v1/tools/excel-to-pdf-analyze",
+                json={
+                    "excel_template_id": excel_template_id,
+                    "sheet_name": sheet_name,
+                },
+                timeout=self.timeout,
+            )
+            data = self._handle_response(response)
+            return ExcelToPdfAnalyzeResponse.model_validate(data)
+        except PydanticValidationError as e:
+            raise ValidationError(str(e)) from e
+        except requests.exceptions.RequestException as e:
+            raise ConnectionError() from e
+
+    def excel_to_pdf_execute(
+        self,
+        excel_template_id: str,
+        placeholders: Dict[str, str],
+        sheet_name: str | None = None,
+    ) -> ExcelToPdfExecuteResponse:
+        """Excelテンプレートのプレースホルダーを置換し、PDFに変換します。
+
+        Args:
+            excel_template_id: ExcelテンプレートID(UUID)
+            placeholders: プレースホルダーの値（キー: 名前、値: 置換文字列）
+            sheet_name: 処理対象のシート名（省略時は最初のシート）
+
+        Returns:
+            ExcelToPdfExecuteResponse: 変換結果（PDF URL、警告メッセージ）
+
+        Raises:
+            ValidationError: 入力データが不正
+            その他、_handle_responseで定義される例外
+        """
+        try:
+            response = self.session.post(
+                f"{self.base_url}/api/v1/tools/excel-to-pdf-execute",
+                json={
+                    "excel_template_id": excel_template_id,
+                    "placeholders": placeholders,
+                    "sheet_name": sheet_name,
+                },
+                timeout=self.timeout,
+            )
+            data = self._handle_response(response)
+            return ExcelToPdfExecuteResponse.model_validate(data)
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
         except requests.exceptions.RequestException as e:
