@@ -266,6 +266,56 @@ def mermaid_to_image(
         raise
 
 
+@cli.command()
+@click.argument("xlsx_template_id")
+@click.option("--sheet-name", help="解析対象のシート名（省略時は最初のシート）")
+def excel_to_pdf_analyze(xlsx_template_id: str, sheet_name: str | None = None) -> None:
+    """Analyze Excel template and show placeholders."""
+    try:
+        client = get_client()
+        with click.progressbar(
+            length=1, label="テンプレートを解析中...", show_eta=False
+        ) as bar:
+            result = client.excel_to_pdf_analyze(
+                xlsx_template_id, sheet_name=sheet_name
+            )
+            bar.update(1)
+        print(f"シート名: {result.sheet_name}")
+        print(f"プレースホルダー数: {len(result.placeholders)}")
+        for ph in result.placeholders:
+            print(f"  - {ph.key}: {ph.description} (セル: {ph.cell})")
+        print(f"\nJSON Schema:\n{result.placeholders_json_schema}")
+    except MiddlemanBaseException as e:
+        raise click.ClickException(str(e)) from e
+
+
+@cli.command()
+@click.argument("xlsx_template_id")
+@click.option("--sheet-name", help="処理対象のシート名（省略時は最初のシート）")
+def excel_to_pdf_execute(xlsx_template_id: str, sheet_name: str | None = None) -> None:
+    """Execute Excel to PDF conversion with placeholders from stdin (JSON)."""
+    try:
+        client = get_client()
+        print("標準入力からプレースホルダーJSON を読み込んでいます...")
+        placeholders = json.loads(sys.stdin.read())
+        with click.progressbar(
+            length=1, label="PDFに変換中...", show_eta=False
+        ) as bar:
+            result = client.excel_to_pdf_execute(
+                xlsx_template_id, placeholders, sheet_name=sheet_name
+            )
+            bar.update(1)
+        print(f"PDF URL: {result.pdf_url}")
+        if result.warnings:
+            print("警告:")
+            for warning in result.warnings:
+                print(f"  - {warning}")
+    except json.JSONDecodeError as e:
+        raise click.ClickException(f"Invalid JSON input: {e!s}") from e
+    except MiddlemanBaseException as e:
+        raise click.ClickException(str(e)) from e
+
+
 @click.command()
 def mcp_server() -> None:
     """Run MCP server as a standalone command."""

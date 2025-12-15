@@ -303,6 +303,60 @@ def mermaid_file_to_image(
     return client.mermaid_to_image(mermaid_text, options=options)
 
 
+@mcp.tool()
+def excel_to_pdf_analyze(
+    xlsx_template_id: str,
+    sheet_name: str | None = None,
+) -> Dict[str, Any]:
+    """
+    Analyze an Excel template and return placeholder information.
+
+    Args:
+        xlsx_template_id: The Excel template ID (UUID)
+        sheet_name: Optional sheet name to analyze (default: first sheet)
+
+    Returns:
+        A dictionary containing:
+        - sheet_name: The analyzed sheet name
+        - placeholders: List of placeholder information
+        - placeholders_json_schema: JSON schema for the placeholders object
+    """
+    result = client.excel_to_pdf_analyze(xlsx_template_id, sheet_name=sheet_name)
+    return {
+        "sheet_name": result.sheet_name,
+        "placeholders": [p.model_dump() for p in result.placeholders],
+        "placeholders_json_schema": result.placeholders_json_schema,
+    }
+
+
+@mcp.tool()
+def excel_to_pdf_execute(
+    xlsx_template_id: str,
+    placeholders: Dict[str, str],
+    sheet_name: str | None = None,
+) -> Dict[str, Any]:
+    """
+    Replace placeholders in an Excel template and convert to PDF.
+
+    Args:
+        xlsx_template_id: The Excel template ID (UUID)
+        placeholders: Dictionary of placeholder values (key: name, value: text)
+        sheet_name: Optional sheet name to process (default: first sheet)
+
+    Returns:
+        A dictionary containing:
+        - pdf_url: URL to download the generated PDF
+        - warnings: List of warning messages from conversion
+    """
+    result = client.excel_to_pdf_execute(
+        xlsx_template_id, placeholders, sheet_name=sheet_name
+    )
+    return {
+        "pdf_url": result.pdf_url,
+        "warnings": result.warnings,
+    }
+
+
 def run_server() -> None:
     """
     MCPサーバーを実行します。

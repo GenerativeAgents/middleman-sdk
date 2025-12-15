@@ -364,3 +364,253 @@ def test_mermaid_to_image_validation_error(
         client.mermaid_to_image("graph TD; A-->B")
 
     mock_post.assert_called_once()
+
+
+def test_excel_to_pdf_analyze_success(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """excel_to_pdf_analyze 成功時のテスト。"""
+    mock_response.json.return_value = {
+        "sheet_name": "Sheet1",
+        "placeholders": [
+            {
+                "key": "name",
+                "description": "名前",
+                "cell": "A1",
+                "sheet_name": "Sheet1",
+                "number_format": None,
+            },
+            {
+                "key": "amount",
+                "description": "金額",
+                "cell": "B2",
+                "sheet_name": "Sheet1",
+                "number_format": "#,##0",
+            },
+        ],
+        "placeholders_json_schema": '{"type": "object"}',
+        "important_remark_for_user": "Use the JSON schema to understand the structure.",
+    }
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    result = client.excel_to_pdf_analyze("00000000-0000-0000-0000-000000000001")
+
+    assert result.sheet_name == "Sheet1"
+    assert len(result.placeholders) == 2
+    assert result.placeholders[0].key == "name"
+    assert result.placeholders[0].description == "名前"
+    assert result.placeholders[0].cell == "A1"
+    assert result.placeholders[1].key == "amount"
+    assert result.placeholders[1].number_format == "#,##0"
+    assert "type" in result.placeholders_json_schema
+    mock_post.assert_called_once_with(
+        "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-analyze",
+        json={
+            "xlsx_template_id": "00000000-0000-0000-0000-000000000001",
+            "sheet_name": None,
+        },
+        timeout=30.0,
+    )
+
+
+def test_excel_to_pdf_analyze_with_sheet_name(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """excel_to_pdf_analyze シート名指定時のテスト。"""
+    mock_response.json.return_value = {
+        "sheet_name": "CustomSheet",
+        "placeholders": [],
+        "placeholders_json_schema": "{}",
+    }
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    result = client.excel_to_pdf_analyze(
+        "00000000-0000-0000-0000-000000000001",
+        sheet_name="CustomSheet",
+    )
+
+    assert result.sheet_name == "CustomSheet"
+    mock_post.assert_called_once_with(
+        "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-analyze",
+        json={
+            "xlsx_template_id": "00000000-0000-0000-0000-000000000001",
+            "sheet_name": "CustomSheet",
+        },
+        timeout=30.0,
+    )
+
+
+@pytest.mark.parametrize(
+    "status_code,expected_exception",
+    [
+        (HTTP_PAYMENT_REQUIRED, NotEnoughCreditError),
+        (HTTP_UNAUTHORIZED, ForbiddenError),
+        (HTTP_FORBIDDEN, ForbiddenError),
+        (HTTP_NOT_FOUND, NotFoundError),
+        (HTTP_INTERNAL_SERVER_ERROR, InternalError),
+    ],
+)
+def test_excel_to_pdf_analyze_http_errors(
+    client: ToolsClient,
+    mocker: "MockerFixture",
+    mock_response: Mock,
+    status_code: int,
+    expected_exception: type[Exception],
+) -> None:
+    """excel_to_pdf_analyze HTTP エラー時のテスト。"""
+    mock_response.status_code = status_code
+    mock_response.url = "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-analyze"
+    mock_response.headers = {"content-type": "application/json"}
+    mock_response.text = ""
+    mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError()
+    mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    with pytest.raises(expected_exception):
+        client.excel_to_pdf_analyze("00000000-0000-0000-0000-000000000001")
+
+
+def test_excel_to_pdf_analyze_validation_error(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """excel_to_pdf_analyze バリデーションエラー時のテスト。"""
+    mock_response.json.return_value = {"invalid": "response"}
+    mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    with pytest.raises(ValidationError):
+        client.excel_to_pdf_analyze("00000000-0000-0000-0000-000000000001")
+
+
+def test_excel_to_pdf_execute_success(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """excel_to_pdf_execute 成功時のテスト。"""
+    mock_response.json.return_value = {
+        "pdf_url": "https://example.com/output.pdf",
+        "warnings": [],
+        "important_remark_for_user": "The URL expires in 1 hour.",
+    }
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    result = client.excel_to_pdf_execute(
+        "00000000-0000-0000-0000-000000000001",
+        {"name": "テスト", "amount": "1000"},
+    )
+
+    assert result.pdf_url == "https://example.com/output.pdf"
+    assert result.warnings == []
+    mock_post.assert_called_once_with(
+        "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-execute",
+        json={
+            "xlsx_template_id": "00000000-0000-0000-0000-000000000001",
+            "placeholders": {"name": "テスト", "amount": "1000"},
+            "sheet_name": None,
+        },
+        timeout=30.0,
+    )
+
+
+def test_excel_to_pdf_execute_with_warnings(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """excel_to_pdf_execute 警告付きの成功時のテスト。"""
+    mock_response.json.return_value = {
+        "pdf_url": "https://example.com/output.pdf",
+        "warnings": ["Font 'MS Gothic' was replaced with 'Noto Sans CJK JP'"],
+    }
+    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    result = client.excel_to_pdf_execute(
+        "00000000-0000-0000-0000-000000000001",
+        {"name": "テスト"},
+        sheet_name="Sheet2",
+    )
+
+    assert result.pdf_url == "https://example.com/output.pdf"
+    assert len(result.warnings) == 1
+    assert "Font" in result.warnings[0]
+    mock_post.assert_called_once_with(
+        "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-execute",
+        json={
+            "xlsx_template_id": "00000000-0000-0000-0000-000000000001",
+            "placeholders": {"name": "テスト"},
+            "sheet_name": "Sheet2",
+        },
+        timeout=30.0,
+    )
+
+
+@pytest.mark.parametrize(
+    "status_code,expected_exception",
+    [
+        (HTTP_PAYMENT_REQUIRED, NotEnoughCreditError),
+        (HTTP_UNAUTHORIZED, ForbiddenError),
+        (HTTP_FORBIDDEN, ForbiddenError),
+        (HTTP_NOT_FOUND, NotFoundError),
+        (HTTP_INTERNAL_SERVER_ERROR, InternalError),
+    ],
+)
+def test_excel_to_pdf_execute_http_errors(
+    client: ToolsClient,
+    mocker: "MockerFixture",
+    mock_response: Mock,
+    status_code: int,
+    expected_exception: type[Exception],
+) -> None:
+    """excel_to_pdf_execute HTTP エラー時のテスト。"""
+    mock_response.status_code = status_code
+    mock_response.url = "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-execute"
+    mock_response.headers = {"content-type": "application/json"}
+    mock_response.text = ""
+    mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError()
+    mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    with pytest.raises(expected_exception):
+        client.excel_to_pdf_execute(
+            "00000000-0000-0000-0000-000000000001",
+            {"name": "テスト"},
+        )
+
+
+def test_excel_to_pdf_execute_validation_error(
+    client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
+) -> None:
+    """excel_to_pdf_execute バリデーションエラー時のテスト。"""
+    mock_response.json.return_value = {"invalid": "response"}
+    mocker.patch.object(client.session, "post", return_value=mock_response)
+
+    with pytest.raises(ValidationError):
+        client.excel_to_pdf_execute(
+            "00000000-0000-0000-0000-000000000001",
+            {"name": "テスト"},
+        )
+
+
+def test_excel_to_pdf_execute_connection_error(
+    client: ToolsClient, mocker: "MockerFixture"
+) -> None:
+    """excel_to_pdf_execute 接続エラー時のテスト。"""
+    mocker.patch.object(
+        client.session,
+        "post",
+        side_effect=requests.exceptions.ConnectionError(),
+    )
+
+    with pytest.raises(ConnectionError):
+        client.excel_to_pdf_execute(
+            "00000000-0000-0000-0000-000000000001",
+            {"name": "テスト"},
+        )
+
+
+def test_excel_to_pdf_analyze_connection_error(
+    client: ToolsClient, mocker: "MockerFixture"
+) -> None:
+    """excel_to_pdf_analyze 接続エラー時のテスト。"""
+    mocker.patch.object(
+        client.session,
+        "post",
+        side_effect=requests.exceptions.ConnectionError(),
+    )
+
+    with pytest.raises(ConnectionError):
+        client.excel_to_pdf_analyze("00000000-0000-0000-0000-000000000001")
