@@ -404,9 +404,9 @@ def test_excel_to_pdf_analyze_success(
     assert result.placeholders[1].number_format == "#,##0"
     assert "type" in result.placeholders_json_schema
     mock_post.assert_called_once_with(
-        "https://middleman-ai.com/api/v1/tools/excel-to-pdf-analyze",
+        "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-analyze",
         json={
-            "excel_template_id": "00000000-0000-0000-0000-000000000001",
+            "xlsx_template_id": "00000000-0000-0000-0000-000000000001",
             "sheet_name": None,
         },
         timeout=30.0,
@@ -431,9 +431,9 @@ def test_excel_to_pdf_analyze_with_sheet_name(
 
     assert result.sheet_name == "CustomSheet"
     mock_post.assert_called_once_with(
-        "https://middleman-ai.com/api/v1/tools/excel-to-pdf-analyze",
+        "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-analyze",
         json={
-            "excel_template_id": "00000000-0000-0000-0000-000000000001",
+            "xlsx_template_id": "00000000-0000-0000-0000-000000000001",
             "sheet_name": "CustomSheet",
         },
         timeout=30.0,
@@ -459,7 +459,7 @@ def test_excel_to_pdf_analyze_http_errors(
 ) -> None:
     """excel_to_pdf_analyze HTTP エラー時のテスト。"""
     mock_response.status_code = status_code
-    mock_response.url = "https://middleman-ai.com/api/v1/tools/excel-to-pdf-analyze"
+    mock_response.url = "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-analyze"
     mock_response.headers = {"content-type": "application/json"}
     mock_response.text = ""
     mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError()
@@ -499,9 +499,9 @@ def test_excel_to_pdf_execute_success(
     assert result.pdf_url == "https://example.com/output.pdf"
     assert result.warnings == []
     mock_post.assert_called_once_with(
-        "https://middleman-ai.com/api/v1/tools/excel-to-pdf-execute",
+        "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-execute",
         json={
-            "excel_template_id": "00000000-0000-0000-0000-000000000001",
+            "xlsx_template_id": "00000000-0000-0000-0000-000000000001",
             "placeholders": {"name": "テスト", "amount": "1000"},
             "sheet_name": None,
         },
@@ -529,9 +529,9 @@ def test_excel_to_pdf_execute_with_warnings(
     assert len(result.warnings) == 1
     assert "Font" in result.warnings[0]
     mock_post.assert_called_once_with(
-        "https://middleman-ai.com/api/v1/tools/excel-to-pdf-execute",
+        "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-execute",
         json={
-            "excel_template_id": "00000000-0000-0000-0000-000000000001",
+            "xlsx_template_id": "00000000-0000-0000-0000-000000000001",
             "placeholders": {"name": "テスト"},
             "sheet_name": "Sheet2",
         },
@@ -558,7 +558,7 @@ def test_excel_to_pdf_execute_http_errors(
 ) -> None:
     """excel_to_pdf_execute HTTP エラー時のテスト。"""
     mock_response.status_code = status_code
-    mock_response.url = "https://middleman-ai.com/api/v1/tools/excel-to-pdf-execute"
+    mock_response.url = "https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-execute"
     mock_response.headers = {"content-type": "application/json"}
     mock_response.text = ""
     mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError()

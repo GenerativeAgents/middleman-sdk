@@ -500,13 +500,13 @@ class ToolsClient:
 
     def excel_to_pdf_analyze(
         self,
-        excel_template_id: str,
+        xlsx_template_id: str,
         sheet_name: str | None = None,
     ) -> ExcelToPdfAnalyzeResponse:
         """Excelテンプレートを解析し、プレースホルダー情報を返します。
 
         Args:
-            excel_template_id: ExcelテンプレートID(UUID)
+            xlsx_template_id: ExcelテンプレートID(UUID)
             sheet_name: 解析対象のシート名（省略時は最初のシート）
 
         Returns:
@@ -518,9 +518,9 @@ class ToolsClient:
         """
         try:
             response = self.session.post(
-                f"{self.base_url}/api/v1/tools/excel-to-pdf-analyze",
+                f"{self.base_url}/api/v1/tools/xlsx-to-pdf-analyze",
                 json={
-                    "excel_template_id": excel_template_id,
+                    "xlsx_template_id": xlsx_template_id,
                     "sheet_name": sheet_name,
                 },
                 timeout=self.timeout,
@@ -534,14 +534,14 @@ class ToolsClient:
 
     def excel_to_pdf_execute(
         self,
-        excel_template_id: str,
+        xlsx_template_id: str,
         placeholders: Dict[str, str],
         sheet_name: str | None = None,
     ) -> ExcelToPdfExecuteResponse:
         """Excelテンプレートのプレースホルダーを置換し、PDFに変換します。
 
         Args:
-            excel_template_id: ExcelテンプレートID(UUID)
+            xlsx_template_id: ExcelテンプレートID(UUID)
             placeholders: プレースホルダーの値（キー: 名前、値: 置換文字列）
             sheet_name: 処理対象のシート名（省略時は最初のシート）
 
@@ -554,9 +554,9 @@ class ToolsClient:
         """
         try:
             response = self.session.post(
-                f"{self.base_url}/api/v1/tools/excel-to-pdf-execute",
+                f"{self.base_url}/api/v1/tools/xlsx-to-pdf-execute",
                 json={
-                    "excel_template_id": excel_template_id,
+                    "xlsx_template_id": xlsx_template_id,
                     "placeholders": placeholders,
                     "sheet_name": sheet_name,
                 },

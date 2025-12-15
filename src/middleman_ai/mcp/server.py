@@ -305,14 +305,14 @@ def mermaid_file_to_image(
 
 @mcp.tool()
 def excel_to_pdf_analyze(
-    excel_template_id: str,
+    xlsx_template_id: str,
     sheet_name: str | None = None,
 ) -> Dict[str, Any]:
     """
     Analyze an Excel template and return placeholder information.
 
     Args:
-        excel_template_id: The Excel template ID (UUID)
+        xlsx_template_id: The Excel template ID (UUID)
         sheet_name: Optional sheet name to analyze (default: first sheet)
 
     Returns:
@@ -321,7 +321,7 @@ def excel_to_pdf_analyze(
         - placeholders: List of placeholder information
         - placeholders_json_schema: JSON schema for the placeholders object
     """
-    result = client.excel_to_pdf_analyze(excel_template_id, sheet_name=sheet_name)
+    result = client.excel_to_pdf_analyze(xlsx_template_id, sheet_name=sheet_name)
     return {
         "sheet_name": result.sheet_name,
         "placeholders": [p.model_dump() for p in result.placeholders],
@@ -331,7 +331,7 @@ def excel_to_pdf_analyze(
 
 @mcp.tool()
 def excel_to_pdf_execute(
-    excel_template_id: str,
+    xlsx_template_id: str,
     placeholders: Dict[str, str],
     sheet_name: str | None = None,
 ) -> Dict[str, Any]:
@@ -339,7 +339,7 @@ def excel_to_pdf_execute(
     Replace placeholders in an Excel template and convert to PDF.
 
     Args:
-        excel_template_id: The Excel template ID (UUID)
+        xlsx_template_id: The Excel template ID (UUID)
         placeholders: Dictionary of placeholder values (key: name, value: text)
         sheet_name: Optional sheet name to process (default: first sheet)
 
@@ -349,7 +349,7 @@ def excel_to_pdf_execute(
         - warnings: List of warning messages from conversion
     """
     result = client.excel_to_pdf_execute(
-        excel_template_id, placeholders, sheet_name=sheet_name
+        xlsx_template_id, placeholders, sheet_name=sheet_name
     )
     return {
         "pdf_url": result.pdf_url,
