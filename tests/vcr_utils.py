@@ -62,6 +62,8 @@ def scrub_request(request: Any) -> Any:
         req = _filter_value_in_request_body(req, "docx_template_id", "TEMPLATE_ID")
     if "json-to-pptx" in request_path:
         req = _filter_value_in_request_body(req, "pptx_template_id", "TEMPLATE_ID")
+    if "xlsx-to-pdf" in request_path:
+        req = _filter_value_in_request_body(req, "xlsx_template_id", "TEMPLATE_ID")
     return req
 
 
@@ -80,6 +82,7 @@ def scrub_response(response: Any) -> Any:
         "x-request-id",
         "date",
         "server",
+        "set-cookie",
     ]
 
     for header in headers_to_filter:
