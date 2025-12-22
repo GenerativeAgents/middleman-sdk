@@ -269,14 +269,14 @@ def mermaid_to_image(
 @cli.command()
 @click.argument("xlsx_template_id")
 @click.option("--sheet-name", help="解析対象のシート名（省略時は最初のシート）")
-def excel_to_pdf_analyze(xlsx_template_id: str, sheet_name: str | None = None) -> None:
+def xlsx_to_pdf_analyze(xlsx_template_id: str, sheet_name: str | None = None) -> None:
     """Analyze Excel template and show placeholders."""
     try:
         client = get_client()
         with click.progressbar(
             length=1, label="テンプレートを解析中...", show_eta=False
         ) as bar:
-            result = client.excel_to_pdf_analyze(
+            result = client.xlsx_to_pdf_analyze(
                 xlsx_template_id, sheet_name=sheet_name
             )
             bar.update(1)
@@ -292,7 +292,7 @@ def excel_to_pdf_analyze(xlsx_template_id: str, sheet_name: str | None = None) -
 @cli.command()
 @click.argument("xlsx_template_id")
 @click.option("--sheet-name", help="処理対象のシート名（省略時は最初のシート）")
-def excel_to_pdf_execute(xlsx_template_id: str, sheet_name: str | None = None) -> None:
+def xlsx_to_pdf_execute(xlsx_template_id: str, sheet_name: str | None = None) -> None:
     """Execute Excel to PDF conversion with placeholders from stdin (JSON)."""
     try:
         client = get_client()
@@ -301,7 +301,7 @@ def excel_to_pdf_execute(xlsx_template_id: str, sheet_name: str | None = None) -
         with click.progressbar(
             length=1, label="PDFに変換中...", show_eta=False
         ) as bar:
-            result = client.excel_to_pdf_execute(
+            result = client.xlsx_to_pdf_execute(
                 xlsx_template_id, placeholders, sheet_name=sheet_name
             )
             bar.update(1)

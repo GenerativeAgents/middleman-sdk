@@ -19,8 +19,6 @@ from .exceptions import (
 )
 from .models import (
     DocxToPageImagesResponse,
-    ExcelToPdfAnalyzeResponse,
-    ExcelToPdfExecuteResponse,
     JsonToPptxAnalyzeResponse,
     JsonToPptxExecuteResponse,
     MdToDocxResponse,
@@ -30,6 +28,8 @@ from .models import (
     PdfToPageImagesResponse,
     PptxToPageImagesResponse,
     XlsxToPageImagesResponse,
+    XlsxToPdfAnalyzeResponse,
+    XlsxToPdfExecuteResponse,
 )
 
 # HTTPステータスコード
@@ -498,11 +498,11 @@ class ToolsClient:
         except requests.exceptions.RequestException as e:
             raise ConnectionError() from e
 
-    def excel_to_pdf_analyze(
+    def xlsx_to_pdf_analyze(
         self,
         xlsx_template_id: str,
         sheet_name: str | None = None,
-    ) -> ExcelToPdfAnalyzeResponse:
+    ) -> XlsxToPdfAnalyzeResponse:
         """Excelテンプレートを解析し、プレースホルダー情報を返します。
 
         Args:
@@ -510,7 +510,7 @@ class ToolsClient:
             sheet_name: 解析対象のシート名（省略時は最初のシート）
 
         Returns:
-            ExcelToPdfAnalyzeResponse: 解析結果（シート名、プレースホルダー一覧）
+            XlsxToPdfAnalyzeResponse: 解析結果（シート名、プレースホルダー一覧）
 
         Raises:
             ValidationError: 入力データが不正
@@ -526,18 +526,18 @@ class ToolsClient:
                 timeout=self.timeout,
             )
             data = self._handle_response(response)
-            return ExcelToPdfAnalyzeResponse.model_validate(data)
+            return XlsxToPdfAnalyzeResponse.model_validate(data)
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
         except requests.exceptions.RequestException as e:
             raise ConnectionError() from e
 
-    def excel_to_pdf_execute(
+    def xlsx_to_pdf_execute(
         self,
         xlsx_template_id: str,
         placeholders: Dict[str, str],
         sheet_name: str | None = None,
-    ) -> ExcelToPdfExecuteResponse:
+    ) -> XlsxToPdfExecuteResponse:
         """Excelテンプレートのプレースホルダーを置換し、PDFに変換します。
 
         Args:
@@ -546,7 +546,7 @@ class ToolsClient:
             sheet_name: 処理対象のシート名（省略時は最初のシート）
 
         Returns:
-            ExcelToPdfExecuteResponse: 変換結果（PDF URL、警告メッセージ）
+            XlsxToPdfExecuteResponse: 変換結果（PDF URL、警告メッセージ）
 
         Raises:
             ValidationError: 入力データが不正
@@ -563,7 +563,7 @@ class ToolsClient:
                 timeout=self.timeout,
             )
             data = self._handle_response(response)
-            return ExcelToPdfExecuteResponse.model_validate(data)
+            return XlsxToPdfExecuteResponse.model_validate(data)
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
         except requests.exceptions.RequestException as e:

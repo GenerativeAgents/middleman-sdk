@@ -132,7 +132,7 @@ class MermaidToImageResponse(BaseModel):
     )
 
 
-class ExcelPlaceholder(BaseModel):
+class XlsxPlaceholder(BaseModel):
     """Excelプレースホルダー情報。"""
 
     key: str = Field(..., description="プレースホルダーのキー")
@@ -142,11 +142,11 @@ class ExcelPlaceholder(BaseModel):
     number_format: str | None = Field(None, description="セルの数値フォーマット")
 
 
-class ExcelToPdfAnalyzeResponse(BaseModel):
-    """Excel → PDF テンプレート解析のレスポンスモデル。"""
+class XlsxToPdfAnalyzeResponse(BaseModel):
+    """XLSX → PDF テンプレート解析のレスポンスモデル。"""
 
     sheet_name: str = Field(..., description="解析対象のシート名")
-    placeholders: List[ExcelPlaceholder] = Field(
+    placeholders: List[XlsxPlaceholder] = Field(
         ..., description="プレースホルダー一覧"
     )
     placeholders_json_schema: str = Field(
@@ -157,8 +157,8 @@ class ExcelToPdfAnalyzeResponse(BaseModel):
     )
 
 
-class ExcelToPdfExecuteResponse(BaseModel):
-    """Excel → PDF 変換実行のレスポンスモデル。"""
+class XlsxToPdfExecuteResponse(BaseModel):
+    """XLSX → PDF 変換実行のレスポンスモデル。"""
 
     pdf_url: str = Field(..., description="生成されたPDFのダウンロードURL")
     warnings: List[str] = Field(

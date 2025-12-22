@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: '{"xlsx_template_id": "TEMPLATE_ID", "placeholders": {"company_name": "\u30c6\u30b9\u30c8\u682a\u5f0f\u4f1a\u793e",
+      "no": "001", "date": "2025/01/01", "price": "10000"}, "sheet_name": null}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '213'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-execute
+  response:
+    body:
+      string: "{\"pdf_url\":\"https://middleman-ai.com/s/c8f5fa6f/ZGOgozU1IA\",\"warnings\":[\"\u30D5\u30A9\u30F3\u30C8\u304C
+        Noto Sans CJK JP \u306B\u7F6E\u63DB\u3055\u308C\u307E\u3057\u305F: Yu Gothic\"],\"important_remark_for_user\":\"The
+        URL expires in 1 hour.Please note that you will not be able to download the
+        file after it has expired.\"}"
+    headers:
+      content-length:
+      - '281'
+      content-type:
+      - application/json
+      date:
+      - FILTERED
+      server:
+      - FILTERED
+      set-cookie:
+      - FILTERED
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - FILTERED
+      x-request-id:
+      - FILTERED
+    status:
+      code: 200
+      message: OK
+version: 1

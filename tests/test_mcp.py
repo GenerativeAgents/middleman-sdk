@@ -21,6 +21,8 @@ from middleman_ai.mcp.server import (
     pptx_to_page_images,
     run_server,
     xlsx_to_page_images,
+    xlsx_to_pdf_analyze,
+    xlsx_to_pdf_execute,
 )
 
 if TYPE_CHECKING:
@@ -268,6 +270,59 @@ def test_mermaid_file_to_image_tool_mcp(mocker: "MockerFixture") -> None:
     call_args = mock_client.mermaid_to_image.call_args
     assert "graph TD" in call_args[0][0]  # Mermaidファイルの内容
     assert call_args[1]["options"] is None
+
+
+def test_xlsx_to_pdf_analyze_tool_mcp(mocker: "MockerFixture") -> None:
+    """xlsx_to_pdf_analyzeツールのテスト。"""
+    from unittest.mock import MagicMock
+
+    mock_client = mocker.patch("middleman_ai.mcp.server.client")
+    mock_result = MagicMock()
+    mock_result.sheet_name = "Sheet1"
+    mock_placeholder = MagicMock()
+    mock_placeholder.model_dump.return_value = {
+        "key": "name",
+        "description": "名前",
+        "cell": "A1",
+        "sheet_name": "Sheet1",
+        "number_format": None,
+    }
+    mock_result.placeholders = [mock_placeholder]
+    mock_result.placeholders_json_schema = '{"type": "object"}'
+    mock_client.xlsx_to_pdf_analyze.return_value = mock_result
+
+    result = xlsx_to_pdf_analyze("00000000-0000-0000-0000-000000000001")
+
+    assert result["sheet_name"] == "Sheet1"
+    assert len(result["placeholders"]) == 1
+    assert result["placeholders"][0]["key"] == "name"
+    mock_client.xlsx_to_pdf_analyze.assert_called_once_with(
+        "00000000-0000-0000-0000-000000000001", sheet_name=None
+    )
+
+
+def test_xlsx_to_pdf_execute_tool_mcp(mocker: "MockerFixture") -> None:
+    """xlsx_to_pdf_executeツールのテスト。"""
+    from unittest.mock import MagicMock
+
+    mock_client = mocker.patch("middleman_ai.mcp.server.client")
+    mock_result = MagicMock()
+    mock_result.pdf_url = "https://example.com/output.pdf"
+    mock_result.warnings = []
+    mock_client.xlsx_to_pdf_execute.return_value = mock_result
+
+    result = xlsx_to_pdf_execute(
+        "00000000-0000-0000-0000-000000000001",
+        {"name": "テスト"},
+    )
+
+    assert result["pdf_url"] == "https://example.com/output.pdf"
+    assert result["warnings"] == []
+    mock_client.xlsx_to_pdf_execute.assert_called_once_with(
+        "00000000-0000-0000-0000-000000000001",
+        {"name": "テスト"},
+        sheet_name=None,
+    )
 
 
 def test_run_server_mcp(mocker: "MockerFixture") -> None:
