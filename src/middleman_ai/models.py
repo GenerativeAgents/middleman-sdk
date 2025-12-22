@@ -130,3 +130,40 @@ class MermaidToImageResponse(BaseModel):
     important_remark_for_user: str | None = Field(
         None, description="ユーザーへの重要な注意事項"
     )
+
+
+class XlsxPlaceholder(BaseModel):
+    """Excelプレースホルダー情報。"""
+
+    key: str = Field(..., description="プレースホルダーのキー")
+    description: str = Field(..., description="プレースホルダーの説明")
+    cell: str = Field(..., description="セル位置（例: A1, E3）")
+    sheet_name: str = Field(..., description="シート名")
+    number_format: str | None = Field(None, description="セルの数値フォーマット")
+
+
+class XlsxToPdfAnalyzeResponse(BaseModel):
+    """XLSX → PDF テンプレート解析のレスポンスモデル。"""
+
+    sheet_name: str = Field(..., description="解析対象のシート名")
+    placeholders: List[XlsxPlaceholder] = Field(
+        ..., description="プレースホルダー一覧"
+    )
+    placeholders_json_schema: str = Field(
+        ..., description="placeholdersオブジェクトのJSON Schema（AI用）"
+    )
+    important_remark_for_user: str | None = Field(
+        None, description="ユーザーへの重要な注意事項"
+    )
+
+
+class XlsxToPdfExecuteResponse(BaseModel):
+    """XLSX → PDF 変換実行のレスポンスモデル。"""
+
+    pdf_url: str = Field(..., description="生成されたPDFのダウンロードURL")
+    warnings: List[str] = Field(
+        default_factory=list, description="変換時の警告メッセージ（例: フォント置換）"
+    )
+    important_remark_for_user: str | None = Field(
+        None, description="ユーザーへの重要な注意事項"
+    )

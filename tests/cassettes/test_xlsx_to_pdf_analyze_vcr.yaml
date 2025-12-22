@@ -1,0 +1,62 @@
+interactions:
+- request:
+    body: '{"xlsx_template_id": "TEMPLATE_ID", "sheet_name": null}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '80'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v1/tools/xlsx-to-pdf-analyze
+  response:
+    body:
+      string: "{\"sheet_name\":\"\u9818\u53CE\u66F8\",\"placeholders\":[{\"key\":\"company_name\",\"description\":\"\",\"cell\":\"A3\",\"sheet_name\":\"\u9818\u53CE\u66F8\",\"number_format\":null},{\"key\":\"no\",\"description\":\"\",\"cell\":\"L3\",\"sheet_name\":\"\u9818\u53CE\u66F8\",\"number_format\":null},{\"key\":\"date\",\"description\":\"\u4F8B
+        2025/12/01\",\"cell\":\"L4\",\"sheet_name\":\"\u9818\u53CE\u66F8\",\"number_format\":null},{\"key\":\"price\",\"description\":\"\",\"cell\":\"F6\",\"sheet_name\":\"\u9818\u53CE\u66F8\",\"number_format\":\"\\\"\xA5\\\"#,##0;[Red]\\\"\xA5\\\"\\\\-#,##0\"}],\"placeholders_json_schema\":\"{\\\"properties\\\":
+        {\\\"company_name\\\": {\\\"anyOf\\\": [{\\\"type\\\": \\\"string\\\"}, {\\\"type\\\":
+        \\\"integer\\\"}, {\\\"type\\\": \\\"number\\\"}, {\\\"type\\\": \\\"boolean\\\"}],
+        \\\"description\\\": \\\"\\\", \\\"title\\\": \\\"Company Name\\\"}, \\\"no\\\":
+        {\\\"anyOf\\\": [{\\\"type\\\": \\\"string\\\"}, {\\\"type\\\": \\\"integer\\\"},
+        {\\\"type\\\": \\\"number\\\"}, {\\\"type\\\": \\\"boolean\\\"}], \\\"description\\\":
+        \\\"\\\", \\\"title\\\": \\\"No\\\"}, \\\"date\\\": {\\\"anyOf\\\": [{\\\"type\\\":
+        \\\"string\\\"}, {\\\"type\\\": \\\"integer\\\"}, {\\\"type\\\": \\\"number\\\"},
+        {\\\"type\\\": \\\"boolean\\\"}], \\\"description\\\": \\\"\u4F8B 2025/12/01\\\",
+        \\\"title\\\": \\\"Date\\\"}, \\\"price\\\": {\\\"anyOf\\\": [{\\\"type\\\":
+        \\\"string\\\"}, {\\\"type\\\": \\\"integer\\\"}, {\\\"type\\\": \\\"number\\\"},
+        {\\\"type\\\": \\\"boolean\\\"}], \\\"description\\\": \\\"\\\", \\\"title\\\":
+        \\\"Price\\\"}}, \\\"required\\\": [\\\"company_name\\\", \\\"no\\\", \\\"date\\\",
+        \\\"price\\\"], \\\"title\\\": \\\"XlsxPlaceholders\\\", \\\"type\\\": \\\"object\\\"}\",\"important_remark_for_user\":\"Use
+        the 'placeholders_json_schema' to understand the structure of the placeholders
+        object that should be passed to the xlsx-to-pdf-execute endpoint.\"}"
+    headers:
+      content-encoding:
+      - gzip
+      content-type:
+      - application/json
+      date:
+      - FILTERED
+      server:
+      - FILTERED
+      set-cookie:
+      - FILTERED
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - FILTERED
+      x-request-id:
+      - FILTERED
+    status:
+      code: 200
+      message: OK
+version: 1

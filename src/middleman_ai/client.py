@@ -28,6 +28,8 @@ from .models import (
     PdfToPageImagesResponse,
     PptxToPageImagesResponse,
     XlsxToPageImagesResponse,
+    XlsxToPdfAnalyzeResponse,
+    XlsxToPdfExecuteResponse,
 )
 
 # HTTPステータスコード
@@ -491,6 +493,77 @@ class ToolsClient:
             data = self._handle_response(response)
             result = MermaidToImageResponse.model_validate(data)
             return result.image_url
+        except PydanticValidationError as e:
+            raise ValidationError(str(e)) from e
+        except requests.exceptions.RequestException as e:
+            raise ConnectionError() from e
+
+    def xlsx_to_pdf_analyze(
+        self,
+        xlsx_template_id: str,
+        sheet_name: str | None = None,
+    ) -> XlsxToPdfAnalyzeResponse:
+        """Excelテンプレートを解析し、プレースホルダー情報を返します。
+
+        Args:
+            xlsx_template_id: ExcelテンプレートID(UUID)
+            sheet_name: 解析対象のシート名（省略時は最初のシート）
+
+        Returns:
+            XlsxToPdfAnalyzeResponse: 解析結果（シート名、プレースホルダー一覧）
+
+        Raises:
+            ValidationError: 入力データが不正
+            その他、_handle_responseで定義される例外
+        """
+        try:
+            response = self.session.post(
+                f"{self.base_url}/api/v1/tools/xlsx-to-pdf-analyze",
+                json={
+                    "xlsx_template_id": xlsx_template_id,
+                    "sheet_name": sheet_name,
+                },
+                timeout=self.timeout,
+            )
+            data = self._handle_response(response)
+            return XlsxToPdfAnalyzeResponse.model_validate(data)
+        except PydanticValidationError as e:
+            raise ValidationError(str(e)) from e
+        except requests.exceptions.RequestException as e:
+            raise ConnectionError() from e
+
+    def xlsx_to_pdf_execute(
+        self,
+        xlsx_template_id: str,
+        placeholders: Dict[str, str],
+        sheet_name: str | None = None,
+    ) -> XlsxToPdfExecuteResponse:
+        """Excelテンプレートのプレースホルダーを置換し、PDFに変換します。
+
+        Args:
+            xlsx_template_id: ExcelテンプレートID(UUID)
+            placeholders: プレースホルダーの値（キー: 名前、値: 置換文字列）
+            sheet_name: 処理対象のシート名（省略時は最初のシート）
+
+        Returns:
+            XlsxToPdfExecuteResponse: 変換結果（PDF URL、警告メッセージ）
+
+        Raises:
+            ValidationError: 入力データが不正
+            その他、_handle_responseで定義される例外
+        """
+        try:
+            response = self.session.post(
+                f"{self.base_url}/api/v1/tools/xlsx-to-pdf-execute",
+                json={
+                    "xlsx_template_id": xlsx_template_id,
+                    "placeholders": placeholders,
+                    "sheet_name": sheet_name,
+                },
+                timeout=self.timeout,
+            )
+            data = self._handle_response(response)
+            return XlsxToPdfExecuteResponse.model_validate(data)
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
         except requests.exceptions.RequestException as e:

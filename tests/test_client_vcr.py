@@ -293,3 +293,45 @@ def test_mermaid_to_image_with_options_vcr(client: ToolsClient) -> None:
     assert isinstance(image_url, str)
     assert image_url.startswith("https://")
     assert "/s/" in image_url
+
+
+@pytest.mark.vcr()
+def test_xlsx_to_pdf_analyze_vcr(client: ToolsClient) -> None:
+    """ToolsClient.xlsx_to_pdf_analyzeの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    template_id = os.getenv("MIDDLEMAN_TEST_XLSX_TEMPLATE_ID") or ""
+    result = client.xlsx_to_pdf_analyze(xlsx_template_id=template_id)
+    assert result.sheet_name is not None
+    assert isinstance(result.placeholders, list)
+    assert len(result.placeholders) > 0
+    for placeholder in result.placeholders:
+        assert placeholder.key is not None
+        assert placeholder.cell is not None
+
+
+@pytest.mark.vcr()
+def test_xlsx_to_pdf_execute_vcr(client: ToolsClient) -> None:
+    """ToolsClient.xlsx_to_pdf_executeの実際のAPIを使用したテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    template_id = os.getenv("MIDDLEMAN_TEST_XLSX_TEMPLATE_ID") or ""
+    placeholders = {
+        "company_name": "テスト株式会社",
+        "no": "001",
+        "date": "2025/01/01",
+        "price": "10000",
+    }
+    result = client.xlsx_to_pdf_execute(
+        xlsx_template_id=template_id,
+        placeholders=placeholders,
+    )
+    assert result.pdf_url is not None
+    assert result.pdf_url.startswith("https://")
+    assert "/s/" in result.pdf_url
