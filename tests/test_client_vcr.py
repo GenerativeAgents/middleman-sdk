@@ -24,7 +24,7 @@ def client() -> ToolsClient:
     )
 
 
-@pytest.mark.vcr()
+@pytest.mark.vcr(match_on=["method", "scheme", "port", "path", "query"])
 def test_md_to_pdf_vcr(client: ToolsClient) -> None:
     """ToolsClient.md_to_pdfの実際のAPIを使用したテスト。
 
@@ -45,7 +45,7 @@ def test_md_to_pdf_vcr(client: ToolsClient) -> None:
     assert "/s/" in pdf_url
 
 
-@pytest.mark.vcr()
+@pytest.mark.vcr(match_on=["method", "scheme", "port", "path", "query"])
 def test_md_to_pdf_with_template_id_vcr(client: ToolsClient) -> None:
     """ToolsClient.md_to_pdfの実際のAPIを使用したテスト。
 
