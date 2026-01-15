@@ -56,23 +56,24 @@ def test_md_to_pdf_success(
     client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
 ) -> None:
     """md_to_pdf成功時のテスト。"""
-    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+    mock_post = mocker.patch.object(requests, "post", return_value=mock_response)
 
     result = client.md_to_pdf("# Test")
 
     assert result == "https://example.com/test.pdf"
-    mock_post.assert_called_once_with(
-        "https://middleman-ai.com/api/v1/tools/md-to-pdf",
-        json={"markdown": "# Test", "pdf_template_id": None},
-        timeout=30.0,
-    )
+    mock_post.assert_called_once()
+    call_args = mock_post.call_args
+    assert call_args[0][0] == "https://middleman-ai.com/api/v1/tools/md-to-pdf/form"
+    assert call_args[1]["data"]["markdown"] == "# Test"
+    assert call_args[1]["files"] is None
+    assert call_args[1]["timeout"] == 30.0
 
 
 def test_md_to_pdf_success_with_template_id(
     client: ToolsClient, mocker: "MockerFixture", mock_response: Mock
 ) -> None:
     """md_to_pdf成功時のテスト。"""
-    mock_post = mocker.patch.object(client.session, "post", return_value=mock_response)
+    mock_post = mocker.patch.object(requests, "post", return_value=mock_response)
 
     result = client.md_to_pdf(
         "# Test",
@@ -80,14 +81,14 @@ def test_md_to_pdf_success_with_template_id(
     )
 
     assert result == "https://example.com/test.pdf"
-    mock_post.assert_called_once_with(
-        "https://middleman-ai.com/api/v1/tools/md-to-pdf",
-        json={
-            "markdown": "# Test",
-            "pdf_template_id": "00000000-0000-0000-0000-000000000001",
-        },
-        timeout=30.0,
-    )
+    mock_post.assert_called_once()
+    call_args = mock_post.call_args
+    assert call_args[0][0] == "https://middleman-ai.com/api/v1/tools/md-to-pdf/form"
+    assert call_args[1]["data"]["markdown"] == "# Test"
+    expected_id = "00000000-0000-0000-0000-000000000001"
+    assert call_args[1]["data"]["pdf_template_id"] == expected_id
+    assert call_args[1]["files"] is None
+    assert call_args[1]["timeout"] == 30.0
 
 
 @pytest.mark.parametrize(
@@ -109,11 +110,11 @@ def test_md_to_pdf_http_errors(
 ) -> None:
     """md_to_pdf HTTP エラー時のテスト。"""
     mock_response.status_code = status_code
-    mock_response.url = "https://example.com/api/test"  # URLを追加
-    mock_response.headers = {"content-type": "application/json"}  # headersを追加
-    mock_response.text = ""  # textを追加
+    mock_response.url = "https://example.com/api/test"
+    mock_response.headers = {"content-type": "application/json"}
+    mock_response.text = ""
     mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError()
-    mocker.patch.object(client.session, "post", return_value=mock_response)
+    mocker.patch.object(requests, "post", return_value=mock_response)
 
     with pytest.raises(expected_exception):
         client.md_to_pdf("# Test")
@@ -124,16 +125,13 @@ def test_md_to_pdf_connection_error(
 ) -> None:
     """md_to_pdf 接続エラー時のテスト。"""
     mocker.patch.object(
-        client.session,
+        requests,
         "post",
         side_effect=requests.exceptions.RequestException(),
     )
 
     with pytest.raises(ConnectionError):
-        try:
-            client.md_to_pdf("# Test")
-        except requests.exceptions.RequestException as e:
-            raise ConnectionError() from e
+        client.md_to_pdf("# Test")
 
 
 def test_md_to_pdf_validation_error(
@@ -141,7 +139,7 @@ def test_md_to_pdf_validation_error(
 ) -> None:
     """md_to_pdf バリデーションエラー時のテスト。"""
     mock_response.json.return_value = {"invalid": "response"}
-    mocker.patch.object(client.session, "post", return_value=mock_response)
+    mocker.patch.object(requests, "post", return_value=mock_response)
 
     with pytest.raises(ValidationError):
         client.md_to_pdf("# Test")
@@ -150,7 +148,7 @@ def test_md_to_pdf_validation_error(
 def test_md_to_pdf_timeout_error(client: ToolsClient, mocker: "MockerFixture") -> None:
     """md_to_pdf タイムアウトエラー時のテスト。"""
     mocker.patch.object(
-        client.session,
+        requests,
         "post",
         side_effect=requests.exceptions.Timeout("Connection timed out"),
     )

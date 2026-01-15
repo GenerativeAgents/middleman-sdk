@@ -39,7 +39,11 @@ def md_to_pdf(markdown_text: str, pdf_template_id: str | None = None) -> str:
 
 
 @mcp.tool()
-def md_file_to_pdf(md_file_full_path: str, pdf_template_id: str | None = None) -> str:
+def md_file_to_pdf(
+    md_file_full_path: str,
+    pdf_template_id: str | None = None,
+    image_paths: List[str] | None = None,
+) -> str:
     """
     Convert a Markdown file to PDF and return the download URL.
 
@@ -47,6 +51,8 @@ def md_file_to_pdf(md_file_full_path: str, pdf_template_id: str | None = None) -
         md_file_full_path: Path to the local Markdown file
         pdf_template_id: Optional ID of the PDF template to use.
         If not provided, the default template will be used
+        image_paths: Optional list of local image file paths.
+        These images can be referenced in the Markdown by their filename.
 
     Returns:
         The URL to download the generated PDF
@@ -59,9 +65,21 @@ def md_file_to_pdf(md_file_full_path: str, pdf_template_id: str | None = None) -
     if not os.access(file_path, os.R_OK):
         raise ValueError(f"File not readable: {md_file_full_path}")
 
+    if image_paths:
+        for img_path in image_paths:
+            img_file = Path(img_path)
+            if not img_file.exists():
+                raise ValueError(f"Image file not found: {img_path}")
+            if not img_file.is_file():
+                raise ValueError(f"Image path is not a file: {img_path}")
+            if not os.access(img_file, os.R_OK):
+                raise ValueError(f"Image file not readable: {img_path}")
+
     with file_path.open("r") as f:
         md_text = f.read()
-    return client.md_to_pdf(md_text, pdf_template_id=pdf_template_id)
+    return client.md_to_pdf(
+        md_text, pdf_template_id=pdf_template_id, image_paths=image_paths
+    )
 
 
 @mcp.tool()

@@ -86,6 +86,7 @@ def test_md_file_to_pdf_tool_mcp(
     mock_client.md_to_pdf.assert_called_once_with(
         "# Test MD",
         pdf_template_id=template_id,
+        image_paths=None,
     )
     mock_os_access.assert_called_once_with(mock_path.return_value, mocker.ANY)
 
