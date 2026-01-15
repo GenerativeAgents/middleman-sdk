@@ -335,3 +335,47 @@ def test_xlsx_to_pdf_execute_vcr(client: ToolsClient) -> None:
     assert result.pdf_url is not None
     assert result.pdf_url.startswith("https://")
     assert "/s/" in result.pdf_url
+
+
+@pytest.mark.vcr(match_on=["method", "scheme", "port", "path", "query"])
+def test_md_to_pdf_with_images_vcr(client: ToolsClient) -> None:
+    """ToolsClient.md_to_pdfの画像付きテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    test_markdown = """# Test with Image
+
+This document includes an image.
+
+![Test Image](test_image.png)
+
+End of document.
+"""
+    image_path = "tests/data/test_image.png"
+    pdf_url = client.md_to_pdf(markdown_text=test_markdown, image_paths=[image_path])
+    assert pdf_url.startswith("https://")
+    assert "/s/" in pdf_url
+
+
+@pytest.mark.vcr(match_on=["method", "scheme", "port", "path", "query"])
+def test_md_to_pdf_with_japanese_filename_image_vcr(client: ToolsClient) -> None:
+    """ToolsClient.md_to_pdfの日本語ファイル名画像付きテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    test_markdown = """# 日本語ファイル名テスト
+
+このドキュメントには日本語ファイル名の画像が含まれています。
+
+![テスト画像](テスト画像.png)
+
+ドキュメント終了。
+"""
+    image_path = "tests/data/テスト画像.png"
+    pdf_url = client.md_to_pdf(markdown_text=test_markdown, image_paths=[image_path])
+    assert pdf_url.startswith("https://")
+    assert "/s/" in pdf_url

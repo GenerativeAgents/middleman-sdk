@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: !!binary |
+      LS1lZGJhNDdkNDUzNjY2NjYxYjQzMzM2MGQ4NzU4NzkxNg0KQ29udGVudC1EaXNwb3NpdGlvbjog
+      Zm9ybS1kYXRhOyBuYW1lPSJtYXJrZG93biINCg0KIyBUZXN0IHdpdGggSW1hZ2UKClRoaXMgZG9j
+      dW1lbnQgaW5jbHVkZXMgYW4gaW1hZ2UuCgohW1Rlc3QgSW1hZ2VdKHRlc3RfaW1hZ2UucG5nKQoK
+      RW5kIG9mIGRvY3VtZW50LgoNCi0tZWRiYTQ3ZDQ1MzY2NjY2MWI0MzMzNjBkODc1ODc5MTYNCkNv
+      bnRlbnQtRGlzcG9zaXRpb246IGZvcm0tZGF0YTsgbmFtZT0iZmlsZXMiOyBmaWxlbmFtZT0idGVz
+      dF9pbWFnZS5wbmciDQpDb250ZW50LVR5cGU6IGltYWdlL3BuZw0KDQqJUE5HDQoaCgAAAA1JSERS
+      AAAAZAAAAGQIAgAAAP+AAgMAAADjSURBVHic7dCxAQAgDICw6v8/6wtlT2Ymzhu27rrErMKswKzA
+      rMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCs
+      wKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzA
+      rMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCs
+      wKzArMCswKzArMCswKzArMCs2fuKXgHHYZoHzwAAAABJRU5ErkJggg0KLS1lZGJhNDdkNDUzNjY2
+      NjYxYjQzMzM2MGQ4NzU4NzkxNi0tDQo=
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '650'
+      Content-Type:
+      - multipart/form-data; boundary=edba47d453666661b433360d87587916
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v1/tools/md-to-pdf/form
+  response:
+    body:
+      string: '{"pdf_url":"https://middleman-ai.com/s/cd6b4bab/oNrUjiJaqE","important_remark_for_user":"The
+        URL expires in 1 hour.Please note that you will not be able to download the
+        file after it has expired."}'
+    headers:
+      content-length:
+      - '201'
+      content-type:
+      - application/json
+      date:
+      - FILTERED
+      server:
+      - FILTERED
+      set-cookie:
+      - FILTERED
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - FILTERED
+      x-request-id:
+      - FILTERED
+    status:
+      code: 200
+      message: OK
+version: 1

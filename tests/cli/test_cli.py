@@ -15,7 +15,9 @@ def test_md_to_pdf_cli(runner, mock_client):
     result = runner.invoke(cli, ["md-to-pdf"], input="# Test")
     assert result.exit_code == 0
     assert "https://example.com/test.pdf" in result.output
-    mock_client.md_to_pdf.assert_called_once_with("# Test", pdf_template_id=None)
+    mock_client.md_to_pdf.assert_called_once_with(
+        "# Test", pdf_template_id=None, image_paths=None
+    )
 
 
 def test_md_to_pdf_cli_with_template_id(runner, mock_client):
@@ -24,7 +26,7 @@ def test_md_to_pdf_cli_with_template_id(runner, mock_client):
     assert result.exit_code == 0
     assert "https://example.com/test.pdf" in result.output
     mock_client.md_to_pdf.assert_called_once_with(
-        "# Test", pdf_template_id="TEMPLATE_ID"
+        "# Test", pdf_template_id="TEMPLATE_ID", image_paths=None
     )
 
 

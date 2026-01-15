@@ -43,7 +43,14 @@ def cli() -> None:
 
 @cli.command()
 @click.argument("template_id", required=False)
-def md_to_pdf(template_id: str | None = None) -> None:
+@click.option(
+    "--images",
+    "-i",
+    multiple=True,
+    type=click.Path(exists=True),
+    help="画像ファイルパス（複数指定可）。Markdown内でファイル名で参照できます。",
+)
+def md_to_pdf(template_id: str | None = None, images: tuple[str, ...] = ()) -> None:
     """Convert Markdown to PDF."""
     print("md_to_pdf コマンドを実行しています...")
     try:
@@ -53,9 +60,14 @@ def md_to_pdf(template_id: str | None = None) -> None:
         print(
             f"読み込んだMarkdown ({len(markdown_text)} 文字): {markdown_text[:50]}..."
         )
+        image_paths = list(images) if images else None
+        if image_paths:
+            print(f"添付画像: {image_paths}")
         with click.progressbar(length=1, label="PDFに変換中...", show_eta=False) as bar:
             print("APIを呼び出しています...")
-            pdf_url = client.md_to_pdf(markdown_text, pdf_template_id=template_id)
+            pdf_url = client.md_to_pdf(
+                markdown_text, pdf_template_id=template_id, image_paths=image_paths
+            )
             bar.update(1)
         print(f"変換結果URL: {pdf_url}")
         if template_id:
