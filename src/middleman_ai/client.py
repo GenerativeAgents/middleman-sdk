@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 from typing import Any, Dict, List, cast
 
 import requests
@@ -154,12 +155,18 @@ class ToolsClient:
         except json.JSONDecodeError as e:
             raise ValidationError("Invalid JSON response") from e
 
-    def md_to_pdf(self, markdown_text: str, pdf_template_id: str | None = None) -> str:
+    def md_to_pdf(
+        self,
+        markdown_text: str,
+        pdf_template_id: str | None = None,
+        image_paths: List[str] | None = None,
+    ) -> str:
         """Markdown文字列をPDFに変換し、PDFのダウンロードURLを返します。
 
         Args:
             markdown_text: 変換対象のMarkdown文字列
             pdf_template_id: テンプレートID(UUID)
+            image_paths: ローカル画像ファイルパスのリスト（Markdown内で参照可能）
 
         Returns:
             str: 生成されたPDFのURL
@@ -169,21 +176,51 @@ class ToolsClient:
             その他、_handle_responseで定義される例外
         """
         try:
-            response = self.session.post(
-                f"{self.base_url}/api/v1/tools/md-to-pdf",
-                json={
-                    "markdown": markdown_text,
-                    "pdf_template_id": pdf_template_id,
-                },
+            files: List[tuple[str, tuple[str, bytes, str]]] = []
+            if image_paths:
+                for path in image_paths:
+                    with open(path, "rb") as f:
+                        filename = os.path.basename(path)
+                        content = f.read()
+                        mime_type = self._get_image_mime_type(filename)
+                        files.append(("files", (filename, content, mime_type)))
+
+            data: Dict[str, Any] = {"markdown": markdown_text}
+            if pdf_template_id:
+                data["pdf_template_id"] = pdf_template_id
+
+            headers = dict(self.session.headers)
+            del headers["Content-Type"]
+
+            response = requests.post(
+                f"{self.base_url}/api/v1/tools/md-to-pdf/form",
+                data=data,
+                files=files if files else None,
+                headers=headers,
                 timeout=self.timeout,
             )
-            data = self._handle_response(response)
-            result = MdToPdfResponse.model_validate(data)
+            result_data = self._handle_response(response)
+            result = MdToPdfResponse.model_validate(result_data)
             return result.pdf_url
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
         except requests.exceptions.RequestException as e:
             raise ConnectionError() from e
+        except OSError as e:
+            raise ValidationError(f"Failed to read image file: {e}") from e
+
+    def _get_image_mime_type(self, filename: str) -> str:
+        """ファイル名から画像のMIMEタイプを推測"""
+        ext = filename.lower().split(".")[-1]
+        mime_types = {
+            "png": "image/png",
+            "jpg": "image/jpeg",
+            "jpeg": "image/jpeg",
+            "gif": "image/gif",
+            "webp": "image/webp",
+            "svg": "image/svg+xml",
+        }
+        return mime_types.get(ext, "application/octet-stream")
 
     def md_to_docx(
         self,

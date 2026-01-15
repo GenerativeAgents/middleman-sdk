@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: !!binary |
+      LS05ZjI4YjA1YTYzZmU1NjgyOTY0YjcyNDUwM2Q0N2I4Zg0KQ29udGVudC1EaXNwb3NpdGlvbjog
+      Zm9ybS1kYXRhOyBuYW1lPSJtYXJrZG93biINCg0KIyDml6XmnKzoqp7jg5XjgqHjgqTjg6vlkI3j
+      g4bjgrnjg4gKCuOBk+OBruODieOCreODpeODoeODs+ODiOOBq+OBr+aXpeacrOiqnuODleOCoeOC
+      pOODq+WQjeOBrueUu+WDj+OBjOWQq+OBvuOCjOOBpuOBhOOBvuOBmeOAggoKIVvjg4bjgrnjg4jn
+      lLvlg49dKOODhuOCueODiOeUu+WDjy5wbmcpCgrjg4njgq3jg6Xjg6Hjg7Pjg4jntYLkuobjgIIK
+      DQotLTlmMjhiMDVhNjNmZTU2ODI5NjRiNzI0NTAzZDQ3YjhmDQpDb250ZW50LURpc3Bvc2l0aW9u
+      OiBmb3JtLWRhdGE7IG5hbWU9ImZpbGVzIjsgZmlsZW5hbWU9IuODhuOCueODiOeUu+WDjy5wbmci
+      DQpDb250ZW50LVR5cGU6IGltYWdlL3BuZw0KDQqJUE5HDQoaCgAAAA1JSERSAAAAZAAAAGQIAgAA
+      AP+AAgMAAADkSURBVHic7dCxAQAgDICw6v8/6wtlT2Ymzswbdu6yw6zGrMCswKzArMCswKzArMCs
+      wKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzA
+      rMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCs
+      wKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzA
+      rMCswKzArNn7iGABx9CglmwAAAAASUVORK5CYIINCi0tOWYyOGIwNWE2M2ZlNTY4Mjk2NGI3MjQ1
+      MDNkNDdiOGYtLQ0K
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '753'
+      Content-Type:
+      - multipart/form-data; boundary=9f28b05a63fe5682964b724503d47b8f
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v1/tools/md-to-pdf/form
+  response:
+    body:
+      string: '{"pdf_url":"https://middleman-ai.com/s/cd6b4bab/u5EXgShUuq","important_remark_for_user":"The
+        URL expires in 1 hour.Please note that you will not be able to download the
+        file after it has expired."}'
+    headers:
+      content-length:
+      - '201'
+      content-type:
+      - application/json
+      date:
+      - FILTERED
+      server:
+      - FILTERED
+      set-cookie:
+      - FILTERED
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - FILTERED
+      x-request-id:
+      - FILTERED
+    status:
+      code: 200
+      message: OK
+version: 1

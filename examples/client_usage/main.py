@@ -1,17 +1,29 @@
 import os
 
+from dotenv import load_dotenv
+
 from middleman_ai import ToolsClient
+
+load_dotenv()
 
 
 def main() -> None:
     # Initialize client
-    client = ToolsClient(api_key=os.getenv("MIDDLEMAN_API_KEY", ""))
+    client = ToolsClient(
+        api_key=os.getenv("MIDDLEMAN_API_KEY", ""),
+        base_url=os.getenv("MIDDLEMAN_BASE_URL", "https://middleman-ai.com"),
+    )
 
     # Markdown → PDF
     markdown_text = "# Sample\nThis is a test."
     pdf_template_id = os.getenv("MIDDLEMAN_PDF_TEMPLATE_ID", None)
     pdf_url = client.md_to_pdf(markdown_text, pdf_template_id=pdf_template_id)
     print(f"Generated PDF URL (default template): {pdf_url}")
+
+    # Markdown → PDF (with local images)
+    markdown_with_image = "# Image Test\n\n![test](test_image.png)"
+    pdf_url = client.md_to_pdf(markdown_with_image, image_paths=["test_image.png"])
+    print(f"Generated PDF URL (with image): {pdf_url}")
 
     # Markdown → DOCX
     docx_url = client.md_to_docx(markdown_text)
@@ -72,6 +84,20 @@ graph TD
     )
     pptx_url = client.json_to_pptx_execute_v2(pptx_template_id, presentation)
     print(f"Generated PPTX URL: {pptx_url}")
+
+    # XLSX → PDF (analyze)
+    xlsx_template_id = os.getenv("MIDDLEMAN_XLSX_TEMPLATE_ID", "")
+    if xlsx_template_id:
+        result = client.xlsx_to_pdf_analyze(xlsx_template_id)
+        print(f"XLSX Template sheet: {result.sheet_name}")
+        print(f"Placeholders: {[p.key for p in result.placeholders]}")
+
+        # XLSX → PDF (execute)
+        placeholders = {p.key: f"Sample {p.key}" for p in result.placeholders}
+        result = client.xlsx_to_pdf_execute(xlsx_template_id, placeholders)
+        print(f"Generated PDF URL (from XLSX): {result.pdf_url}")
+    else:
+        print("Skipping XLSX → PDF: MIDDLEMAN_XLSX_TEMPLATE_ID not set")
 
 
 if __name__ == "__main__":

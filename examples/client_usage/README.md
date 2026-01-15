@@ -15,6 +15,7 @@ Middleman.ai の ToolsClient メソッドを直接使用する最小限のサン
 export MIDDLEMAN_API_KEY="YOUR_API_KEY"
 export MIDDLEMAN_PDF_TEMPLATE_ID="YOUR_TEMPLATE_ID"   # マークダウン to PDFのテンプレートIDを必要に応じて設定
 export MIDDLEMAN_PPTX_TEMPLATE_ID="YOUR_TEMPLATE_ID"  # JSON to PPTXの機能を使用する場合sample_template.pptxをMiddleman.aiにアップロードしてそのIDを設定
+export MIDDLEMAN_XLSX_TEMPLATE_ID="YOUR_TEMPLATE_ID"  # XLSX to PDFの機能を使用する場合、プレースホルダー付きExcelテンプレートをアップロードしてそのIDを設定
 ```
 
 2. 依存関係のインストール:
