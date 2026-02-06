@@ -379,3 +379,36 @@ def test_md_to_pdf_with_japanese_filename_image_vcr(client: ToolsClient) -> None
     pdf_url = client.md_to_pdf(markdown_text=test_markdown, image_paths=[image_path])
     assert pdf_url.startswith("https://")
     assert "/s/" in pdf_url
+
+
+@pytest.mark.vcr(match_on=["method", "scheme", "port", "path", "query"])
+def test_json_to_pptx_execute_v2_with_images_vcr(client: ToolsClient) -> None:
+    """ToolsClient.json_to_pptx_execute_v2の画像付きテスト。
+
+    Note:
+        このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
+        初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
+    """
+    template_id = (
+        os.getenv("MIDDLEMAN_TEST_PPTX_TEMPLATE_ID") or ""
+    )
+    presentation = {
+        "slides": [
+            {
+                "type": "title",
+                "placeholders": [
+                    {"name": "title", "content": "Test Title with Image"},
+                    {"name": "subtitle", "content": "Test Subtitle"},
+                ],
+            }
+        ]
+    }
+    image_path = "tests/data/test_image.png"
+    pptx_url = client.json_to_pptx_execute_v2(
+        pptx_template_id=template_id,
+        presentation=Presentation.model_validate(presentation),
+        image_paths=[image_path],
+    )
+    assert isinstance(pptx_url, str)
+    assert pptx_url.startswith("https://")
+    assert "/s/" in pptx_url

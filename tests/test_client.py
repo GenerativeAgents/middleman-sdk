@@ -12,6 +12,9 @@ from middleman_ai.client import (
     HTTP_NOT_FOUND,
     HTTP_PAYMENT_REQUIRED,
     HTTP_UNAUTHORIZED,
+    Placeholder,
+    Presentation,
+    Slide,
     ToolsClient,
 )
 from middleman_ai.exceptions import (
@@ -612,3 +615,114 @@ def test_xlsx_to_pdf_analyze_connection_error(
 
     with pytest.raises(ConnectionError):
         client.xlsx_to_pdf_analyze("00000000-0000-0000-0000-000000000001")
+
+
+def _create_test_presentation() -> Presentation:
+    """テスト用のPresentationオブジェクトを生成します。"""
+    return Presentation(
+        slides=[
+            Slide(
+                type="title",
+                placeholders=[
+                    Placeholder(name="title", content="Test Title"),
+                ],
+            )
+        ]
+    )
+
+
+def test_json_to_pptx_execute_v2_success(
+    client: ToolsClient, mocker: "MockerFixture"
+) -> None:
+    """json_to_pptx_execute_v2 成功時のテスト。"""
+    mock_response = Mock(spec=requests.Response)
+    mock_response.status_code = 200
+    mock_response.json.return_value = {
+        "pptx_url": "https://example.com/test.pptx",
+        "important_remark_for_user": "The URL expires in 1 hour.",
+    }
+    mock_post = mocker.patch.object(requests, "post", return_value=mock_response)
+
+    presentation = _create_test_presentation()
+    result = client.json_to_pptx_execute_v2(
+        "00000000-0000-0000-0000-000000000001", presentation
+    )
+
+    assert result == "https://example.com/test.pptx"
+    mock_post.assert_called_once()
+    call_args = mock_post.call_args
+    assert (
+        call_args[0][0]
+        == "https://middleman-ai.com/api/v2/tools/json-to-pptx/execute/form"
+    )
+    assert "presentation_json" in call_args[1]["data"]
+    expected_id = "00000000-0000-0000-0000-000000000001"
+    assert call_args[1]["data"]["pptx_template_id"] == expected_id
+    assert call_args[1]["files"] is None
+    assert call_args[1]["timeout"] == 30.0
+
+
+@pytest.mark.parametrize(
+    "status_code,expected_exception",
+    [
+        (HTTP_PAYMENT_REQUIRED, NotEnoughCreditError),
+        (HTTP_UNAUTHORIZED, ForbiddenError),
+        (HTTP_FORBIDDEN, ForbiddenError),
+        (HTTP_NOT_FOUND, NotFoundError),
+        (HTTP_INTERNAL_SERVER_ERROR, InternalError),
+    ],
+)
+def test_json_to_pptx_execute_v2_http_errors(
+    client: ToolsClient,
+    mocker: "MockerFixture",
+    status_code: int,
+    expected_exception: type[Exception],
+) -> None:
+    """json_to_pptx_execute_v2 HTTP エラー時のテスト。"""
+    mock_response = Mock(spec=requests.Response)
+    mock_response.status_code = status_code
+    mock_response.url = "https://example.com/api/test"
+    mock_response.headers = {"content-type": "application/json"}
+    mock_response.text = ""
+    mock_response.json.return_value = {}
+    mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError()
+    mocker.patch.object(requests, "post", return_value=mock_response)
+
+    presentation = _create_test_presentation()
+    with pytest.raises(expected_exception):
+        client.json_to_pptx_execute_v2(
+            "00000000-0000-0000-0000-000000000001", presentation
+        )
+
+
+def test_json_to_pptx_execute_v2_connection_error(
+    client: ToolsClient, mocker: "MockerFixture"
+) -> None:
+    """json_to_pptx_execute_v2 接続エラー時のテスト。"""
+    mocker.patch.object(
+        requests,
+        "post",
+        side_effect=requests.exceptions.RequestException(),
+    )
+
+    presentation = _create_test_presentation()
+    with pytest.raises(ConnectionError):
+        client.json_to_pptx_execute_v2(
+            "00000000-0000-0000-0000-000000000001", presentation
+        )
+
+
+def test_json_to_pptx_execute_v2_validation_error(
+    client: ToolsClient, mocker: "MockerFixture"
+) -> None:
+    """json_to_pptx_execute_v2 バリデーションエラー時のテスト。"""
+    mock_response = Mock(spec=requests.Response)
+    mock_response.status_code = 200
+    mock_response.json.return_value = {"invalid": "response"}
+    mocker.patch.object(requests, "post", return_value=mock_response)
+
+    presentation = _create_test_presentation()
+    with pytest.raises(ValidationError):
+        client.json_to_pptx_execute_v2(
+            "00000000-0000-0000-0000-000000000001", presentation
+        )

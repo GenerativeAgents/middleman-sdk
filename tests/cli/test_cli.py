@@ -30,6 +30,21 @@ def test_md_to_pdf_cli_with_template_id(runner, mock_client):
     )
 
 
+def test_md_to_pdf_cli_with_images(runner, mock_client, tmp_path):
+    """Test md_to_pdf CLI command with images."""
+    mock_client.md_to_pdf.return_value = "https://example.com/test.pdf"
+    image_path = tmp_path / "test.png"
+    image_path.write_bytes(b"dummy image content")
+    result = runner.invoke(
+        cli, ["md-to-pdf", "-i", str(image_path)], input="# Test"
+    )
+    assert result.exit_code == 0
+    assert "https://example.com/test.pdf" in result.output
+    mock_client.md_to_pdf.assert_called_once_with(
+        "# Test", pdf_template_id=None, image_paths=[str(image_path)]
+    )
+
+
 def test_md_to_docx_cli(runner, mock_client):
     """Test md_to_docx CLI command."""
     mock_client.md_to_docx.return_value = "https://example.com/test.docx"
@@ -92,6 +107,33 @@ def test_json_to_pptx_execute_cli(runner, mock_client):
     assert result.exit_code == 0
     assert "https://example.com/result.pptx" in result.output
     mock_client.json_to_pptx_execute_v2.assert_called_once()
+    call_args = mock_client.json_to_pptx_execute_v2.call_args
+    assert call_args[1]["image_paths"] is None
+
+
+def test_json_to_pptx_execute_cli_with_images(runner, mock_client, tmp_path):
+    """Test json_to_pptx_execute CLI command with images."""
+    mock_client.json_to_pptx_execute_v2.return_value = "https://example.com/result.pptx"
+    image_path = tmp_path / "test.png"
+    image_path.write_bytes(b"dummy image content")
+    input_data = {
+        "slides": [
+            {
+                "type": "title",
+                "placeholders": [{"name": "title", "content": "Test Title"}],
+            }
+        ]
+    }
+    result = runner.invoke(
+        cli,
+        ["json-to-pptx-execute", "template-123", "-i", str(image_path)],
+        input=json.dumps(input_data),
+    )
+    assert result.exit_code == 0
+    assert "https://example.com/result.pptx" in result.output
+    mock_client.json_to_pptx_execute_v2.assert_called_once()
+    call_args = mock_client.json_to_pptx_execute_v2.call_args
+    assert call_args[1]["image_paths"] == [str(image_path)]
 
 
 def test_missing_api_key_cli(runner, mocker):

@@ -85,6 +85,27 @@ graph TD
     pptx_url = client.json_to_pptx_execute_v2(pptx_template_id, presentation)
     print(f"Generated PPTX URL: {pptx_url}")
 
+    # JSON → PPTX (execute with local images)
+    presentation_with_image = Presentation(
+        slides=[
+            Slide(
+                type="title",
+                placeholders=[Placeholder(name="title", content="Image Test")],
+            ),
+            Slide(
+                type="content",
+                placeholders=[
+                    Placeholder(name="title", content="Sample Image"),
+                    Placeholder(name="image", content="test_image.png"),
+                ],
+            ),
+        ]
+    )
+    pptx_url = client.json_to_pptx_execute_v2(
+        pptx_template_id, presentation_with_image, image_paths=["test_image.png"]
+    )
+    print(f"Generated PPTX URL (with image): {pptx_url}")
+
     # XLSX → PDF (analyze)
     xlsx_template_id = os.getenv("MIDDLEMAN_XLSX_TEMPLATE_ID", "")
     if xlsx_template_id:

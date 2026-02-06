@@ -448,7 +448,10 @@ class ToolsClient:
             raise ValidationError(str(e)) from e
 
     def json_to_pptx_execute_v2(
-        self, pptx_template_id: str, presentation: Presentation
+        self,
+        pptx_template_id: str,
+        presentation: Presentation,
+        image_paths: List[str] | None = None,
     ) -> str:
         """テンプレートIDとプレゼンテーションを指定し、合成したPPTXを生成します。
 
@@ -470,6 +473,8 @@ class ToolsClient:
                         ...
                     ]
                 }
+            image_paths: ローカル画像ファイルパスのリスト
+                （プレゼンテーション内で参照可能）
 
         Returns:
             str: 生成されたPPTXのダウンロードURL
@@ -479,20 +484,39 @@ class ToolsClient:
             その他、_handle_responseで定義される例外
         """
         try:
-            request_data = {
+            files: List[tuple[str, tuple[str, bytes, str]]] = []
+            if image_paths:
+                for path in image_paths:
+                    with open(path, "rb") as f:
+                        filename = os.path.basename(path)
+                        content = f.read()
+                        mime_type = self._get_image_mime_type(filename)
+                        files.append(("files", (filename, content, mime_type)))
+
+            data: Dict[str, Any] = {
+                "presentation_json": json.dumps(presentation.model_dump()),
                 "pptx_template_id": pptx_template_id,
-                "presentation": presentation.model_dump(),
             }
-            response = self.session.post(
-                f"{self.base_url}/api/v2/tools/json-to-pptx/execute",
-                json=request_data,
+
+            headers = dict(self.session.headers)
+            del headers["Content-Type"]
+
+            response = requests.post(
+                f"{self.base_url}/api/v2/tools/json-to-pptx/execute/form",
+                data=data,
+                files=files if files else None,
+                headers=headers,
                 timeout=self.timeout,
             )
-            data = self._handle_response(response)
-            result = JsonToPptxExecuteResponse.model_validate(data)
+            result_data = self._handle_response(response)
+            result = JsonToPptxExecuteResponse.model_validate(result_data)
             return result.pptx_url
         except PydanticValidationError as e:
             raise ValidationError(str(e)) from e
+        except requests.exceptions.RequestException as e:
+            raise ConnectionError() from e
+        except OSError as e:
+            raise ValidationError(f"Failed to read image file: {e}") from e
 
     def mermaid_to_image(
         self,
