@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from middleman_ai.client import Presentation, ToolsClient
+from middleman_ai.models import CustomSize, MermaidToImageOptions
 
 if TYPE_CHECKING:
     from _pytest.fixtures import FixtureRequest  # noqa: F401
@@ -161,7 +162,7 @@ def test_json_to_pptx_analyze_v2_vcr(client: ToolsClient) -> None:
         assert all("description" in placeholder for placeholder in placeholders)
 
 
-@pytest.mark.vcr()
+@pytest.mark.vcr(match_on=["method", "scheme", "port", "path", "query"])
 def test_json_to_pptx_execute_v2_vcr(client: ToolsClient) -> None:
     """ToolsClient.json_to_pptx_execute_v2の実際のAPIを使用したテスト。
 
@@ -276,8 +277,6 @@ def test_mermaid_to_image_with_options_vcr(client: ToolsClient) -> None:
         このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
         初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
     """
-    from middleman_ai.models import CustomSize, MermaidToImageOptions
-
     test_mermaid = """graph LR
     A[User] --> B[API]
     B --> C[Response]
@@ -389,9 +388,7 @@ def test_json_to_pptx_execute_v2_with_images_vcr(client: ToolsClient) -> None:
         このテストは実際のAPIを呼び出し、レスポンスをキャッシュします。
         初回実行時のみAPIを呼び出し、以降はキャッシュを使用します。
     """
-    template_id = (
-        os.getenv("MIDDLEMAN_TEST_PPTX_TEMPLATE_ID") or ""
-    )
+    template_id = os.getenv("MIDDLEMAN_TEST_PPTX_TEMPLATE_ID") or ""
     presentation = {
         "slides": [
             {
