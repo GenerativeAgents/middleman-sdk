@@ -1,5 +1,6 @@
 """MCPサーバーのテストモジュール。"""
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
@@ -237,9 +238,35 @@ def test_json_to_pptx_execute_tool_mcp(mocker: "MockerFixture") -> None:
     result = json_to_pptx_execute(template_id, json_data["slides"])
 
     assert result == expected_result
-    # expected_arg の定義を複数行に分割
     expected_arg = Presentation(slides=[Slide(type="title_slide", placeholders=[])])
-    mock_execute.assert_called_once_with(template_id, expected_arg)
+    mock_execute.assert_called_once_with(
+        template_id, expected_arg, image_paths=None
+    )
+
+
+def test_json_to_pptx_execute_tool_mcp_with_images(
+    mocker: "MockerFixture", tmp_path: Path
+) -> None:
+    """json_to_pptx_executeツールの画像付きテスト。"""
+    expected_result = "https://example.com/generated.pptx"
+    mock_execute = mocker.patch(
+        "middleman_ai.mcp.server.client.json_to_pptx_execute_v2"
+    )
+    mock_execute.return_value = expected_result
+    json_data = {"slides": [{"type": "title_slide", "title": "Test"}]}
+    template_id = "template1"
+    image_path = tmp_path / "test.png"
+    image_path.write_bytes(b"dummy image content")
+
+    result = json_to_pptx_execute(
+        template_id, json_data["slides"], image_paths=[str(image_path)]
+    )
+
+    assert result == expected_result
+    expected_arg = Presentation(slides=[Slide(type="title_slide", placeholders=[])])
+    mock_execute.assert_called_once_with(
+        template_id, expected_arg, image_paths=[str(image_path)]
+    )
 
 
 def test_mermaid_to_image_tool_mcp(mocker: "MockerFixture") -> None:

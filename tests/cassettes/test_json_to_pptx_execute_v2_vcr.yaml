@@ -1,44 +1,46 @@
 interactions:
-  - request:
-      body: '{"pptx_template_id": "TEMPLATE_ID", "presentation":
-        {"slides": [{"type": "title", "placeholders": [{"name": "title", "content":
-        "Test Title"}, {"name": "subtitle", "content": "Test Subtitle"}]}]}}'
-      headers:
-        Accept:
-          - "*/*"
-        Accept-Encoding:
-          - gzip, deflate, zstd
-        Connection:
-          - keep-alive
-        Content-Length:
-          - "221"
-        Content-Type:
-          - application/json
-        User-Agent:
-          - python-requests/2.32.3
-        authorization:
-          - DUMMY
-      method: POST
-      uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/execute
-    response:
-      body:
-        string: '{"pptx_url":"https://middleman-ai.com/s/709dd3af/6jtIBKQGb6"}'
-      headers:
-        content-length:
-          - "65"
-        content-type:
-          - application/json
-        date:
-          - FILTERED
-        server:
-          - FILTERED
-        vary:
-          - Accept-Encoding
-        x-middleware-rewrite:
-          - FILTERED
-        x-request-id:
-          - FILTERED
-      status:
-        code: 200
-        message: OK
+- request:
+    body: presentation_json=%7B%22slides%22%3A+%5B%7B%22type%22%3A+%22title%22%2C+%22placeholders%22%3A+%5B%7B%22name%22%3A+%22title%22%2C+%22content%22%3A+%22Test+Title%22%7D%2C+%7B%22name%22%3A+%22subtitle%22%2C+%22content%22%3A+%22Test+Subtitle%22%7D%5D%7D%5D%7D&pptx_template_id=7ce50698-8552-4137-b8bb-8385775171e3
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '309'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/execute/form
+  response:
+    body:
+      string: '{"pptx_url":"https://middleman-ai.com/s/cd6b4bab/B70iWbdgv4","important_remark_for_user":"The
+        URL expires in 1 hour. Please note that you will not be able to download the
+        file after it has expired."}'
+    headers:
+      content-length:
+      - '203'
+      content-type:
+      - application/json
+      date:
+      - FILTERED
+      server:
+      - FILTERED
+      set-cookie:
+      - FILTERED
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - FILTERED
+      x-request-id:
+      - FILTERED
+    status:
+      code: 200
+      message: OK
 version: 1

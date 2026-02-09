@@ -195,17 +195,33 @@ def json_to_pptx_analyze(pptx_template_id: str) -> List[Dict[str, Any]]:
 
 
 @mcp.tool()
-def json_to_pptx_execute(pptx_template_id: str, slides: List[Dict[str, Any]]) -> str:
+def json_to_pptx_execute(
+    pptx_template_id: str,
+    slides: List[Dict[str, Any]],
+    image_paths: List[str] | None = None,
+) -> str:
     """
     Generate a PPTX from JSON data using a template.
 
     Args:
         pptx_template_id: The template ID (UUID)
         slides: A list of slide definitions with type and placeholders
+        image_paths: Optional list of local image file paths.
+        These images can be referenced in the presentation by their filename.
 
     Returns:
         The URL to download the generated PPTX
     """
+    if image_paths:
+        for img_path in image_paths:
+            img_file = Path(img_path)
+            if not img_file.exists():
+                raise ValueError(f"Image file not found: {img_path}")
+            if not img_file.is_file():
+                raise ValueError(f"Image path is not a file: {img_path}")
+            if not os.access(img_file, os.R_OK):
+                raise ValueError(f"Image file not readable: {img_path}")
+
     presentation_slides = []
     for slide_data in slides:
         placeholders = []
@@ -217,7 +233,9 @@ def json_to_pptx_execute(pptx_template_id: str, slides: List[Dict[str, Any]]) ->
         )
 
     presentation = Presentation(slides=presentation_slides)
-    return client.json_to_pptx_execute_v2(pptx_template_id, presentation)
+    return client.json_to_pptx_execute_v2(
+        pptx_template_id, presentation, image_paths=image_paths
+    )
 
 
 @mcp.tool()

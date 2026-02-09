@@ -195,7 +195,16 @@ def json_to_pptx_analyze(template_id: str) -> None:
 
 @cli.command()
 @click.argument("template_id")
-def json_to_pptx_execute(template_id: str) -> None:
+@click.option(
+    "--images",
+    "-i",
+    multiple=True,
+    type=click.Path(exists=True),
+    help="画像ファイルパス（複数指定可）。プレゼンテーション内でファイル名で参照できます。",
+)
+def json_to_pptx_execute(
+    template_id: str, images: tuple[str, ...] = ()
+) -> None:
     """Execute PPTX template with data from stdin."""
     try:
         client = get_client()
@@ -212,10 +221,15 @@ def json_to_pptx_execute(template_id: str) -> None:
                 for slide in data["slides"]
             ]
         )
+        image_paths = list(images) if images else None
+        if image_paths:
+            print(f"添付画像: {image_paths}")
         with click.progressbar(
             length=1, label="PPTXを生成中...", show_eta=False
         ) as bar:
-            pptx_url = client.json_to_pptx_execute_v2(template_id, presentation)
+            pptx_url = client.json_to_pptx_execute_v2(
+                template_id, presentation, image_paths=image_paths
+            )
             bar.update(1)
         print(pptx_url)
     except (json.JSONDecodeError, KeyError) as e:

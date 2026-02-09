@@ -1,0 +1,61 @@
+interactions:
+- request:
+    body: !!binary |
+      LS1kNmZiMWI4NzRhNDA2Mzc0MzBkNzIxYTllODE0ZjFhMA0KQ29udGVudC1EaXNwb3NpdGlvbjog
+      Zm9ybS1kYXRhOyBuYW1lPSJwcmVzZW50YXRpb25fanNvbiINCg0KeyJzbGlkZXMiOiBbeyJ0eXBl
+      IjogInRpdGxlIiwgInBsYWNlaG9sZGVycyI6IFt7Im5hbWUiOiAidGl0bGUiLCAiY29udGVudCI6
+      ICJUZXN0IFRpdGxlIHdpdGggSW1hZ2UifSwgeyJuYW1lIjogInN1YnRpdGxlIiwgImNvbnRlbnQi
+      OiAiVGVzdCBTdWJ0aXRsZSJ9XX1dfQ0KLS1kNmZiMWI4NzRhNDA2Mzc0MzBkNzIxYTllODE0ZjFh
+      MA0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJwcHR4X3RlbXBsYXRlX2lk
+      Ig0KDQo3Y2U1MDY5OC04NTUyLTQxMzctYjhiYi04Mzg1Nzc1MTcxZTMNCi0tZDZmYjFiODc0YTQw
+      NjM3NDMwZDcyMWE5ZTgxNGYxYTANCkNvbnRlbnQtRGlzcG9zaXRpb246IGZvcm0tZGF0YTsgbmFt
+      ZT0iZmlsZXMiOyBmaWxlbmFtZT0idGVzdF9pbWFnZS5wbmciDQpDb250ZW50LVR5cGU6IGltYWdl
+      L3BuZw0KDQqJUE5HDQoaCgAAAA1JSERSAAAAZAAAAGQIAgAAAP+AAgMAAADjSURBVHic7dCxAQAg
+      DICw6v8/6wtlT2Ymzhu27rrErMKswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCs
+      wKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzA
+      rMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCs
+      wKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCswKzArMCs2fuKXgHHYZoHzwAAAABJ
+      RU5ErkJggg0KLS1kNmZiMWI4NzRhNDA2Mzc0MzBkNzIxYTllODE0ZjFhMC0tDQo=
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '845'
+      Content-Type:
+      - multipart/form-data; boundary=d6fb1b874a40637430d721a9e814f1a0
+      User-Agent:
+      - python-requests/2.32.3
+      authorization:
+      - DUMMY
+    method: POST
+    uri: https://middleman-ai.com/api/v2/tools/json-to-pptx/execute/form
+  response:
+    body:
+      string: '{"pptx_url":"https://middleman-ai.com/s/cd6b4bab/PvuScnzl7J","important_remark_for_user":"The
+        URL expires in 1 hour. Please note that you will not be able to download the
+        file after it has expired."}'
+    headers:
+      content-length:
+      - '203'
+      content-type:
+      - application/json
+      date:
+      - FILTERED
+      server:
+      - FILTERED
+      set-cookie:
+      - FILTERED
+      vary:
+      - Accept-Encoding
+      x-middleware-rewrite:
+      - FILTERED
+      x-request-id:
+      - FILTERED
+    status:
+      code: 200
+      message: OK
+version: 1
