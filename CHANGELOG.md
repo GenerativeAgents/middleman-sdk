@@ -4,7 +4,7 @@
 
 フォーマットは[Keep a Changelog](https://keepachangelog.com/ja/)に基づいています。
 
-## [v0.3.2] - 2026-01-16
+## [v0.3.2] - 2026-02-09
 
 ### 追加
 
